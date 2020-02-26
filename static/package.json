@@ -1,14 +1,23 @@
 {
-  "name": "static",
+  "name": "caprice",
   "version": "1.0.0",
-  "description": "",
+  "description": "tonez baby",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "joe",
   "license": "ISC",
   "dependencies": {
     "tone": "^13.8.25"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lijeffrey39/caprice.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lijeffrey39/caprice/issues"
+  },
+  "homepage": "https://github.com/lijeffrey39/caprice#readme"
 }
