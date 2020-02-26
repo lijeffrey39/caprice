@@ -4,6 +4,12 @@ class ControllerDisplay {
     constructor() {
         this.socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
 
+        //create a synth and connect it to the master output (your speakers)
+        // const synth = new Tone.Synth().toDestination();
+
+        // //play a middle 'C' for the duration of an 8th note
+        // synth.triggerAttackRelease("C4", "8n");
+
         this.socket.on('my response', function(msg) {
             console.log(msg.data);
         });
