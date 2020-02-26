@@ -28,12 +28,23 @@ class ControllerBluetoothInterface {
             device.addEventListener('gattserverdisconnected', onDeviceDisconnected);
         }
 
-        return device.gatt.connect();
+        console.log("connecting to bluetooth device");
+
+        return device.gatt.connect().catch(function(){
+            console.log("error caught, trying to connect again");
+            device.gatt.connect();
+        });
+
     }
 
     pair() {
+
+        console.log("pairing");
         return navigator.bluetooth.requestDevice({
-            acceptAllDevices: true,
+            // acceptAllDevices: true,
+            filters: [
+                { namePrefix: 'Gear' }
+            ],
             optionalServices: [
                 ControllerBluetoothInterface.UUID_CUSTOM_SERVICE
             ]
@@ -83,7 +94,9 @@ class ControllerBluetoothInterface {
         ) & 0x3FF;
 
         // com.samsung.android.app.vr.input.service/ui/c.class:L222
-        const timestamp = ((new Int32Array(buffer.slice(0, 4))[0]) & 0xFFFFFFFF) / 1000 * ControllerBluetoothInterface.TIMESTAMP_FACTOR;
+        // const timestamp = ((new Int32Array(buffer.slice(0, 4))[0]) & 0xFFFFFFFF) / 1000 * ControllerBluetoothInterface.TIMESTAMP_FACTOR;
+        // console.log(timestamp.length);
+        // console.log(timestamp);
 
         // com.samsung.android.app.vr.input.service/ui/c.class:L222
         const temperature = eventData[57];
@@ -136,7 +149,7 @@ class ControllerBluetoothInterface {
 
             magX, magY, magZ,
 
-            timestamp,
+            // timestamp,
             temperature,
             axisX, axisY,
             triggerButton,

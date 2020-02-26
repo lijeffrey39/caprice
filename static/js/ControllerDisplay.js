@@ -1,18 +1,16 @@
 window.AHRS = require('ahrs');
+// var MIDI = require('midijs');
 
 class ControllerDisplay {
     constructor() {
+        // console.log(MIDI);
         this.socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
-
-        //create a synth and connect it to the master output (your speakers)
-        // const synth = new Tone.Synth().toDestination();
-
-        // //play a middle 'C' for the duration of an 8th note
-        // synth.triggerAttackRelease("C4", "8n");
 
         this.socket.on('my response', function(msg) {
             console.log(msg.data);
         });
+
+
 
         this.PATH                 = 'static/models/';
         this.TILT                 = Math.PI * 0.2;
@@ -82,6 +80,7 @@ class ControllerDisplay {
         // mtlLoader.load('gear_vr_controller.mtl', this.onMTLLoaded, (function () {
         //     console.log("hi");
         // }));
+        console.log(this.PATH);
         if (navigator.bluetooth) {
             document.getElementById('deviceActions').addEventListener(
                 'change',
@@ -258,7 +257,14 @@ class ControllerDisplay {
         let deltaTimeSeconds = 0;
         // this.updateTexture(data);
         // console.log(data);
-        this.socket.emit('my event', {data: data});
+
+        if(data["triggerButton"]){
+            startLog(["accel","gyro","touch"],data,true);
+        } else {
+            startLog(["accel","gyro","touch"],data,false);
+        }
+
+        this.socket.emit('my event', {data: data['accel']});
     }
 
     onClickDeviceActionButton() {
@@ -293,3 +299,4 @@ const controllerDisplay            = new ControllerDisplay();
 const controllerBluetoothInterface = new ControllerBluetoothInterface(
     controllerDisplay.onControllerDataReceived
 );
+
