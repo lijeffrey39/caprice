@@ -1,44 +1,45 @@
 
-from flask import Flask
-from flask import render_template
-from flask_socketio import SocketIO, emit
+import logging
 import os
 
-# creates a Flask application, named app
+from engineio.payload import Payload
+from flask import Flask, render_template
+from flask_socketio import SocketIO, emit
+from swipe_detection import SwipeDetector
+
+Payload.max_decode_packets = 100
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 app = Flask(__name__)
 socketio = SocketIO(app)
+sd = SwipeDetector()
 
-# a route where we will display a welcome message via an HTML template
-# @app.route("/")
-# def hello():
-#     message = "Hello, World"
-#     return render_template('index.html', message=message)
 
 @app.route("/")
-def hello():
-    return render_template('index.html', token = "hi")
+def index_file():
+    return render_template('index.html')
+
 
 @socketio.on('my event', namespace='/test')
-def test_message(message):
-    # print(message)
-    # print(message['data']['triggerButton'])
-    emit('this data', {'data': message['data']}, broadcast=True)
+def notification(message):
+    direction = sd.receiveData(message)[0]
+    if (direction != 'none'):
+        print(direction)
+    emit('this data', {'data': message}, broadcast=True)
 
 
 @socketio.on('connect', namespace='/test')
-def test_connect():
+def connection():
     # emit('my response', {'data': 'Connected'}, broadcast=True)
     print("Connected")
 
 
 @socketio.on('button press', namespace='/test')
-def test_connect(buttonNum):
+def test_connect1(buttonNum):
     print("Button Pressed", buttonNum)
 
 
-# run the application
 if __name__ == "__main__":
-    # app.run(debug=True)
     print("running")
     socketio.run(app, host='0.0.0.0')

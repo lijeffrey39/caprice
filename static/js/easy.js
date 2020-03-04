@@ -10,28 +10,25 @@ var triggerCounter = 0;
 var counter = 0;
 
 function startLog(dataType, data, trigger){
-	if(trigger == false){
-		if(logOn){
+	if (trigger == false){
+		if (logOn){
 			logOn = false;
 			createCharts(triggerCounter);
 
 			console.log("POLL DONE");
 			
 		}
-
 		return;
 	}
 
-	// // console.log("touchpadX: " + data['axisX']);
-	// console.log("touchpadY: " + data['axisY']);
 
-	if(logOn == false){
+	if (logOn == false){
 		logOn = true;
 		triggerCounter += 1;
 		counter = 0;
 	} 
 
-	if(dataType.includes("accel")){
+	if (dataType.includes("accel")){
 		var xAcceleration = data['accel'][0] + .10;
 		var yAcceleration = data['accel'][1] - .40;
 		var zAcceleration = data['accel'][2] - .90;
@@ -295,7 +292,6 @@ function createAccelChart(dataLogIndex){
 function createGyroChart(dataLogIndex){
 
 	//Gyro Chart
-	
 	var gyrochart = document.getElementById('gyro_chart');
 	var gyrologData = dataLogGyro[dataLogIndex];
 	console.log(gyrologData);
@@ -343,22 +339,20 @@ function createGyroChart(dataLogIndex){
 }
 
 function createTouchChart(dataLogIndex){
-
 	//Touch Chart
-	
 	var touchchart = document.getElementById('touch_chart');
 	var touchlogData = dataLogTouch[dataLogIndex];
 	console.log(touchlogData);
 	console.log("CREATING TOUCH CHART");
 
 	var touchchartData = [touchlogData['touch_points']];
+	console.log(touchchartData);
 	var myChartTouch = new Chart(touchchart, {
 	    type: 'scatter',
 	    data: {
 	    	datasets: touchchartData
 	    },
 	    options: {
-
             responsive:  true,
             scales: {
               xAxes: [{
@@ -392,12 +386,9 @@ function createTouchChart(dataLogIndex){
 	});
 }
 
-
 function createCharts(dataLogIndex){
-
 	createAccelChart(dataLogIndex);
 	createGyroChart(dataLogIndex);
 	createTouchChart(dataLogIndex);
 	createCombinedAccelChart(dataLogIndex);
-
 }

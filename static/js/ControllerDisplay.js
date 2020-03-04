@@ -254,17 +254,16 @@ class ControllerDisplay {
     }
 
     onControllerDataReceived(data) {
-        let deltaTimeSeconds = 0;
-        // this.updateTexture(data);
-        // console.log(data);
-
-        if(data["triggerButton"]){
+        if (data["triggerButton"]){
             startLog(["accel","gyro","touch"],data,true);
         } else {
             startLog(["accel","gyro","touch"],data,false);
         }
 
-        this.socket.emit('my event', {data: data['accel']});
+        var result = {'accel': data['accel'], 
+                      'axisX': data['axisX'],
+                      'axisY': data['axisY']}
+        this.socket.emit('my event', result);
     }
 
     onClickDeviceActionButton() {

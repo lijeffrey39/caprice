@@ -1,6 +1,3 @@
-console.log("i'm a cunt");
-console.log("sfdjlksd");
-
 //create a synth and connect it to the master output (your speakers)
 const synth = new Tone.Synth().toMaster();
 // var pitchShift = new Tone.PitchShift({
