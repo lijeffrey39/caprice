@@ -163,3 +163,135 @@ Mean: 0.19070517252604166
 Std: 0.07455603256089136
 Trigger Released (END) 
 # of Peaks: 1
+
+Trigger Pressed (START) 
+Trigger Released (END) 
+# of Peaks: 0
+
+Trigger Pressed (START) 
+Peak Detected: 
+Value: 0.0632330664062499
+Mean: 0.03561992404513881
+Std: 0.0028283557500337793
+Trigger Released (END) 
+# of Peaks: 1
+
+Trigger Pressed (START) 
+Peak Detected: 
+Value: 0.40219976562500004
+Mean: 0.12041626464843747
+Std: 0.07004945156558022
+Trigger Released (END) 
+# of Peaks: 1
+
+Trigger Pressed (START) 
+Trigger Released (END) 
+# of Peaks: 0
+
+Trigger Pressed (START) 
+Peak Detected: 
+Value: 0.707752109375
+Mean: 0.10166504801432293
+Std: 0.07901347697562787
+Peak Detected: 
+Value: 0.834166015625
+Mean: 2.184974592013889
+Std: 0.35237828771670576
+Trigger Released (END) 
+# of Peaks: 2
+
+Trigger Pressed (START) 
+Peak Detected: 
+Value: 1.12051248046875
+Mean: 0.2798816731770833
+Std: 0.17088838936751655
+Peak Detected: 
+Value: 0.566920869140625
+Mean: 1.4804949972873265
+Std: 0.1718028741554521
+Trigger Released (END) 
+# of Peaks: 2
+
+Trigger Pressed (START) 
+Peak Detected: 
+Value: 0.18097546875000015
+Mean: 1.2097905745442707
+Std: 0.25938558409246826
+Trigger Released (END) 
+# of Peaks: 1
+
+Trigger Pressed (START) 
+Peak Detected: 
+Value: 0.18964693359374996
+Mean: 2.1616177788628472
+Std: 0.5063321226994902
+Trigger Released (END) 
+# of Peaks: 1
+
+Trigger Pressed (START) 
+Peak Detected: 
+Value: 0.5257928515625
+Mean: 0.054945705295138945
+Std: 0.037251803512770416
+Peak Detected: 
+Value: 0.41805371093750004
+Mean: 0.13540830078125
+Std: 0.06754516380718424
+Peak Detected: 
+Value: 0.8241102978515625
+Mean: 0.4058167087673611
+Std: 0.10375490987004439
+Peak Detected: 
+Value: 0.28679925781250004
+Mean: 0.14942526150173618
+Std: 0.03413225138696557
+Trigger Released (END) 
+# of Peaks: 4
+
+Trigger Pressed (START) 
+Peak Detected: 
+Value: 0.34426011718750005
+Mean: 0.40773300998263895
+Std: 0.016132967930335036
+Peak Detected: 
+Value: 0.3006856640625002
+Mean: 0.3831829380580359
+Std: 0.018467029839813076
+Peak Detected: 
+Value: 0.5156848437500001
+Mean: 0.37500160058593757
+Std: 0.02424478140014874
+Peak Detected: 
+Value: 0.4730681054687501
+Mean: 0.38065192925347235
+Std: 0.007037490877387072
+Peak Detected: 
+Value: 0.2355633007812501
+Mean: 0.3803327235243057
+Std: 0.003843983508156277
+Peak Detected: 
+Value: 0.3351620703125001
+Mean: 0.3849615169270834
+Std: 0.011102039486059312
+Peak Detected: 
+Value: 0.30834703125000007
+Mean: 0.3809711566840279
+Std: 0.009238304178689944
+Peak Detected: 
+Value: 0.22598650390625008
+Mean: 0.3820884657118057
+Std: 0.009774282058736355
+Peak Detected: 
+Value: 0.2848838867187501
+Mean: 0.3838442100694446
+Std: 0.00483077620622587
+Trigger Released (END) 
+# of Peaks: 9
+
+Trigger Pressed (START) 
+Peak Detected: 
+Value: 0.563090078125
+Mean: 0.18943501925998277
+Std: 0.08508848615950687
+Trigger Released (END) 
+# of Peaks: 1

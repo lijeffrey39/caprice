@@ -1,4 +1,7 @@
 <html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
 <style>
     #deviceActions {
         position: absolute;
@@ -51,23 +54,23 @@
         Messages about the device appear here.
     </div>
     <button id=box>Joe</button>
+    <button id=box1>Joe2</button>
 </div>
 <div>
-    <table style="width:100% ; height:100%">
-        <tr>
+    <table style="width:100% ; height:100%" id = "all_charts">
+        <tr id = '1'>
             <canvas id="accel_chart"></canvas>
         </tr>
-        <tr>
+        <tr id = '2'>
             <canvas id="combine_accel_chart"></canvas>
         </tr>
-        <tr>
+        <tr id = '3'>
             <canvas id="gyro_chart"></canvas>
         </tr>
-        <tr>
+        <tr id = '4'>
             <canvas id="touch_chart"></canvas>
         </tr>
     </table>
-    
 </div>
 <div id="webbluetoothNotSupported">
     Sorry, your browser cannot run this demo unless it supports the
