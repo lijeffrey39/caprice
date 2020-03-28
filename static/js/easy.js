@@ -331,8 +331,8 @@ function createGyroChart(dataLogIndex){
                   labelString: 'Gyro'
                 },
                 ticks: {
-                  min: -2,
-                  max: 2,
+                  min: -10,
+                  max: 10,
                   stepSize: 0.1,
                   fixedStepSize: 0.1,
                 }

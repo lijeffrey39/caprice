@@ -264,7 +264,7 @@ class ControllerDisplay {
             startLog(["accel","gyro","touch"],data,false);
         }
 
-        this.socket.emit('my event', {data: data['accel']});
+        this.socket.emit('my event', {data: data});
     }
 
     onClickDeviceActionButton() {
