@@ -19,20 +19,21 @@ socketio = SocketIO(app)
 def hello():
     return render_template('index.html', token = "hi")
 
-@socketio.on('my event', namespace='/test')
-def test_message(message):
-    # print(message)
+# this is the note-playing socket
+@socketio.on('notif')
+def test_message():
+    print('received')
     # print(message['data']['triggerButton'])
-    emit('this data', {'data': message['data']}, broadcast=True)
+    emit('update value', {'notes': ['C4', 'E4', 'G4'], 'new_swipe': True}, broadcast=True)
 
 
-@socketio.on('connect', namespace='/test')
+@socketio.on('connect')
 def test_connect():
-    # emit('my response', {'data': 'Connected'}, broadcast=True)
+    emit('after connect', {'data': 'Connected'}, broadcast=True)
     print("Connected")
 
 
-@socketio.on('button press', namespace='/test')
+@socketio.on('button press')
 def test_connect(buttonNum):
     print("Button Pressed", buttonNum)
 
