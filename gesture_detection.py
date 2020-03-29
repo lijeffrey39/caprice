@@ -12,7 +12,7 @@ class GestureDetector:
         self.prev_accel = []
         self.prev_success = []
         self.threshold = 3.75
-        self.influence = 0.4
+        self.influence = 0.15
         self.peak_counter = 0
 
 
@@ -31,11 +31,11 @@ class GestureDetector:
                 print("Number of detected peaks: ", self.peak_counter)
                 print("end")
 
-                f = open("gesture_outputs.txt","a")
-                f.write("Trigger Released (END) \n")
-                f.write("# of Peaks: ")
-                f.write(str(self.peak_counter))
-                f.close()
+                # f = open("gesture_outputs.txt","a")
+                # f.write("Trigger Released (END) \n")
+                # f.write("# of Peaks: ")
+                # f.write(str(self.peak_counter))
+                # f.close()
 
                 self.peak_counter = 0
             return 
@@ -51,13 +51,15 @@ class GestureDetector:
             self.prev_accel.append(combined_accel)
             self.prev_success.append(False)
             self.lag_counter += 1
-            f = open("gesture_outputs.txt","a")
-            f.write("\n\nTrigger Pressed (START) \n")
-            f.close()
+            # f = open("gesture_outputs.txt","a")
+            # f.write("\n\nTrigger Pressed (START) \n")
+            # f.close()
             print("start")
-            return
+            return 'start'
 
         else:
+            return_value = None
+
             self.lag_counter += 1
             if(self.moving_std != None and self.moving_mean != None):
                 if(abs(combined_accel - self.moving_mean) >= self.threshold * self.moving_std):
@@ -71,32 +73,38 @@ class GestureDetector:
                         print("Mean: ", self.moving_mean)
                         print("Std: ", self.moving_std)
 
-                        f = open("gesture_outputs.txt","a")
-                        f.write("Peak Detected: \n")
-                        f.write("Value: ")
-                        f.write(str(combined_accel))
-                        f.write("\n")
-                        f.write("Mean: ")
-                        f.write(str(self.moving_mean))
-                        f.write("\n")
-                        f.write("Std: ")
-                        f.write(str(self.moving_std))
-                        f.write("\n")
-                        f.close()
+                        # f = open("gesture_outputs.txt","a")
+                        # f.write("Peak Detected: \n")
+                        # f.write("Value: ")
+                        # f.write(str(combined_accel))
+                        # f.write("\n")
+                        # f.write("Mean: ")
+                        # f.write(str(self.moving_mean))
+                        # f.write("\n")
+                        # f.write("Std: ")
+                        # f.write(str(self.moving_std))
+                        # f.write("\n")
+                        # f.close()
 
                         self.peak_counter += 1
                         influenced_val = self.influence * combined_accel + (1-self.influence) * self.prev_accel[-1]
                         self.prev_accel.append(influenced_val)
                         self.prev_success.append(True)
+
+                        return_value = 'change'
                     
                     else:
                         self.prev_accel.append(combined_accel)
                         self.prev_success.append(False)
 
+                        return_value = 'hold'
+
                     # return True
                 else:
                     self.prev_accel.append(combined_accel)
                     self.prev_success.append(False)
+
+                    return_value = 'hold'
                     # return False
 
             if(self.lag_counter >= self.lag):
@@ -112,4 +120,8 @@ class GestureDetector:
                 self.prev_accel.append(combined_accel)
                 self.prev_success.append(False)
 
-            return
+                return_value = 'hold'
+            
+            return return_value
+
+            return 
