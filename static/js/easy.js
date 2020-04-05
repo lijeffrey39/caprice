@@ -15,7 +15,7 @@ function startLog(dataType, data, trigger){
 			logOn = false;
 			createCharts(triggerCounter);
 
-			console.log("POLL DONE");
+			// console.log("POLL DONE");
 			
 		}
 		return;
@@ -193,7 +193,7 @@ function createCombinedAccelChart(dataLogIndex){
 	var ctx = document.getElementById('combine_accel_chart');
 	var logData = dataLogCombine[dataLogIndex];
 
-	console.log("CREATING COMBINED ACCEL CHART");
+	// console.log("CREATING COMBINED ACCEL CHART");
 
 	var chartData = [logData['combined_values']];
 
@@ -244,8 +244,8 @@ function createAccelChart(dataLogIndex){
 
 	var ctx = document.getElementById('accel_chart');
 	var logData = dataLog[dataLogIndex];
-	console.log(logData);
-	console.log("CREATING ACCEL CHART");
+	// console.log(logData);
+	// console.log("CREATING ACCEL CHART");
 
 	var chartData = [logData['x_values'], logData['y_values'], logData['z_values']];
 	var myChart = new Chart(ctx, {
@@ -294,8 +294,8 @@ function createGyroChart(dataLogIndex){
 	//Gyro Chart
 	var gyrochart = document.getElementById('gyro_chart');
 	var gyrologData = dataLogGyro[dataLogIndex];
-	console.log(gyrologData);
-	console.log("CREATING GYRO CHART");
+	// console.log(gyrologData);
+	// console.log("CREATING GYRO CHART");
 
 	var gyrochartData = [gyrologData['x_values'], gyrologData['y_values'], gyrologData['z_values']];
 	var myChartGyro = new Chart(gyrochart, {
@@ -342,11 +342,11 @@ function createTouchChart(dataLogIndex){
 	//Touch Chart
 	var touchchart = document.getElementById('touch_chart');
 	var touchlogData = dataLogTouch[dataLogIndex];
-	console.log(touchlogData);
-	console.log("CREATING TOUCH CHART");
+	// console.log(touchlogData);
+	// console.log("CREATING TOUCH CHART");
 
 	var touchchartData = [touchlogData['touch_points']];
-	console.log(touchchartData);
+	// console.log(touchchartData);
 	var myChartTouch = new Chart(touchchart, {
 	    type: 'scatter',
 	    data: {

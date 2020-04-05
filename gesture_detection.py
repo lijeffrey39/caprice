@@ -28,8 +28,8 @@ class GestureDetector:
                 self.prev_accel = []
                 self.prev_success = []
                 
-                print("Number of detected peaks: ", self.peak_counter)
-                print("end")
+                # print("Number of detected peaks: ", self.peak_counter)
+                # print("end")
 
                 # f = open("gesture_outputs.txt","a")
                 # f.write("Trigger Released (END) \n")
@@ -38,7 +38,9 @@ class GestureDetector:
                 # f.close()
 
                 self.peak_counter = 0
-            return 
+
+                return 'end'
+            return None
         
         x_accel = data['accel'][0] + .10
         y_accel = data['accel'][1] - .40
@@ -54,7 +56,7 @@ class GestureDetector:
             # f = open("gesture_outputs.txt","a")
             # f.write("\n\nTrigger Pressed (START) \n")
             # f.close()
-            print("start")
+            # print("start")
             return 'start'
 
         else:
@@ -68,10 +70,10 @@ class GestureDetector:
                     window_success = self.prev_success[lag_difference:lag_difference+self.lag-1]
                     
                     if(True not in window_success):
-                        print("PEAK DETECTED \n\n\n\n\n")
-                        print("Value: ", combined_accel)
-                        print("Mean: ", self.moving_mean)
-                        print("Std: ", self.moving_std)
+                        # print("PEAK DETECTED \n\n\n\n\n")
+                        # print("Value: ", combined_accel)
+                        # print("Mean: ", self.moving_mean)
+                        # print("Std: ", self.moving_std)
 
                         # f = open("gesture_outputs.txt","a")
                         # f.write("Peak Detected: \n")
@@ -124,4 +126,4 @@ class GestureDetector:
             
             return return_value
 
-            return 
+            # return 

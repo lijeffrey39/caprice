@@ -40,16 +40,44 @@ gd = GestureDetector()
 # counter_values = []
 # total_time = 0
 
+current_note = []
 
 @app.route("/")
 def index_file():
     return render_template('index.html')
 
-@socketio.on('my event', namespace='/test')
+@socketio.on('my event')
 def notification(message):
-    gd.gesture_output(message['data'])
+    global current_note
 
-@socketio.on('swipe event', namespace='/test')
+    output = gd.gesture_output(message['data'])
+    if (output != None):
+        if output == 'start':
+            current_note = ['C4', 'E4', 'G4']
+            # emit('update value', {'notes': current_note, 'new_swipe': True}, broadcast=True)
+
+            test_message({'notes': current_note, 'new_swipe': True})
+            print('start')
+        elif output == 'change':
+            current_note = ['D4', 'F4', 'A4']
+            # emit('update value', {'notes': current_note, 'new_swipe': True}, broadcast=True)
+
+            test_message({'notes': current_note, 'new_swipe': True})
+            print('change')
+        
+        elif output == 'end':
+            current_note = []
+            # emit('update value', {'notes': [], 'new_swipe': True}, broadcast=True)
+            test_message({'notes': [], 'new_swipe': True})
+
+            print('end')
+
+        else:
+            #output is 'hold'
+            # emit('update value', {'notes': current_note, 'new_swipe': False}, broadcast=True)
+            test_message({'notes': current_note, 'new_swipe': False})
+
+@socketio.on('swipe event')
 def swipe_notification(message):
     direction = sd.receiveData(message)[0]
     if (direction != 'none'):
@@ -102,10 +130,10 @@ def test_connect1(buttonNum):
 
 @socketio.on('notif')
 # this is the note-playing socket
-def test_message():
+def test_message(value):
     print('received')
     # print(message['data']['triggerButton'])
-    emit('update value', {'notes': ['C4', 'E4', 'G4'], 'new_swipe': True}, broadcast=True)
+    emit('update value', value, broadcast=True)
 
 if __name__ == "__main__":
     print("running")
