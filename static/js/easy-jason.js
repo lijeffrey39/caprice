@@ -52,6 +52,32 @@ function addEffect(args) {
     effects.push(effect);
 }
 
+function removeEffect(name) {
+    var effect;
+    switch(name) {
+        case "chorus":
+            effect = Tone.Chorus;
+        case "delay":
+            effect = Tone.FeedbackDelay;
+        case "distortion":
+            effect = Tone.Distortion;
+        case "reverb":
+            effect = Tone.Reverb;
+        case "tremolo":
+            effect = Tone.Tremelo;
+        case "vibrato":
+            effect = Tone.Vibrato;
+    }
+
+    for(i = 0; i < effects.length; i++) {
+        if(effects[i] instanceof effect) {
+            effects.pop(i);
+            break;
+        }
+    }
+
+}
+
 var pitchShift = new Tone.PitchShift({
     pitch: pitchnum
     // windowSize: 
@@ -101,6 +127,14 @@ $(document).ready(function() {
   
     socket.on('update value', function(msg) {
         console.log(msg.data);
+        if(msg.effects_toggle) {
+            if(msg.effects_toggle.toggle) {
+                addEffect(msg.effects_toggle);
+            }
+            else {
+                removeEffect(msg.effects_toggle.name);
+            }
+        }
         playNotes(msg.notes, msg.new_swipe);
         // $('#' + msg.who).val(msg.data);
     });
