@@ -52,6 +52,32 @@ function addEffect(args) {
     effects.push(effect);
 }
 
+function removeEffect(name) {
+    var effect;
+    switch(name) {
+        case "chorus":
+            effect = Tone.Chorus;
+        case "delay":
+            effect = Tone.FeedbackDelay;
+        case "distortion":
+            effect = Tone.Distortion;
+        case "reverb":
+            effect = Tone.Reverb;
+        case "tremolo":
+            effect = Tone.Tremelo;
+        case "vibrato":
+            effect = Tone.Vibrato;
+    }
+
+    for(i = 0; i < effects.length; i++) {
+        if(effects[i] instanceof effect) {
+            effects.pop(i);
+            break;
+        }
+    }
+
+}
+
 var pitchShift = new Tone.PitchShift({
     pitch: pitchnum
     // windowSize: 
@@ -79,16 +105,18 @@ function playNotes(notes, new_swipe) {
     if(new_swipe) {
         polysynth.triggerRelease(lastNotes);
         polysynth.triggerAttack(notes);
-        lastNotes = notes;
     }
     else if(notes != lastNotes) {
         let newNotes = Array.from(difference(notes, lastNotes));
         let finNotes = Array.from(difference(lastNotes, notes));
         polysynth.triggerRelease(finNotes);
         polysynth.triggerAttack(newNotes);
-        lastNotes = notes;
+        // lastNotes = notes;
     }
+    lastNotes = notes;
 }
+
+var dt;
 
 $(document).ready(function() {
          
@@ -100,8 +128,28 @@ $(document).ready(function() {
     });
   
     socket.on('update value', function(msg) {
-        console.log(msg.data);
+        var timer;
+
+        if (JSON.stringify(msg.notes) != JSON.stringify(lastNotes)) {
+            dt = new Date();
+            console.log(dt.getTime());
+            timer = true;
+        } else {
+            timer = false;
+        }
+        if(msg.effects_toggle) {
+            if(msg.effects_toggle.toggle) {
+                addEffect(msg.effects_toggle);
+            }
+            else {
+                removeEffect(msg.effects_toggle.name);
+            }
+        }
         playNotes(msg.notes, msg.new_swipe);
+        // if (JSON.stringify(msg.notes) != JSON.stringify(lastNotes)) {
+        //     dt = new Date();
+        //     console.log(dt.getTime());
+        // }
         // $('#' + msg.who).val(msg.data);
     });
   });
