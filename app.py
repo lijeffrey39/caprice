@@ -131,7 +131,7 @@ def test_connect1(buttonNum):
 @socketio.on('notif')
 # this is the note-playing socket
 def test_message(value):
-    print('received')
+    # print('received')
     # print(message['data']['triggerButton'])
     emit('update value', value, broadcast=True)
 
