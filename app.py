@@ -6,6 +6,7 @@ from gesture_detection import GestureDetector
 import logging
 import os
 import time
+import copy
 import numpy
 
 from engineio.payload import Payload
@@ -50,32 +51,34 @@ def index_file():
 def notification(message):
     global current_note
 
-    output = gd.gesture_output(message['data'])
-    if (output != None):
-        if output == 'start':
-            current_note = ['C4', 'E4', 'G4']
-            # emit('update value', {'notes': current_note, 'new_swipe': True}, broadcast=True)
 
-            test_message({'notes': current_note, 'new_swipe': True})
-            print('start')
-        elif output == 'change':
-            current_note = ['D4', 'F4', 'A4']
-            # emit('update value', {'notes': current_note, 'new_swipe': True}, broadcast=True)
+    test_message({'notes': current_note, 'new_swipe': False})   
+    return
+    # output = gd.gesture_output(message['data'])
+    # if (output != None):
+    #     test_message({'notes': current_note, 'new_swipe': True})
+    #     return
+    #     if output == 'start':
+    #         # current_note = ['C4', 'E4', 'G4']
+    #         # emit('update value', {'notes': current_note, 'new_swipe': True}, broadcast=True)
 
-            test_message({'notes': current_note, 'new_swipe': True})
-            print('change')
+    #         test_message({'notes': current_note, 'new_swipe': True})
+    #         print('start')
+    #     elif output == 'change':
+    #         # current_note = ['D4', 'F4', 'A4']
+    #         # emit('update value', {'notes': current_note, 'new_swipe': True}, broadcast=True)
+
+    #         test_message({'notes': current_note, 'new_swipe': True})
+    #         print('change')
         
-        elif output == 'end':
-            current_note = []
-            # emit('update value', {'notes': [], 'new_swipe': True}, broadcast=True)
-            test_message({'notes': [], 'new_swipe': True})
-
-            print('end')
-
-        else:
-            #output is 'hold'
-            # emit('update value', {'notes': current_note, 'new_swipe': False}, broadcast=True)
-            test_message({'notes': current_note, 'new_swipe': False})
+    #     elif output == 'end':
+    #         # emit('update value', {'notes': [], 'new_swipe': True}, broadcast=True)
+    #         test_message({'notes': [], 'new_swipe': True})
+    #         print('end')
+    #     else:
+    #         #output is 'hold'
+    #         # emit('update value', {'notes': current_note, 'new_swipe': False}, broadcast=True)
+    #         test_message({'notes': current_note, 'new_swipe': False})
 
 @socketio.on('swipe event')
 def swipe_notification(message):
@@ -124,14 +127,34 @@ def test_connect():
     emit('after connect', {'data': 'Connected'}, broadcast=True)
     print("Connected")
 
-@socketio.on('button press', namespace='/test')
-def test_connect1(buttonNum):
-    print("Button Pressed", buttonNum)
+prev = []
+count = 0
+total = 0
+
+@socketio.on('button press')
+def test_connect1(buttonsPressed):
+    # print(buttonsPressed)
+    global current_note
+    global prev
+    global count 
+    global total
+    # temp = []
+    # for note in buttonsPressed:
+    #     if (buttonsPressed[0][note]):
+    #         temp.append(note)
+    if(copy.deepcopy(prev) != copy.deepcopy(buttonsPressed[0])):
+        # print(round(time.time() * 1000) - buttonsPressed[1])
+        count += 1
+        total += round(time.time() * 1000) - buttonsPressed[1]
+        print(total / count)
+
+    prev = buttonsPressed[0]
+    # print("Button Pressed", current_note)
 
 @socketio.on('notif')
 # this is the note-playing socket
 def test_message(value):
-    print('received')
+    # print('received')
     # print(message['data']['triggerButton'])
     emit('update value', value, broadcast=True)
 
