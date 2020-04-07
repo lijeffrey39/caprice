@@ -28,7 +28,7 @@ class GestureDetector:
                 self.prev_accel = []
                 self.prev_success = []
                 
-                # print("Number of detected peaks: ", self.peak_counter)
+                print("Number of detected peaks: ", self.peak_counter)
                 # print("end")
 
                 # f = open("gesture_outputs.txt","a")
