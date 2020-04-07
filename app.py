@@ -34,15 +34,14 @@ def index_file():
 
 @socketio.on('my event')
 def notification(message): 
-    direction = sd.receiveData(message['swipes'])[0]
+    # direction = sd.receiveData(message['swipes'])
+    direction = sd.detect_press(message['swipes'])
     pc.swipeControl(direction)
     test_message({'notes': pc.current_notes, 'new_swipe': False})
 
     return
     # output = gd.gesture_output(message['data'])
     # if (output != None):
-    #     test_message({'notes': current_note, 'new_swipe': True})
-    #     return
     #     if output == 'start':
     #         # current_note = ['C4', 'E4', 'G4']
     #         # emit('update value', {'notes': current_note, 'new_swipe': True}, broadcast=True)

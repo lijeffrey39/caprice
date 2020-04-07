@@ -259,10 +259,10 @@ class ControllerDisplay {
         // } else {
         //     startLog(["accel","gyro","touch"],data,false);
         // }
-
         var result = {'accel': data['accel'], 
                       'axisX': data['axisX'],
-                      'axisY': data['axisY']}
+                      'axisY': data['axisY'],
+                      'touchpadButton': data['touchpadButton']}
         this.socket.emit('my event', {data: data, 'swipes': result});
     }
 

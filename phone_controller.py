@@ -1,6 +1,7 @@
 
 class PhoneController:
     def __init__(self):
+        self.real_start = [60, 62, 64, 65, 67, 69, 71, 72]
         self.midi_start = [60, 62, 64, 65, 67, 69, 71, 72]
         self.phone_start = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'Z']
         self.octave_number = 8
@@ -33,12 +34,21 @@ class PhoneController:
             self.increase_octave()
         elif (dir == 'left'):
             self.decrease_octave()
+        elif (dir == 'center'):
+            self.reset()
         elif (dir == 'off'):
-            self.set_shift(0)
             if (self.get_shift() == 1):
                 self.shift_down()
             elif (self.get_shift() == -1):
                 self.shift_up()
+            self.set_shift(0)
+
+    def reset(self):
+        self.midi_start = self.real_start
+        self.octave_number = 8
+        self.current_notes = []
+        self.current_midi_notes = []
+        self.shift = 0
 
     def set_shift(self, shift):
         self.shift = shift
