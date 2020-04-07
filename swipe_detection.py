@@ -8,7 +8,7 @@ class SwipeDetector:
         self.xyArr = [(0, 0)] * self.windowSize
         self.count = 0
         self.direction = ""
-        self.pressed = False
+        self.triggered = False
 
         self.actualPrevDirection = ""
 
@@ -19,8 +19,10 @@ class SwipeDetector:
         distX = curr[0] - prev[0]
         distY = curr[1] - prev[1]
         if (abs(distX) >= self.threshold and abs(distY) <= self.restraint):
+            self.triggered = False
             direction[0] = 'left' if (distX < 0) else 'right'
         elif (abs(distY) >= self.threshold and abs(distX) <= self.restraint):
+            self.triggered = False
             direction[0] = 'up' if (distY < 0) else 'down'
         self.direction = direction[0]
     
@@ -29,10 +31,7 @@ class SwipeDetector:
         yAxis = allData['axisY']
         direction = ['none']
         prevDirection = self.direction
-        if (xAxis == 0):
-            self.pressed = False
-        else:
-            self.pressed = True
+        pressed = False if (xAxis == 0) else True
 
         self.count += 1
         curr = (xAxis, yAxis)
@@ -42,8 +41,12 @@ class SwipeDetector:
         if (prevDirection == self.direction):
             direction[0] = 'none'
         
-        # if (self.actualPrevDirection == 'up'):
+        if (self.actualPrevDirection == 'up' or self.actualPrevDirection == 'down'):
+            if (pressed == False and self.triggered == False):
+                self.triggered = True
+                return [self.actualPrevDirection + ' release']
 
-        
-        self.actualPrevDirection = direction[0]
+
+        if (direction[0] != 'none'):
+            self.actualPrevDirection = direction[0]
         return direction
