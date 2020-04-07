@@ -52,10 +52,15 @@ def notification(message):
     global current_note
 
     # test_message({'notes': current_note, 'new_swipe': False})   
-    emit('update value', {'notes': current_note, 'new_swipe': False}, broadcast=True)
+    direction = sd.receiveData(message.swipes)[0]
+
+    if (direction != 'none'):
+        current_note = swipeControl(direction, current_note)
+
+    test_message({'notes': current_note, 'new_swipe': False})
+    
     return
     # output = gd.gesture_output(message['data'])
-    # print()
     # if (output != None):
     #     test_message({'notes': current_note, 'new_swipe': True})
     #     return
@@ -80,6 +85,35 @@ def notification(message):
     #         #output is 'hold'
     #         # emit('update value', {'notes': current_note, 'new_swipe': False}, broadcast=True)
     #         test_message({'notes': current_note, 'new_swipe': False})
+
+shift = 0
+def swipeControl(dir, notes):
+    if dir == 'up':
+        #pitchshift up
+        for note in notes:
+            note += 1
+        
+        shift = 1
+    elif dir == 'down':
+        #pitchshift down
+        for note in notes:
+            note -= 1
+
+        shift = -1
+    elif dir == 'right':
+        #half octave up
+        pass
+    elif dir == 'left':
+        pass
+    elif dir == 'off':
+        if shift == 1:
+            for note in notes:
+                note -= 1
+        elif shift == -1:
+            for note in notes:
+                note += 1
+    return notes
+
 
 @socketio.on('swipe event')
 def swipe_notification(message):
@@ -134,6 +168,7 @@ total = 0
 
 @socketio.on('button press')
 def test_connect1(buttonsPressed):
+    
     # print(buttonsPressed)
     global current_note
     global prev
