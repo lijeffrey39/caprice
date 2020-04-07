@@ -263,9 +263,7 @@ class ControllerDisplay {
         var result = {'accel': data['accel'], 
                       'axisX': data['axisX'],
                       'axisY': data['axisY']}
-        // this.socket.emit('swipe event', result);
         this.socket.emit('my event', {data: data, 'swipes': result});
-
     }
 
     onClickDeviceActionButton() {
