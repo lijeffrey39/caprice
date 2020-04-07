@@ -51,10 +51,11 @@ def index_file():
 def notification(message):
     global current_note
 
-
-    test_message({'notes': current_note, 'new_swipe': False})   
+    # test_message({'notes': current_note, 'new_swipe': False})   
+    emit('update value', {'notes': current_note, 'new_swipe': False}, broadcast=True)
     return
     # output = gd.gesture_output(message['data'])
+    # print()
     # if (output != None):
     #     test_message({'notes': current_note, 'new_swipe': True})
     #     return
@@ -138,16 +139,17 @@ def test_connect1(buttonsPressed):
     global prev
     global count 
     global total
-    # temp = []
-    # for note in buttonsPressed:
-    #     if (buttonsPressed[0][note]):
-    #         temp.append(note)
+    temp = []
+    for note in buttonsPressed[0]:
+        if (buttonsPressed[0][note]):
+            temp.append(note + '4')
     if(copy.deepcopy(prev) != copy.deepcopy(buttonsPressed[0])):
         # print(round(time.time() * 1000) - buttonsPressed[1])
         count += 1
         total += round(time.time() * 1000) - buttonsPressed[1]
         print(total / count)
 
+    current_note = temp
     prev = buttonsPressed[0]
     # print("Button Pressed", current_note)
 

@@ -111,6 +111,7 @@ function playNotes(notes, new_swipe) {
         let finNotes = Array.from(difference(lastNotes, notes));
         polysynth.triggerRelease(finNotes);
         polysynth.triggerAttack(newNotes);
+        // console.log(newNotes);
         // lastNotes = notes;
     }
     lastNotes = notes;
@@ -132,7 +133,6 @@ $(document).ready(function() {
 
         if (JSON.stringify(msg.notes) != JSON.stringify(lastNotes)) {
             dt = new Date();
-            console.log(dt.getTime());
             timer = true;
         } else {
             timer = false;
