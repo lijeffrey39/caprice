@@ -2,7 +2,7 @@ import time
 
 class SwipeDetector:
     def __init__(self):
-        self.threshold = 200
+        self.threshold = 100
         self.restraint = 100
         self.windowSize = 7
         self.xyArr = [(0, 0)] * self.windowSize
@@ -44,7 +44,7 @@ class SwipeDetector:
         if (self.actualPrevDirection == 'up' or self.actualPrevDirection == 'down'):
             if (pressed == False and self.triggered == False):
                 self.triggered = True
-                return [self.actualPrevDirection + ' release']
+                return ['off']
 
 
         if (direction[0] != 'none'):
