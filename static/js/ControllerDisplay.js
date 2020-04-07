@@ -260,11 +260,10 @@ class ControllerDisplay {
         //     startLog(["accel","gyro","touch"],data,false);
         // }
 
-        this.socket.emit('my event', {data: data});
         var result = {'accel': data['accel'], 
                       'axisX': data['axisX'],
                       'axisY': data['axisY']}
-        this.socket.emit('swipe event', result);
+        this.socket.emit('my event', {data: data, 'swipes': result});
     }
 
     onClickDeviceActionButton() {
