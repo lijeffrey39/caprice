@@ -34,8 +34,8 @@ gd = GestureDetector()
 #     message = "Hello, World"
 #     return render_template('index.html', message=message)
 
-# counter = 0
-# startLog = False
+counter = 0
+startLog = False
 # start = None
 # end = None
 # counter_values = []
@@ -49,36 +49,32 @@ def index_file():
 
 @socketio.on('my event')
 def notification(message):
-    global current_note
 
+    output = gd.gesture_output(message['data'])
+    if (output != None):
+        test_message({'notes': current_note, 'new_swipe': True})
+        return
+        if output == 'start':
+            # current_note = ['C4', 'E4', 'G4']
+            # emit('update value', {'notes': current_note, 'new_swipe': True}, broadcast=True)
 
-    test_message({'notes': current_note, 'new_swipe': False})   
-    return
-    # output = gd.gesture_output(message['data'])
-    # if (output != None):
-    #     test_message({'notes': current_note, 'new_swipe': True})
-    #     return
-    #     if output == 'start':
-    #         # current_note = ['C4', 'E4', 'G4']
-    #         # emit('update value', {'notes': current_note, 'new_swipe': True}, broadcast=True)
+            test_message({'notes': current_note, 'new_swipe': True})
+            print('start')
+        elif output == 'change':
+            # current_note = ['D4', 'F4', 'A4']
+            # emit('update value', {'notes': current_note, 'new_swipe': True}, broadcast=True)
 
-    #         test_message({'notes': current_note, 'new_swipe': True})
-    #         print('start')
-    #     elif output == 'change':
-    #         # current_note = ['D4', 'F4', 'A4']
-    #         # emit('update value', {'notes': current_note, 'new_swipe': True}, broadcast=True)
-
-    #         test_message({'notes': current_note, 'new_swipe': True})
-    #         print('change')
+            test_message({'notes': current_note, 'new_swipe': True})
+            print('change')
         
-    #     elif output == 'end':
-    #         # emit('update value', {'notes': [], 'new_swipe': True}, broadcast=True)
-    #         test_message({'notes': [], 'new_swipe': True})
-    #         print('end')
-    #     else:
-    #         #output is 'hold'
-    #         # emit('update value', {'notes': current_note, 'new_swipe': False}, broadcast=True)
-    #         test_message({'notes': current_note, 'new_swipe': False})
+        elif output == 'end':
+            # emit('update value', {'notes': [], 'new_swipe': True}, broadcast=True)
+            test_message({'notes': [], 'new_swipe': True})
+            print('end')
+        else:
+            #output is 'hold'
+            # emit('update value', {'notes': current_note, 'new_swipe': False}, broadcast=True)
+            test_message({'notes': current_note, 'new_swipe': False})
 
 @socketio.on('swipe event')
 def swipe_notification(message):

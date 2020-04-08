@@ -197,6 +197,8 @@ function createCombinedAccelChart(dataLogIndex){
 
 	var chartData = [logData['combined_values']];
 
+	console.log(chartData);
+
 	var myChart = new Chart(ctx, {
 	    type: 'line',
 	    data: {
