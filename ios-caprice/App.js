@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, FlatList, Dimensions } from 'react-native';
 import SocketIOClient from 'socket.io-client';
 
 const data = [
-  { key: 'C' }, { key: 'G' }, { key: 'D' }, { key: 'A' }, { key: 'E' }, { key: 'B' }, { key: 'F' }, { key: 'C' }
+  { key: 'C' }, { key: 'G' }, { key: 'D' }, { key: 'A' }, { key: 'E' }, { key: 'B' }, { key: 'F' }, { key: 'Z' }
 ];
 
 const formatData = (data, numColumns) => {
@@ -32,7 +32,7 @@ export default class App extends React.Component {
       "E": false,
       "F": false,
       "G": false,
-      "H": false
+      "Z": false
     }
     this.socket.on("this data", msg => {
         this.setState(msg['data'])

@@ -254,17 +254,16 @@ class ControllerDisplay {
     }
 
     onControllerDataReceived(data) {
-        if (data["triggerButton"]){
-            startLog(["accel","gyro","touch"],data,true);
-        } else {
-            startLog(["accel","gyro","touch"],data,false);
-        }
-
-        this.socket.emit('my event', {data: data});
+        // if (data["triggerButton"]){
+        //     startLog(["accel","gyro","touch"],data,true);
+        // } else {
+        //     startLog(["accel","gyro","touch"],data,false);
+        // }
         var result = {'accel': data['accel'], 
                       'axisX': data['axisX'],
-                      'axisY': data['axisY']}
-        this.socket.emit('swipe event', result);
+                      'axisY': data['axisY'],
+                      'touchpadButton': data['touchpadButton']}
+        this.socket.emit('my event', {data: data, 'swipes': result});
     }
 
     onClickDeviceActionButton() {
