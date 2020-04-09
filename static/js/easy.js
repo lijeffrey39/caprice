@@ -29,9 +29,9 @@ function startLog(dataType, data, trigger){
 	} 
 
 	if (dataType.includes("accel")){
-		var xAcceleration = data['accel'][0] + .10;
-		var yAcceleration = data['accel'][1] - .40;
-		var zAcceleration = data['accel'][2] - .90;
+		var xAcceleration = data['accel'][0] ;
+		var yAcceleration = data['accel'][1] ;//-.45;//- .20;
+		var zAcceleration = data['accel'][2] ;//-.85;//- .95;
 
 		if(dataLog[triggerCounter] == null){
 			dataLog[triggerCounter] = {};
@@ -197,7 +197,7 @@ function createCombinedAccelChart(dataLogIndex){
 
 	var chartData = [logData['combined_values']];
 
-	console.log(chartData);
+	// console.log(chartData);
 
 	var myChart = new Chart(ctx, {
 	    type: 'line',
@@ -217,7 +217,7 @@ function createCombinedAccelChart(dataLogIndex){
                 },
                 ticks: {
                   min: 0,
-                  max: 100,
+                  max: 300,
                   
                   fixedStepSize: 1,
                 }
@@ -268,7 +268,7 @@ function createAccelChart(dataLogIndex){
                 },
                 ticks: {
                   min: 0,
-                  max: 100,
+                  max: 300,
                   
                   fixedStepSize: 1,
                 }
@@ -318,7 +318,7 @@ function createGyroChart(dataLogIndex){
                 },
                 ticks: {
                   min: 0,
-                  max: 100,
+                  max: 300,
                   
                   fixedStepSize: 1,
                 }
@@ -388,9 +388,121 @@ function createTouchChart(dataLogIndex){
 	});
 }
 
+function createGyroVelChart(dataLogIndex){
+
+	//Gyro Chart
+	var gyrochart = document.getElementById('gyro_vel_chart');
+	var gyrologData = dataLogGyro[dataLogIndex];
+	// console.log(gyrologData);
+	// console.log("CREATING GYRO CHART");
+
+	var gyrochartData = [gyrologData['x_values'], gyrologData['y_values'], gyrologData['z_values']];
+	
+	var arrayLength = gyrochartData[0]['data'].length;
+
+	var windowSize = Math.floor(arrayLength/5);
+
+	var xWindowData = [];
+	var yWindowData = [];
+	var zWindowData = [];
+
+	var xRawData = gyrochartData[0]['data'];
+	var yRawData = gyrochartData[1]['data'];
+	var zRawData = gyrochartData[2]['data'];
+	
+	for (var i = 0; i<arrayLength; i++){
+		
+		if(i+windowSize < arrayLength && i-windowSize >= 0){
+			var xSum = 0;
+			var ySum = 0;
+			var zSum = 0;
+			
+			for (var j = i-windowSize; j<=i+windowSize; j++){
+				xSum = xSum + xRawData[j]['y'];
+				ySum = ySum + yRawData[j]['y'];
+				zSum = zSum + zRawData[j]['y'];
+			}
+
+			xWindowData.push({x: i,
+							  y: xSum});
+			yWindowData.push({x: i,
+							  y: ySum});
+			zWindowData.push({x: i,
+							  y: zSum});
+		}
+		
+	}
+
+	var newChartX = { label: 'x_gyro_vel',
+					  data: xWindowData,
+					  borderColor: gyrologData['x_values']['borderColor'],
+					  pointBackgroundColor: gyrologData['x_values']['pointBackgroundColor'],
+					  borderWidth: gyrologData['x_values']['borderWidth'],
+					  fill: false };
+	
+	var newChartY = { label: 'y_gyro_vel',
+					  data: yWindowData,
+					  borderColor: gyrologData['y_values']['borderColor'],
+					  pointBackgroundColor: gyrologData['y_values']['pointBackgroundColor'],
+					  borderWidth: gyrologData['y_values']['borderWidth'],
+					  fill: false };
+
+	var newChartZ = { label: 'z_gyro_vel',
+					  data: zWindowData,
+					  borderColor: gyrologData['z_values']['borderColor'],
+					  pointBackgroundColor: gyrologData['z_values']['pointBackgroundColor'],
+					  borderWidth: gyrologData['z_values']['borderWidth'],
+					  fill: false };
+
+	var chartDataSets = [newChartX, newChartY, newChartZ];
+
+	console.log(gyrochartData);
+	console.log(chartDataSets)
+
+	var myChartGyro = new Chart(gyrochart, {
+	    type: 'line',
+	    data: {
+	    	datasets: chartDataSets
+	    },
+	    options: {
+
+            responsive:  true,
+            scales: {
+              xAxes: [{
+                type: 'linear',
+                position: 'bottom',
+                scaleLabel:{
+                  display: true,
+                  labelString: 'Ticks'
+                },
+                ticks: {
+                  min: 0,
+                  max: 100,
+                  
+                  fixedStepSize: 1,
+                }
+              }],
+              yAxes: [{
+                scaleLabel:{
+                  display:true,
+                  labelString: 'Gyro Velocity'
+                },
+                ticks: {
+                  min: -100,
+                  max: 100,
+                  stepSize: 0.1,
+                  fixedStepSize: 0.1,
+                }
+              }]
+            }
+        }
+	});
+}
+
 function createCharts(dataLogIndex){
 	createAccelChart(dataLogIndex);
 	createGyroChart(dataLogIndex);
 	createTouchChart(dataLogIndex);
 	createCombinedAccelChart(dataLogIndex);
+	createGyroVelChart(dataLogIndex);
 }

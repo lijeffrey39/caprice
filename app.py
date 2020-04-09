@@ -12,6 +12,7 @@ from flask_socketio import SocketIO, emit
 from gesture_detection import GestureDetector
 from swipe_detection import SwipeDetector
 from phone_controller import PhoneController
+from gyro_velocity import GyroVelocity
 
 Payload.max_decode_packets = 100
 log = logging.getLogger('werkzeug')
@@ -21,12 +22,16 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 sd = SwipeDetector()
 pc = PhoneController()
+gd = GestureDetector()
+gv = GyroVelocity()
 
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
-gd = GestureDetector()
 current_note = []
+prev_gyrovel_x = 0
+prev_gyrovel_y = 0
+prev_gyrovel_z = 0
 
 @app.route("/")
 def index_file():
@@ -35,8 +40,25 @@ def index_file():
 @socketio.on('my event')
 def notification(message): 
     # direction = sd.receiveData(message['swipes'])
-    direction = sd.detect_press(message['swipes'])
+    direction = sd.detect_press(message['data'])
     pc.swipeControl(direction)
+    gyro_vel = gv.velocity_output(message['data'])
+
+    global prev_gyrovel_x
+    global prev_gyrovel_y
+    global prev_gyrovel_z
+    
+    if gyro_vel != None:
+        if(gyro_vel['x'] != prev_gyrovel_x):
+            prev_gyrovel_x = gyro_vel['x']
+            print("X GYRO VELOCITY: ", gyro_vel['x'])
+        if(gyro_vel['y'] != prev_gyrovel_y):
+            prev_gyrovel_y = gyro_vel['y']
+            print("Y GYRO VELOCITY: ", gyro_vel['y'])
+        if(gyro_vel['z'] != prev_gyrovel_z):
+            prev_gyrovel_z = gyro_vel['z']
+            print("Z GYRO VELOCITY: ", gyro_vel['z'])
+
     test_message({'notes': pc.current_notes, 'new_swipe': False})
 
     return
