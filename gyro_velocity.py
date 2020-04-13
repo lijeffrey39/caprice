@@ -2,7 +2,7 @@ class GyroVelocity:
 
     def __init__(self):
         self.trigger_on = False
-        self.lag = 10
+        self.lag = 20
         self.lag_counter = 0
         self.prev_gyro_x = []
         self.prev_gyro_y = []
@@ -19,7 +19,9 @@ class GyroVelocity:
             if(self.trigger_on):
                 self.trigger_on = False
                 self.lag_counter = 0
-                self.prev_gyro = []
+                self.prev_gyro_x = []
+                self.prev_gyro_y = []
+                self.prev_gyro_z = []
                 self.current_velocity = {'x': 0,
                                          'y': 0,
                                          'z': 0 }

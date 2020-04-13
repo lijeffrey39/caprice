@@ -25,7 +25,7 @@ pc = PhoneController()
 gd = GestureDetector()
 gv = GyroVelocity()
 
-pc.current_notes = ['C4', 'E4', 'G4']
+pc.current_notes = ['C4'] #, 'E4', 'G4']
 
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
@@ -55,13 +55,13 @@ def notification(message):
     if gyro_vel != None:
         if(gyro_vel['x'] != prev_gyrovel_x):
             prev_gyrovel_x = gyro_vel['x']
-            print("X GYRO VELOCITY: ", gyro_vel['x'])
+            # print("X GYRO VELOCITY: ", gyro_vel['x'])
         if(gyro_vel['y'] != prev_gyrovel_y):
             prev_gyrovel_y = gyro_vel['y']
             print("Y GYRO VELOCITY: ", gyro_vel['y'])
         if(gyro_vel['z'] != prev_gyrovel_z):
             prev_gyrovel_z = gyro_vel['z']
-            print("Z GYRO VELOCITY: ", gyro_vel['z'])
+            # print("Z GYRO VELOCITY: ", gyro_vel['z'])
 
     # test_message({'notes': pc.current_notes, 'new_swipe': False})
 

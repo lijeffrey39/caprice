@@ -16,20 +16,32 @@ const synth = new Tone.Synth({
 const polysynth = new Tone.PolySynth(4, Tone.Synth);
 
 var panner = new Tone.Panner3D().toMaster();
+panner.coneOuterAngle = 70;
+panner.coneInnerAngle = 70;
+panner.coneOuterGain = 0.3;
+
 // polysynth.connect(panner);
 
 //gyro is dict w keys 'x' 'y' 'z'
 function panner_update(gyro) {
-    var scale = 0.01;
-    console.log(panner)
+    var scale = 0.001;
+    
+    // panner.setOrientation(
+    //     gyro['y'],
+    //     0,
+    //     0
+    // );
+
     // panner.setPosition(
-    //     panner.positionX + scale*gyro['x'], 
-    //     panner.positionY + scale*gyro['y'], 
-    //     panner.positionZ + scale*gyro['z']);
+    //     panner.positionX + scale*gyro['y'], 
+    //     panner.positionY, //+ scale*gyro['y'], 
+    //     panner.positionZ); //+ scale*gyro['z']);
     panner.setPosition(
-        scale*gyro['y'], 
+        gyro['y'], 
         0, 
-        0);
+        2);
+    
+    console.log(panner);
 }
 
 var sampler = new Tone.Sampler({
@@ -244,6 +256,8 @@ $(document).ready(function() {
 
         if(msg.gyro != null) {
             panner_update(msg.gyro);
+        } else {
+            panner.setPosition(0,0,2);
         }
         // if (JSON.stringify(msg.notes) != JSON.stringify(lastNotes)) {
         //     dt = new Date();
