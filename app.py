@@ -25,6 +25,8 @@ pc = PhoneController()
 gd = GestureDetector()
 gv = GyroVelocity()
 
+pc.current_notes = ['C4', 'E4', 'G4']
+
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
@@ -37,6 +39,8 @@ prev_gyrovel_z = 0
 def index_file():
     return render_template('index.html')
 
+first = False
+tog = False
 @socketio.on('my event')
 def notification(message): 
     # direction = sd.receiveData(message['swipes'])
@@ -59,8 +63,22 @@ def notification(message):
             prev_gyrovel_z = gyro_vel['z']
             print("Z GYRO VELOCITY: ", gyro_vel['z'])
 
-    test_message({'notes': pc.current_notes, 'new_swipe': False})
+    # test_message({'notes': pc.current_notes, 'new_swipe': False})
 
+    global first, tog
+    if first:
+        test_message({'notes': pc.current_notes, 'new_swipe': True,
+            'gyro': gyro_vel})
+        # , 'effects_toggle': 
+        #     {'toggle': tog,
+        #     'name': 'tremolo', 
+        #     'params': {'freq': 10,
+        #                 'depth': 0.9}}})
+        first = False
+    else:
+        test_message({'notes': pc.current_notes, 'new_swipe': False,
+            'gyro': gyro_vel})
+            
     return
     # output = gd.gesture_output(message['data'])
     # if (output != None):
@@ -123,6 +141,14 @@ def test_message(value):
     # print('received')
     # print(message['data']['triggerButton'])
     emit('update value', value, broadcast=True)
+
+@socketio.on('bietch')
+def bietch():
+    global first, tog
+    first = True
+    tog = not tog
+    print('yuk')
+
 
 if __name__ == "__main__":
     print("running")
