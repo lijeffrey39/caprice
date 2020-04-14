@@ -254,11 +254,11 @@ class ControllerDisplay {
     }
 
     onControllerDataReceived(data) {
-        if (data["triggerButton"]){
-            startLog(["accel","gyro","touch"],data,true);
-        } else {
-            startLog(["accel","gyro","touch"],data,false);
-        }
+        // if (data["triggerButton"]){
+        //     startLog(["accel","gyro","touch"],data,true);
+        // } else {
+        //     startLog(["accel","gyro","touch"],data,false);
+        // }
         var result = {'accel': data['accel'], 
                       'axisX': data['axisX'],
                       'axisY': data['axisY'],
