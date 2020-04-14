@@ -15,7 +15,7 @@ const synth = new Tone.Synth({
 
 const polysynth = new Tone.PolySynth(4, Tone.Synth);
 
-var panner = new Tone.Panner3D().toMaster();
+var panner = new Tone.Panner3D();
 panner.coneOuterAngle = 70;
 panner.coneInnerAngle = 70;
 panner.coneOuterGain = 0.3;
@@ -24,36 +24,61 @@ panner.coneOuterGain = 0.3;
 
 //gyro is dict w keys 'x' 'y' 'z'
 function panner_update(gyro) {
-    var scale = 0.20;
+    var xscale = 0.25;
+    var zscale = 0.1;
     
-    // panner.setOrientation(
-    //     gyro['y'],
-    //     0,
-    //     0
-    // );
-
-    // panner.setPosition(
-    //     panner.positionX + scale*gyro['y'], 
-    //     panner.positionY, //+ scale*gyro['y'], 
-    //     panner.positionZ); //+ scale*gyro['z']);
     panner.setPosition(
-        -scale*gyro['y'], 
+        -xscale*gyro['y'], 
         0, 
-        2);
-    
-    console.log(panner);
+        2 - (Math.min(2, zscale*gyro['x'])));
 }
 
-var sampler = new Tone.Sampler({
-    'C4': "static/Harmonics/C.mp3"
-}, function() {
-    console.log('yee');
-    // sampler.toMaster();
-    sampler.triggerAttack('C4');
-    sampler.triggerAttack('E4');
-    sampler.triggerAttack('G4');
+function wah(gyro) {
+    var scale = 40;
 
-})
+    filter.frequency.value = Math.max(100, 4000-scale*gyro['x']);
+}
+
+var sampler = new Tone.Sampler(
+    {
+    // 'C4': "static/samples/Harmonics/C.mp3"
+    'E3': 'static/samples/Cello/E3.[mp3|ogg]',
+    'E4': 'static/samples/Cello/E4.[mp3|ogg]',
+    'F2': 'static/samples/Cello/F2.[mp3|ogg]',
+    'F3': 'static/samples/Cello/F3.[mp3|ogg]',
+    'F4': 'static/samples/Cello/F4.[mp3|ogg]',
+    'F#3': 'static/samples/Cello/Fs3.[mp3|ogg]',
+    'F#4': 'static/samples/Cello/Fs4.[mp3|ogg]',
+    'G2': 'static/samples/Cello/G2.[mp3|ogg]',
+    'G3': 'static/samples/Cello/G3.[mp3|ogg]',
+    'G4': 'static/samples/Cello/G4.[mp3|ogg]',
+    'G#2': 'static/samples/Cello/Gs2.[mp3|ogg]',
+    'G#3': 'static/samples/Cello/Gs3.[mp3|ogg]',
+    'G#4': 'static/samples/Cello/Gs4.[mp3|ogg]',
+    'A2': 'static/samples/Cello/A2.[mp3|ogg]',
+    'A3': 'static/samples/Cello/A3.[mp3|ogg]',
+    'A4': 'static/samples/Cello/A4.[mp3|ogg]',
+    'A#2': 'static/samples/Cello/As2.[mp3|ogg]',
+    'A#3': 'static/samples/Cello/As3.[mp3|ogg]',
+    'A#4': 'static/samples/Cello/As4.[mp3|ogg]',
+    'B2': 'static/samples/Cello/B2.[mp3|ogg]',
+    'B3': 'static/samples/Cello/B3.[mp3|ogg]',
+    'B4': 'static/samples/Cello/B4.[mp3|ogg]',
+    'C2': 'static/samples/Cello/C2.[mp3|ogg]',
+    'C3': 'static/samples/Cello/C3.[mp3|ogg]',
+    'C4': 'static/samples/Cello/C4.[mp3|ogg]',
+    'C5': 'static/samples/Cello/C5.[mp3|ogg]',
+    'C#3': 'static/samples/Cello/Cs3.[mp3|ogg]',
+    'C#4': 'static/samples/Cello/Cs4.[mp3|ogg]',
+    'D2': 'static/samples/Cello/D2.[mp3|ogg]',
+    'D3': 'static/samples/Cello/D3.[mp3|ogg]',
+    'D4': 'static/samples/Cello/D4.[mp3|ogg]',
+    'D#2': 'static/samples/Cello/Ds2.[mp3|ogg]',
+    'D#3': 'static/samples/Cello/Ds3.[mp3|ogg]',
+    'D#4': 'static/samples/Cello/Ds4.[mp3|ogg]',
+    'E2': 'static/samples/Cello/E2.[mp3|ogg]'
+}
+);
 
 function addEffect(args) {
     var effect;
@@ -162,6 +187,12 @@ var vibe = new Tone.Vibrato({
     depth: 0
 });
 
+var filter = new Tone.Filter({
+    type: "allpass",
+    frequency: 4000,
+    Q: 0.1
+});
+
 
 
 //set of current notes being played
@@ -203,10 +234,10 @@ function sampler_playNotes(notes, new_swipe) {
     if(new_swipe) {
         console.log(notes);
         
-        for(i=0; i<lastNotes.size; i++) {
+        for(i=0; i<lastNotes.length; i++) {
             sampler.triggerRelease(lastNotes_arr[i]);
         }
-        for(i=0; i<notes.size; i++) {
+        for(i=0; i<notes.length; i++) {
             sampler.triggerAttack(notes_arr[i])
         }
     }
@@ -252,26 +283,28 @@ $(document).ready(function() {
                 removeEffect(msg.effects_toggle.name);
             }
         }
-        synth_playNotes(msg.notes, msg.new_swipe);
+        sampler_playNotes(msg.notes, msg.new_swipe);
 
         if(msg.gyro != null) {
             panner_update(msg.gyro);
+            // filter.type = "bandpass";
+            wah(msg.gyro);
         } else {
             panner.setPosition(0,0,2);
+            // filter.type = "allpass";
         }
-        // if (JSON.stringify(msg.notes) != JSON.stringify(lastNotes)) {
-        //     dt = new Date();
-        //     console.log(dt.getTime());
-        // }
-        // $('#' + msg.who).val(msg.data);
+        
     });
   });
 
+var volume = new Tone.Volume(-10);
 
 
-polysynth.connect(vibe);
+sampler.connect(vibe);
 vibe.connect(panner);
 panner.toMaster();
+// panner.connect(volume)
+// volume.toMaster();
 // polysynth.toMaster();
 var cMaj = new Set(['C4', 'E4', 'G4']);
 var cMaj1 = new Set(['G#4']);

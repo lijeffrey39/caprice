@@ -40,7 +40,7 @@ def index_file():
     return render_template('index.html')
 
 first = False
-tog = False
+hold = False
 @socketio.on('my event')
 def notification(message): 
     # direction = sd.receiveData(message['swipes'])
@@ -65,8 +65,8 @@ def notification(message):
 
     # test_message({'notes': pc.current_notes, 'new_swipe': False})
 
-    global first, tog
-    if first:
+    global hold 
+    if message['data']['triggerButton'] and not hold:
         test_message({'notes': pc.current_notes, 'new_swipe': True,
             'gyro': gyro_vel})
         # , 'effects_toggle': 
@@ -74,11 +74,13 @@ def notification(message):
         #     'name': 'tremolo', 
         #     'params': {'freq': 10,
         #                 'depth': 0.9}}})
-        first = False
+        hold = True
     else:
         test_message({'notes': pc.current_notes, 'new_swipe': False,
             'gyro': gyro_vel})
-            
+
+        if not message['data']['triggerButton']: hold = False
+
     return
     # output = gd.gesture_output(message['data'])
     # if (output != None):
