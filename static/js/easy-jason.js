@@ -15,7 +15,7 @@ const synth = new Tone.Synth({
 
 const polysynth = new Tone.PolySynth(4, Tone.Synth);
 
-var panner = new Tone.Panner3D().toMaster();
+var panner = new Tone.Panner3D();
 panner.coneOuterAngle = 70;
 panner.coneInnerAngle = 70;
 panner.coneOuterGain = 0.3;
@@ -24,24 +24,19 @@ panner.coneOuterGain = 0.3;
 
 //gyro is dict w keys 'x' 'y' 'z'
 function panner_update(gyro) {
-    var scale = 0.001;
+    var xscale = 0.25;
+    var zscale = 0.1;
     
-    // panner.setOrientation(
-    //     gyro['y'],
-    //     0,
-    //     0
-    // );
-
-    // panner.setPosition(
-    //     panner.positionX + scale*gyro['y'], 
-    //     panner.positionY, //+ scale*gyro['y'], 
-    //     panner.positionZ); //+ scale*gyro['z']);
     panner.setPosition(
-        gyro['y'], 
+        -xscale*gyro['y'], 
         0, 
-        2);
-    
-    console.log(panner);
+        2 - (Math.min(2, zscale*gyro['x'])));
+}
+
+function wah(gyro) {
+    var scale = 40;
+
+    filter.frequency.value = Math.max(100, 4000-scale*gyro['x']);
 }
 
 var sampler = new Tone.Sampler({
@@ -162,6 +157,12 @@ var vibe = new Tone.Vibrato({
     depth: 0
 });
 
+var filter = new Tone.Filter({
+    type: "allpass",
+    frequency: 4000,
+    Q: 0.1
+});
+
 
 
 //set of current notes being played
@@ -255,23 +256,25 @@ $(document).ready(function() {
         synth_playNotes(msg.notes, msg.new_swipe);
 
         if(msg.gyro != null) {
-            panner_update(msg.gyro);
+            // panner_update(msg.gyro);
+            filter.type = "bandpass";
+            wah(msg.gyro);
         } else {
-            panner.setPosition(0,0,2);
+            // panner.setPosition(0,0,2);
+            filter.type = "allpass";
         }
-        // if (JSON.stringify(msg.notes) != JSON.stringify(lastNotes)) {
-        //     dt = new Date();
-        //     console.log(dt.getTime());
-        // }
-        // $('#' + msg.who).val(msg.data);
+        
     });
   });
 
+var volume = new Tone.Volume(-10);
 
 
 polysynth.connect(vibe);
-vibe.connect(panner);
-panner.toMaster();
+vibe.connect(filter);
+filter.toMaster();
+// panner.connect(volume)
+// volume.toMaster();
 // polysynth.toMaster();
 var cMaj = new Set(['C4', 'E4', 'G4']);
 var cMaj1 = new Set(['G#4']);
