@@ -24,7 +24,7 @@ panner.coneOuterGain = 0.3;
 
 //gyro is dict w keys 'x' 'y' 'z'
 function panner_update(gyro) {
-    var scale = 0.001;
+    var scale = 0.20;
     
     // panner.setOrientation(
     //     gyro['y'],
@@ -37,7 +37,7 @@ function panner_update(gyro) {
     //     panner.positionY, //+ scale*gyro['y'], 
     //     panner.positionZ); //+ scale*gyro['z']);
     panner.setPosition(
-        gyro['y'], 
+        -scale*gyro['y'], 
         0, 
         2);
     
