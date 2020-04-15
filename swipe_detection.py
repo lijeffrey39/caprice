@@ -47,7 +47,7 @@ class SwipeDetector:
         if (self.actualPrevDirection == 'up' or self.actualPrevDirection == 'down'):
             if (pressed == False and self.triggered == False):
                 self.triggered = True
-                return ['off']
+                return 'off'
 
         if (direction[0] != 'none'):
             self.actualPrevDirection = direction[0]
