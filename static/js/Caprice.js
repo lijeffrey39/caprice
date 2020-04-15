@@ -28,12 +28,10 @@ class Caprice {
         this.getMagnetometerFloatWithOffsetFromArrayBufferAtIndex = this.getMagnetometerFloatWithOffsetFromArrayBufferAtIndex.bind(this);
 
         if (navigator.bluetooth) {
-            console.log("yo")
-            document.getElementById('deviceActionsButton').addEventListener(
+            document.getElementById('connect').addEventListener(
                 'click', this.pair
             );
         } else {
-            console.log("hi")
             document.getElementById('webbluetoothNotSupported').classList.add('show');
         }
     }
@@ -170,3 +168,5 @@ class Caprice {
             });
     }
 }
+
+var caprice = new Caprice();

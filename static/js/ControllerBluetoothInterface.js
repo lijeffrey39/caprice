@@ -1,6 +1,7 @@
 class ControllerBluetoothInterface {
     constructor(onControllerDataReceived, onDeviceDisconnected) {
         this.gattServer               = null;
+        this.batteryService           = null;
         this.deviceInformationService = null;
         this.customService            = null;
         this.customServiceNotify      = null;
