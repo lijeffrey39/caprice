@@ -10,6 +10,7 @@ const GYRO_FACTOR = 0.0001; // to radians / s
 const ACCEL_FACTOR = 0.00001; // to g (9.81 m/s**2)
 const TIMESTAMP_FACTOR = 0.001; // to seconds
 
+
 class Caprice {
     constructor() {
         this.socket = io.connect('http://' + document.domain + ':' + location.port);
@@ -17,12 +18,14 @@ class Caprice {
         this.customServiceWrite = null;
         this.customServiceNotify = null;
         this.gattServer = null;
+        this.customService = null;
 
         this.onControllerDataReceived  = this.onControllerDataReceived.bind(this);
         this.onDeviceConnected = this.onDeviceConnected.bind(this);
         this.onNotificationReceived = this.onNotificationReceived.bind(this);
         this.runCommand = this.runCommand.bind(this);
-        this.getLittleEndianUint8Array = this.getLittleEndianUint8Array(this);
+        this.startSensorData = this.startSensorData.bind(this);
+        this.getLittleEndianUint8Array = this.getLittleEndianUint8Array.bind(this);
         this.getAccelerometerFloatWithOffsetFromArrayBufferAtIndex = this.getAccelerometerFloatWithOffsetFromArrayBufferAtIndex.bind(this);
         this.getGyroscopeFloatWithOffsetFromArrayBufferAtIndex = this.getGyroscopeFloatWithOffsetFromArrayBufferAtIndex.bind(this);
         this.getMagnetometerFloatWithOffsetFromArrayBufferAtIndex = this.getMagnetometerFloatWithOffsetFromArrayBufferAtIndex.bind(this);
@@ -31,12 +34,13 @@ class Caprice {
             document.getElementById('connect').addEventListener(
                 'click', this.pair
             );
+            $('.toast').toast({delay: 5000});
         } else {
             document.getElementById('webbluetoothNotSupported').classList.add('show');
         }
     }
 
-    onDeviceConnected(device) {
+    onDeviceConnected = (device) => {
         console.log("connecting to bluetooth device");
         return device.gatt.connect().catch(function(){
             console.log("error caught, trying to connect again");
@@ -44,15 +48,19 @@ class Caprice {
         });
     }
 
-    pair() {
-        console.log("pairing");
+    pair = () => {
+        document.getElementById('loading').classList.add('show');
+        document.getElementById('loading1').classList.add('show');
         return navigator.bluetooth.requestDevice({
             filters: [{ namePrefix: 'Gear' }], 
             optionalServices: [UUID_CUSTOM_SERVICE]
-        })  .then(this.onDeviceConnected)
-            .then(gattServer => this.gattServer = gattServer)
+        })
+            .then(this.onDeviceConnected)
+            .then(gattServer => {this.gattServer = gattServer})
+
             .then(() => this.gattServer.getPrimaryService(UUID_CUSTOM_SERVICE))
-            .then(customService => this.customService = customService)
+            .then(customService => {this.customService = customService})
+
             .then(() => this.customService
                 .getCharacteristic(UUID_CUSTOM_SERVICE_WRITE)
                 .then(characteristic => this.customServiceWrite = characteristic))
@@ -63,16 +71,21 @@ class Caprice {
                 .startNotifications()
                 .then(() => {
                     this.customServiceNotify.addEventListener('characteristicvaluechanged', this.onNotificationReceived);
-                    this.startSensorData();
+                    var count = 0;
+                    setInterval(() => {
+                        if (count >= 2) { return }
+                        count += 1
+                        this.startSensorData();
+                    }, 1000);
                 }));
     }
 
-    startSensorData() {
+    startSensorData = () => {
+        document.getElementById('loading').classList.remove('show');
+        document.getElementById('loading1').classList.remove('show');
+        $('.toast').toast('show');
         this.runCommand(CMD_VR_MODE)
-            .then(() => this.runCommand(CMD_SENSOR)
-            .then(() => this.runCommand(CMD_VR_MODE)
-            .then(() => this.runCommand(CMD_SENSOR))
-            .then(() => this.runCommand(CMD_VR_MODE))));
+            .then(() => this.runCommand(CMD_SENSOR));
     }
 
     onNotificationReceived(e) {
@@ -99,12 +112,12 @@ class Caprice {
         const gyro = [
             this.getGyroscopeFloatWithOffsetFromArrayBufferAtIndex(buffer, 10, 0),
             this.getGyroscopeFloatWithOffsetFromArrayBufferAtIndex(buffer, 12, 0),
-            thi.sgetGyroscopeFloatWithOffsetFromArrayBufferAtIndex(buffer, 14, 0)
+            this.getGyroscopeFloatWithOffsetFromArrayBufferAtIndex(buffer, 14, 0)
         ].map(v => v * GYRO_FACTOR);
 
-        const magX = getMagnetometerFloatWithOffsetFromArrayBufferAtIndex(buffer, 0);
-        const magY = getMagnetometerFloatWithOffsetFromArrayBufferAtIndex(buffer, 2);
-        const magZ = getMagnetometerFloatWithOffsetFromArrayBufferAtIndex(buffer, 4);
+        const magX = this.getMagnetometerFloatWithOffsetFromArrayBufferAtIndex(buffer, 0);
+        const magY = this.getMagnetometerFloatWithOffsetFromArrayBufferAtIndex(buffer, 2);
+        const magZ = this.getMagnetometerFloatWithOffsetFromArrayBufferAtIndex(buffer, 4);
 
         const triggerButton    = Boolean(eventData[58] & (1 << 0));
         const homeButton       = Boolean(eventData[58] & (1 << 1));
@@ -134,7 +147,8 @@ class Caprice {
                       'axisY': data['axisY'],
                       'gyro' : data['gyro'],
                       'triggerButton': data['triggerButton'],
-                      'touchpadButton': data['touchpadButton']}
+                      'touchpadButton': data['touchpadButton'],
+                      'homeButton': data['homeButton']}
         this.socket.emit('my event', {data: result});
     }
 
@@ -161,7 +175,7 @@ class Caprice {
         return leAB;
     };
 
-    runCommand(commandValue) {
+    runCommand = (commandValue) => {
         return this.customServiceWrite.writeValue(this.getLittleEndianUint8Array(commandValue))
             .catch(e => {
                 console.warn('Error: ' + e);

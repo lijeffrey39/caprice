@@ -25,6 +25,7 @@ class ControllerBluetoothInterface {
 
     onDeviceConnected(device) {
         if (this.onDeviceDisconnected) {
+            console.log("disconnect");
             device.addEventListener('gattserverdisconnected', onDeviceDisconnected);
         }
 
@@ -42,15 +43,14 @@ class ControllerBluetoothInterface {
         console.log("pairing");
         return navigator.bluetooth.requestDevice({
             // acceptAllDevices: true,
-            filters: [
-                { namePrefix: 'Gear' }
-            ],
+            filters: 
+                [{ namePrefix: 'Gear' }],
             optionalServices: [
                 ControllerBluetoothInterface.UUID_CUSTOM_SERVICE
             ]
         })
             .then(this.onDeviceConnected)
-            .then(gattServer => this.gattServer = gattServer)
+            .then(gattServer => {this.gattServer = gattServer; console.log(gattServer)})
 
             // Get custom service
             .then(() => this.gattServer.getPrimaryService(ControllerBluetoothInterface.UUID_CUSTOM_SERVICE))
