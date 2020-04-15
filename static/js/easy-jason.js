@@ -56,7 +56,7 @@ var delay = new Tone.FeedbackDelay({
 
 //distortion
 var distortion = new Tone.Distortion({
-    distortion : 0,
+    distortion : 0.4,
     oversample : 'none',
     wet: 0
 })
@@ -607,7 +607,7 @@ var xylophone = new Tone.Sampler({
     'C6': 'static/samples/xylophone/C6.[mp3|ogg]'
 })
 
-var sampler = xylophone;
+var sampler = violin;
 
 function addEffect(args) {
     var effect;
@@ -616,9 +616,9 @@ function addEffect(args) {
         case "chorus":
             // delay in ms
             // depth between 0 - 1
-            chorus.frequency.value = args['params']['freq'];
-            chorus.delay.value = args['params']['delay'];
-            chorus.depth.value = args['params']['depth'];
+            // chorus.frequency.value = args['params']['freq'];
+            // chorus.delay.value = args['params']['delay'];
+            // chorus.depth.value = args['params']['depth'];
             chorus.wet.value = args['params']['wet']
             break;
         case 'delay':
@@ -630,8 +630,8 @@ function addEffect(args) {
             break;
         case "distortion":
             // distortion between 0 - 1
-            distortion.level.value = args['params']['distortion'];
-            distortion.oversample = args['params']['oversample'];
+            // distortion.level.value = args['params']['distortion'];
+            // distortion.oversample = args['params']['oversample'];
             distortion.wet.value = args['params']['wet']
 
             break;
@@ -790,11 +790,11 @@ $(document).ready(function() {
 
         if("effects_toggle" in msg) {
             if(msg.effects_toggle.toggle) {
-                console.log('yup')
+                // console.log('yup')
                 addEffect(msg.effects_toggle);
             }
             else {
-                console.log('nope')
+                // console.log('nope')
                 removeEffect(msg.effects_toggle.name);
             }
         }

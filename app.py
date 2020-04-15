@@ -39,6 +39,12 @@ left_effect = False
 down_effect = False
 current_mode = "play"
 home_release = True
+effects_set = {
+    'up': 'distortion',
+    'down': 'chorus',
+    'left': 'panner',
+    'right': 'wah'
+}
 
 @app.route("/")
 def index_file():
@@ -68,6 +74,7 @@ def notification(message):
     global left_effect
     global right_effect
     global home_release
+    global effects_set
 
     if message['data']['homeButton']:
         if home_release:
@@ -84,39 +91,57 @@ def notification(message):
             home_release = True
 
     swipe_direction = sd.receiveData(message['data'])
+    toggled_effects = []
+    untoggled_effects = []
+
     if swipe_direction != 'none':
         if current_mode == 'play':
             if swipe_direction == 'up':
                 if up_effect:
                     up_effect = False
-                    print('UP EFFECT DISABLED')
+                    untoggled_effects.append(effects_set['up'])
+                    print('%s EFFECT DISABLED' %effects_set['up'])
                 else:
                     up_effect = True
-                    print('UP EFFECT ENABLED')
+                    toggled_effects.append(effects_set['up'])
+                    print('%s EFFECT ENABLED' %effects_set['up'])
+        
             elif swipe_direction == 'down':
                 if down_effect:
                     down_effect = False
-                    print('DOWN EFFECT DISABLED')
+                    untoggled_effects.append(effects_set['down'])
+                    print('%s EFFECT DISABLED' %effects_set['down'])
                 else:
                     down_effect = True
-                    print('DOWN EFFECT ENABLED')
+                    toggled_effects.append(effects_set['down'])
+                    print('%s EFFECT ENABLED' %effects_set['down'])
+
             elif swipe_direction == 'right':
                 if right_effect:
                     right_effect = False
-                    print('RIGHT EFFECT DISABLED')
+                    untoggled_effects.append(effects_set['right'])
+                    print('%s EFFECT DISABLED' %effects_set['right'])
                 else:
                     right_effect = True
-                    print('RIGHT EFFECT ENABLED')
+                    toggled_effects.append(effects_set['right'])
+                    print('%s EFFECT ENABLED' %effects_set['right'])
+
             elif swipe_direction == 'left':
                 if left_effect:
                     left_effect = False
-                    print('LEFT EFFECT DISABLED')
+                    untoggled_effects.append(effects_set['left'])
+                    print('%s EFFECT DISABLED' %effects_set['left'])
                 else:
                     left_effect = True
-                    print('LEFT EFFECT ENABLED')
+                    toggled_effects.append(effects_set['left'])
+                    print('%s EFFECT ENABLED' %effects_set['left'])
+            # print(toggled_effects)
+            # print(untoggled_effects)
         else:
             # EDIT MODE SWIPES
             print(swipe_direction)
+    
+    
 
     if current_mode == 'play':
 
@@ -124,15 +149,34 @@ def notification(message):
         pc.swipeControl(direction)
 
         gyro_vel = gv.velocity_output(message['data'])
+        effects_toggle = []
+        for effect in toggled_effects:
+            effects_toggle.append({
+                'toggle': True,
+                'name': effect,
+                'params': {'wet': 0.5}
+            })
+        for disabled in untoggled_effects:
+            effects_toggle.append({
+                'toggle': False,
+                'name': disabled
+            })
+
         if gyro_vel != None:
+
             if gyro_vel['trigger'] == 'start':
                 test_message({'notes': pc.current_notes, 'new_swipe': True,
-                    'gyro': gyro_vel})
+                    'gyro': gyro_vel, 'effects_toggle': effects_toggle})
             elif gyro_vel['trigger'] == 'hold':
                 test_message({'notes': pc.current_notes, 'new_swipe': False,
-                    'gyro': gyro_vel})
+                    'gyro': gyro_vel, 'effects_toggle': effects_toggle})
             else:
-                test_message({'notes': [], 'new_swipe': True, 'gyro': gyro_vel})
+                test_message({'notes': [], 'new_swipe': True, 'gyro': gyro_vel,
+                    'effects_toggle': effects_toggle})
+        
+        else:
+            test_message({'notes': [], 'new_swipe': False, 'gyro': gyro_vel,
+                'effects_toggle': effects_toggle})
     
 
     return
