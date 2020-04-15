@@ -4,16 +4,6 @@ var effects = [];
 
 var pitchnum = 5;
 var release = 0.01
-//create a synth and connect it to the master output (your speakers)
-const synth = new Tone.Synth({
-    envelope: {
-        sustain: 1,
-        // decay: 0
-        release: release
-    }
-});
-
-const polysynth = new Tone.PolySynth(4, Tone.Synth);
 
 //panner effect
 var panner = new Tone.Panner3D();
@@ -95,7 +85,7 @@ function panner_update(gyro) {
     panner.setPosition(
         -xscale*gyro['y'], 
         0, 
-        2 - (Math.min(1.5, zscale*gyro['x'])));
+        2 - (Math.min(1, zscale*gyro['x'])));
 }
 
 function wah_run(gyro) {
@@ -615,7 +605,21 @@ var xylophone = new Tone.Sampler({
     'C6': 'static/samples/xylophone/C6.[mp3|ogg]'
 })
 
-var sampler = cello;
+var synth = new Tone.PolySynth(4, Tone.Synth);
+
+// var metalsynth = new Tone.MetalSynth();
+
+var membranesynth = new Tone.MembraneSynth();
+
+var fmsynth = new Tone.PolySynth(4, Tone.FMSynth);
+
+var duosynth = new Tone.PolySynth(4, Tone.DuoSynth);
+
+var amsynth = new Tone.PolySynth(4, Tone.AMSynth);
+
+
+var sampler = amsynth;
+var playNotes = synth_playNotes;
 function setInstrument(ins) {
     switch(ins){
         case "cello":
@@ -677,6 +681,30 @@ function setInstrument(ins) {
             break;
         case "xylophone":
             sampler = xylophone;
+            break;
+        case "synth":
+            sampler = synth;
+            playNotes = synth_playNotes;
+            break;
+        // case "metalsynth":
+        //     sampler = metalsynth;
+        //     playNotes = synth_playNotes;
+        //     break;
+        case "membranesynth":
+            sampler = membranesynth;
+            playNotes = synth_playNotes;
+            break;
+        case "fmsynth":
+            sampler = fmsynth;
+            playNotes = synth_playNotes;
+            break;
+        case "duosynth":
+            sampler = duosynth;
+            playNotes = synth_playNotes;
+            break;
+        case "amsynth":
+            sampler = amsynth;
+            playNotes = synth_playNotes;
             break;
     }
 }
@@ -801,14 +829,14 @@ function difference(setA, setB) {
 //will reflect in the audio
 function synth_playNotes(notes, new_swipe) {
     if(new_swipe) {
-        polysynth.triggerRelease(lastNotes);
-        polysynth.triggerAttack(notes);
+        sampler.triggerRelease(lastNotes);
+        sampler.triggerAttack(notes);
     }
     else if(notes != lastNotes) {
         let newNotes = Array.from(difference(notes, lastNotes));
         let finNotes = Array.from(difference(lastNotes, notes));
-        polysynth.triggerRelease(finNotes);
-        polysynth.triggerAttack(newNotes);
+        sampler.triggerRelease(finNotes);
+        sampler.triggerAttack(newNotes);
         // console.log(newNotes);
         // lastNotes = notes;
     }
@@ -877,14 +905,13 @@ $(document).ready(function() {
             }
         }
         // sampler_playNotes(msg.notes, msg.new_swipe);
-        sampler_playNotes(msg.notes, msg.new_swipe);
+        playNotes(msg.notes, msg.new_swipe);
 
 
         if(msg.gyro != null) {
             if(pannerOn) {
                 panner_update(msg.gyro);
             }
-            wah.type = "bandpass";
             wah_run(msg.gyro);
         } else {
             panner.setPosition(0,0,2);
@@ -893,8 +920,6 @@ $(document).ready(function() {
         
     });
   });
-
-var volume = new Tone.Volume(-10);
 
 //set up effects chain
 sampler.connect(wah);
