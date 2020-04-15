@@ -62,11 +62,13 @@ var distortion = new Tone.Distortion({
 })
 
 //reverb
+var curDecay = 2;
 var reverb = new Tone.Reverb({
-    decay : 1.5 ,
+    decay : 2 ,
     preDelay : 0.01,
-    wet: 0,
+    wet: 0.6,
 })
+reverb.generate();
 
 //tremolo
 var tremolo = new Tone.Tremolo({
@@ -100,6 +102,12 @@ function wah_run(gyro) {
     var scale = 40;
 
     wah.frequency.value = Math.max(100, 4000-scale*gyro['x']);
+}
+
+function reverb_run(gyro) {
+    var scale = 0.1;
+
+    reverb.decay.value = curDecay + Math.abs(scale*gyro['x']);
 }
 
 var cello = new Tone.Sampler(
@@ -607,7 +615,75 @@ var xylophone = new Tone.Sampler({
     'C6': 'static/samples/xylophone/C6.[mp3|ogg]'
 })
 
+<<<<<<< HEAD
 var sampler = violin;
+=======
+var sampler = cello;
+function setInstrument(ins) {
+    switch(ins){
+        case "cello":
+            sampler = cello;
+            break;
+        case "bass":
+            sampler = bass;
+            break;
+        case "bassoon":
+            sampler = bassoon;
+            break;
+        case "clarinet":
+            sampler = clarinet;
+            break;
+        case "contrabass":
+            sampler = contrabass;
+            break;
+        case "flute":
+            sampler = flute;
+            break;
+        case "french horn":
+            sampler = french_horn;
+            break;
+        case "acoustic guitar":
+            sampler = acoustic_guitar;
+            break;
+        case "electric guitar":
+            sampler = electric_guitar;
+            break;
+        case "classical guitar":
+            sampler = nylon_guitar;
+            break;
+        case "harmonium":
+            sampler = harmonium;
+            break;
+        case "harp":
+            sampler = harp;
+            break;
+        case "organ":
+            sampler = organ;
+            break;
+        case "piano":
+            sampler = piano;
+            break;
+        case "saxophone":
+            sampler = saxophone;
+            break;
+        case "trombone":
+            sampler = trombone;
+            break;
+        case "trumpet":
+            sampler = trumpet;
+            break;
+        case "tuba":
+            sampler = tuba;
+            break;
+        case "violin":
+            sampler = violin;
+            break;
+        case "xylophone":
+            sampler = xylophone;
+            break;
+    }
+}
+>>>>>>> e2ef1ac149cdd3fb3aa69bbe76c7fabb8415d8a3
 
 function addEffect(args) {
     var effect;
@@ -640,6 +716,8 @@ function addEffect(args) {
             reverb.decay.value = args['params']['decay'];
             reverb.preDelay.value = args['params']['preDelay'];
             reverb.wet.value = args['params']['wet']
+
+            curDecay = args['params']['decay'];
 
             //have to call this every time params r changed
             reverb.generate();
@@ -783,6 +861,10 @@ $(document).ready(function() {
   
     socket.on('after connect', function(msg) {
         console.log('After connect', msg);
+    });
+
+    socket.on('instrument', function(msg) {
+        setInstrument(msg.instrument);
     });
   
     socket.on('update value', function(msg) {
