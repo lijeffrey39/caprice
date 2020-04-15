@@ -22,9 +22,9 @@ var pitchShift = new Tone.PitchShift({
 
 // wah effect
 var wah = new Tone.Filter({
-    type: "allpass",
+    type: "bandpass",
     frequency: 4000,
-    Q: 0.1
+    Q: 0
 });
 
 //chorus
@@ -767,7 +767,7 @@ function addEffect(args) {
             pannerOn = true;
             break;
         case "wah":
-            wah.type = "bandpass"
+            wah.Q.value = 0.5;
             break;
 
     }
@@ -808,7 +808,7 @@ function removeEffect(name) {
             pannerOn = false;
             break;
         case "wah":
-            wah.type = "allpass"
+            wah.Q.value = 0;
             break;
     }
 }
@@ -915,7 +915,6 @@ $(document).ready(function() {
             wah_run(msg.gyro);
         } else {
             panner.setPosition(0,0,2);
-            wah.type = "allpass";
         }
         
     });
