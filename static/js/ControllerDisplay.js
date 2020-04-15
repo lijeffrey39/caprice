@@ -81,6 +81,7 @@ class ControllerDisplay {
         //     console.log("hi");
         // }));
         console.log(this.PATH);
+        console.log(navigator.bluetooth)
         if (navigator.bluetooth) {
             document.getElementById('deviceActions').addEventListener(
                 'change',

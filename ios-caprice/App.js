@@ -23,7 +23,7 @@ export default class App extends React.Component {
   
   constructor() { 
     super();
-    this.socket = SocketIOClient("http://10.0.0.144:5000", {query: 'b64=1'});
+    this.socket = SocketIOClient("http://100.64.7.250:5000", {query: 'b64=1'});
     this.state = {
       "A": false,
       "B": false,
