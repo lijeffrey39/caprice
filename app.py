@@ -3,6 +3,7 @@ import copy
 import logging
 import os
 import time
+import socket
 
 import numpy
 from engineio.payload import Payload
@@ -184,6 +185,14 @@ def test_message(value):
     emit('update value', value, broadcast=True)
 
 
+def get_Host_name_IP(): 
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    ipAddress = s.getsockname()[0]
+    emit('ip address', ipAddress, broadcast=True)
+
+
 if __name__ == "__main__":
     print("running")
+    get_Host_name_IP()
     socketio.run(app, host='0.0.0.0')

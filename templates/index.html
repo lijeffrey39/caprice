@@ -42,15 +42,24 @@
         #loading1.show {
             display: block;
         }
+
+        #ipAddress {
+            width: 200px;
+            margin-left: auto;
+margin-right:auto;
+        }
     </style>
     <body>
         <section class="jumbotron text-center">
             <div class="container">
                 <h1 style="margin-top: 50px;">Caprice</h1>
                 <p class="lead text-muted">The all in on motion controlled syntesizer</p>
+                <div style="text-align: center">
+                    <input id="ipAddress" class="form-control" type="text" placeholder="10.0.0.144" readonly>
+                </div>
                 <p>
                     <a id="connect" class="btn btn-primary my-2" style="color: white;">Connect your VR remote</a>
-                    <a href="#" class="btn btn-secondary my-2">Connect to your phone</a>
+                    <a style="color: white;" class="btn btn-secondary my-2" data-toggle="modal" data-target="#exampleModal">Connect to your phone</a>
                 </p>
 
                 <p style="margin-top: 50px;" id="loading1">Pairing with your VR remote</p>
@@ -60,11 +69,21 @@
             </div>
             <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
                 <div class="toast" style="position: absolute; top: 0; right: 0;">
-                  <div class="toast-body">
-                    Connected to VR remote!
-                  </div>
+                    <div class="toast-body">
+                        Connected to VR remote!
+                    </div>
                 </div>
-              </div>
+            </div>
+
+              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            ...
+                        </div>
+                    </div>
+                </div>
+            </div> 
         </section>
 
         <div id="webbluetoothNotSupported">
