@@ -283,15 +283,17 @@ $(document).ready(function() {
                 removeEffect(msg.effects_toggle.name);
             }
         }
-        sampler_playNotes(msg.notes, msg.new_swipe);
+        // sampler_playNotes(msg.notes, msg.new_swipe);
+        synth_playNotes(msg.notes, msg.new_swipe);
+
 
         if(msg.gyro != null) {
             panner_update(msg.gyro);
-            // filter.type = "bandpass";
+            filter.type = "bandpass";
             wah(msg.gyro);
         } else {
             panner.setPosition(0,0,2);
-            // filter.type = "allpass";
+            filter.type = "allpass";
         }
         
     });
@@ -300,9 +302,9 @@ $(document).ready(function() {
 var volume = new Tone.Volume(-10);
 
 
-sampler.connect(vibe);
-vibe.connect(panner);
-panner.toMaster();
+polysynth.connect(vibe);
+vibe.connect(filter);
+filter.toMaster();
 // panner.connect(volume)
 // volume.toMaster();
 // polysynth.toMaster();
