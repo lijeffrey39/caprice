@@ -31,16 +31,12 @@ log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
 current_note = []
-prev_gyrovel_x = 0
-prev_gyrovel_y = 0
-prev_gyrovel_z = 0
 
 @app.route("/")
 def index_file():
     return render_template('index.html')
 
-first = False
-hold = False
+
 @socketio.on('my event')
 def notification(message): 
     # direction = sd.receiveData(message['swipes'])
@@ -48,38 +44,17 @@ def notification(message):
     pc.swipeControl(direction)
     gyro_vel = gv.velocity_output(message['data'])
 
-    global prev_gyrovel_x
-    global prev_gyrovel_y
-    global prev_gyrovel_z
     
     if gyro_vel != None:
-        if(gyro_vel['x'] != prev_gyrovel_x):
-            prev_gyrovel_x = gyro_vel['x']
-            # print("X GYRO VELOCITY: ", gyro_vel['x'])
-        if(gyro_vel['y'] != prev_gyrovel_y):
-            prev_gyrovel_y = gyro_vel['y']
-            print("Y GYRO VELOCITY: ", gyro_vel['y'])
-        if(gyro_vel['z'] != prev_gyrovel_z):
-            prev_gyrovel_z = gyro_vel['z']
-            # print("Z GYRO VELOCITY: ", gyro_vel['z'])
-
-    # test_message({'notes': pc.current_notes, 'new_swipe': False})
-
-    global hold 
-    if message['data']['triggerButton'] and not hold:
-        test_message({'notes': pc.current_notes, 'new_swipe': True,
-            'gyro': gyro_vel})
-        # , 'effects_toggle': 
-        #     {'toggle': tog,
-        #     'name': 'tremolo', 
-        #     'params': {'freq': 10,
-        #                 'depth': 0.9}}})
-        hold = True
-    else:
-        test_message({'notes': pc.current_notes, 'new_swipe': False,
-            'gyro': gyro_vel})
-
-        if not message['data']['triggerButton']: hold = False
+        if gyro_vel['trigger'] == 'start':
+            test_message({'notes': pc.current_notes, 'new_swipe': True,
+                'gyro': gyro_vel})
+        elif gyro_vel['trigger'] == 'hold':
+            test_message({'notes': pc.current_notes, 'new_swipe': False,
+                'gyro': gyro_vel})
+        else:
+            test_message({'notes': [], 'new_swipe': True, 'gyro': gyro_vel})
+    
 
     return
     # output = gd.gesture_output(message['data'])
