@@ -165,16 +165,28 @@ function addEffect(args) {
             // distortion between 0 - 1
             distortion.level.value = args['params']['distortion'];
             distortion.oversample = args['params']['oversample'];
+            distortion.wet.value = args['params']['wet']
+
             break;
         case "reverb":
-            effect = new Tone.Reverb(args['params']['decay']);
-            effect.generate()
-                .then(() => effect.toMaster());
+            // decay in secs
+            reverb.decay.value = args['params']['decay'];
+            reverb.preDelay.value = args['params']['preDelay'];
+            reverb.wet.value = args['params']['wet']
+
+            //have to call this every time params r changed
+            reverb.generate();
+
             break;
         case "tremolo":
             // depth between 0 - 1
             effect = new Tone.Tremolo(args['params']['freq'], args['params']['depth']);
             effect.toMaster().start();
+
+            tremolo.frequency.value = args['params']['freq'];
+            tremolo.depth.value = args['params']['depth'];
+            tremolo.wet.value = args['params']['wet']
+
             break;
         case "vibrato":
            // depth between 0 - 1
