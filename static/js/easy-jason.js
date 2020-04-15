@@ -31,7 +31,7 @@ var pitchShift = new Tone.PitchShift({
 });
 
 // wah effect
-var filter = new Tone.Filter({
+var wah = new Tone.Filter({
     type: "allpass",
     frequency: 4000,
     Q: 0.1
@@ -85,6 +85,7 @@ var vibe = new Tone.Vibrato({
 });
 
 //gyro is dict w keys 'x' 'y' 'z'
+var pannerOn = false;
 function panner_update(gyro) {
     var xscale = 0.25;
     var zscale = 0.1;
@@ -95,10 +96,10 @@ function panner_update(gyro) {
         2 - (Math.min(1.5, zscale*gyro['x'])));
 }
 
-function wah(gyro) {
+function wah_run(gyro) {
     var scale = 40;
 
-    filter.frequency.value = Math.max(100, 4000-scale*gyro['x']);
+    wah.frequency.value = Math.max(100, 4000-scale*gyro['x']);
 }
 
 var sampler = new Tone.Sampler(
@@ -180,19 +181,27 @@ function addEffect(args) {
             break;
         case "tremolo":
             // depth between 0 - 1
-            effect = new Tone.Tremolo(args['params']['freq'], args['params']['depth']);
-            effect.toMaster().start();
-
             tremolo.frequency.value = args['params']['freq'];
             tremolo.depth.value = args['params']['depth'];
             tremolo.wet.value = args['params']['wet']
 
+            //have to do this everytime something is edited
+            tremolo.start();
+
             break;
         case "vibrato":
-           // depth between 0 - 1
-            effect = new Tone.Vibrato(args['params']['freq'], args['params']['depth']);
-            effect.toMaster().start();
+            // depth between 0 - 1
+            vibe.frequency.value = args['params']['freq'];
+            vibe.depth.value = args['params']['depth'];
+            vibe.wet.value = args['params']['wet'];
             break;
+        case "panner":
+            pannerOn = true;
+            break;
+        case "wah":
+            wah.type = "bandpass"
+            break;
+
     }
 
     if(effects.length == 0) {
@@ -210,49 +219,30 @@ function removeEffect(name) {
     var effect;
     switch(name) {
         case "chorus":
-            effect = Tone.Chorus;
+            chorus.wet.value = 0;
             break;
         case "delay":
-            effect = Tone.FeedbackDelay;
+            delay.wet.value = 0;
             break;
         case "distortion":
-            effect = Tone.Distortion;
+            distortion.wet.value = 0;
             break;
         case "reverb":
-            effect = Tone.Reverb;
+            reverb.wet.value = 0;
             break;
         case "tremolo":
-            effect = Tone.Tremolo;
+            tremolo.wet.value = 0;
             break;
         case "vibrato":
-            effect = Tone.Vibrato;
+            vibe.wet.value = 0;
+            break;
+        case "panner":
+            pannerOn = false;
+            break;
+        case "wah":
+            wah.type = "allpass"
             break;
     }
-
-    for(var i = 0; i < effects.length; i++) {
-        if(effects[i] instanceof effect) {
-            effects[i].disconnect()
-            if(i == 0) {
-                if(effects.length == 1) {
-                    console.log('removed')
-                    polysynth.toMaster();
-                } else {
-                    polysynth.connect(effects[1])
-                }
-            } else {
-                //if removed effect is last one in chain
-                if(i == effects.length-1) {
-                    effects[effects.length-2].toMaster();
-                } else { //if removed effect is in the middle
-                    effects[i-1].connect(effects[i+1]);
-                }
-            }
-            effects.pop(i);
-
-            break;
-        }
-    }
-
 }
 
 //set of current notes being played
@@ -271,7 +261,6 @@ function difference(setA, setB) {
 //will reflect in the audio
 function synth_playNotes(notes, new_swipe) {
     if(new_swipe) {
-        console.log(notes);
         polysynth.triggerRelease(lastNotes);
         polysynth.triggerAttack(notes);
     }
@@ -348,12 +337,14 @@ $(document).ready(function() {
 
 
         if(msg.gyro != null) {
-            panner_update(msg.gyro);
-            filter.type = "bandpass";
-            wah(msg.gyro);
+            if(pannerOn) {
+                panner_update(msg.gyro);
+            }
+            wah.type = "bandpass";
+            wah_run(msg.gyro);
         } else {
             panner.setPosition(0,0,2);
-            filter.type = "allpass";
+            wah.type = "allpass";
         }
         
     });
@@ -361,41 +352,13 @@ $(document).ready(function() {
 
 var volume = new Tone.Volume(-10);
 
-
-polysynth.connect(vibe);
-vibe.connect(panner);
+//set up effects chain
+polysynth.connect(wah);
+wah.connect(tremolo);
+tremolo.connect(vibe);
+vibe.connect(distortion);
+distortion.connect(chorus);
+chorus.connect(delay);
+delay.connect(reverb);
+reverb.connect(panner);
 panner.toMaster();
-// panner.connect(volume)
-// volume.toMaster();
-// polysynth.toMaster();
-var cMaj = new Set(['C4', 'E4', 'G4']);
-var cMaj1 = new Set(['G#4']);
-
-
-
-//play a middle 'C' for the duration of an 8th note
-// synth.triggerAttackRelease("C4", "8n");
-var box = document.getElementById('box');
-box.addEventListener("click", e => {
-    // synth.disconnect();
-    // vibe.disconnect();
-    // synth.toMaster();
-    // synth.triggerAttack('C4');
-    sampler_playNotes(cMaj, false);
-    vibe.depth.value = 1;
-    vibe.frequency.value = 5;
-    
-    // socket.emit('bietch');
-    
-})
-
-var count = 1;
-var box1 = document.getElementById('box1');
-box1.addEventListener("click", e => {
-    sampler_playNotes(cMaj1, false);
-    
-
-    // count += 1;
-    // synth.setNote("C#4");
-    
-})
