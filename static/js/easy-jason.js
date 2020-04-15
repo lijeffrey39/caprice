@@ -615,9 +615,6 @@ var xylophone = new Tone.Sampler({
     'C6': 'static/samples/xylophone/C6.[mp3|ogg]'
 })
 
-<<<<<<< HEAD
-var sampler = violin;
-=======
 var sampler = cello;
 function setInstrument(ins) {
     switch(ins){
@@ -683,7 +680,6 @@ function setInstrument(ins) {
             break;
     }
 }
->>>>>>> e2ef1ac149cdd3fb3aa69bbe76c7fabb8415d8a3
 
 function addEffect(args) {
     var effect;
