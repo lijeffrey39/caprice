@@ -15,6 +15,18 @@ class Caprice {
     constructor() {
         this.socket = io.connect('http://' + document.domain + ':' + location.port);
 
+
+        fetch("/ip" )
+            .then(async r => {
+                const text = await r.text()
+                const parsed = JSON.parse(text)['message'];
+                document.getElementById("ipAddress").innerText = parsed;
+            })
+            .catch(e => {
+                console.error(e);
+            });
+
+
         this.customServiceWrite = null;
         this.customServiceNotify = null;
         this.gattServer = null;

@@ -7,7 +7,7 @@ import socket
 
 import numpy
 from engineio.payload import Payload
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from flask_socketio import SocketIO, emit
 
 from gesture_detection import GestureDetector
@@ -43,6 +43,20 @@ home_release = True
 @app.route("/")
 def index_file():
     return render_template('index.html')
+
+
+@app.route("/right")
+def right_file():
+    return render_template('page-right.html')
+
+@app.route("/ip", methods=["GET"])
+def index():
+    ip = get_Host_name_IP()
+    api_response = {
+        "status": "success",
+        "message": ip
+    }
+    return jsonify(api_response)
 
 
 @socketio.on('my event')
@@ -189,10 +203,11 @@ def get_Host_name_IP():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))
     ipAddress = s.getsockname()[0]
-    emit('ip address', ipAddress, broadcast=True)
+    # socketio.emit('ip address', ipAddress, broadcast=True)
+    return ipAddress
 
 
 if __name__ == "__main__":
     print("running")
-    get_Host_name_IP()
+    # get_Host_name_IP()
     socketio.run(app, host='0.0.0.0')
