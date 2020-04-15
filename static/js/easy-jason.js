@@ -744,15 +744,15 @@ function addEffect(args) {
 
     }
 
-    if(effects.length == 0) {
-        polysynth.disconnect();
-        polysynth.connect(effect);
-    } else {
-        effects[effects.length - 1].connect(effect);
-    }
+    // if(effects.length == 0) {
+    //     polysynth.disconnect();
+    //     polysynth.connect(effect);
+    // } else {
+    //     effects[effects.length - 1].connect(effect);
+    // }
 
-    effects.push(effect);
-    effect.toMaster();
+    // effects.push(effect);
+    // effect.toMaster();
 }
 
 function removeEffect(name) {
