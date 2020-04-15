@@ -15,12 +15,74 @@ const synth = new Tone.Synth({
 
 const polysynth = new Tone.PolySynth(4, Tone.Synth);
 
+//panner effect
 var panner = new Tone.Panner3D();
 panner.coneOuterAngle = 70;
 panner.coneInnerAngle = 70;
 panner.coneOuterGain = 0.3;
 
-// polysynth.connect(panner);
+//pitchshift effect
+var pitchShift = new Tone.PitchShift({
+    pitch : 0,
+    windowSize : 0.1,
+    delayTime : 0,
+    feedback : 0,
+    wet: 0
+});
+
+// wah effect
+var filter = new Tone.Filter({
+    type: "allpass",
+    frequency: 4000,
+    Q: 0.1
+});
+
+//chorus
+var chorus = new Tone.Chorus({
+    frequency : 0,
+    delayTime : 3.5 ,
+    depth : 0.7 , //0 to 1
+    type : "sine" ,
+    spread : 180,
+    wet: 0, //0 to 1
+});
+
+//delay
+var delay = new Tone.FeedbackDelay({
+    delayTime: 0,
+    feedback: 0,
+    wet: 0
+})
+
+//distortion
+var distortion = new Tone.Distortion({
+    distortion : 0,
+    oversample : 'none',
+    wet: 0
+})
+
+//reverb
+var reverb = new Tone.Reverb({
+    decay : 1.5 ,
+    preDelay : 0.01,
+    wet: 0,
+})
+
+//tremolo
+var tremolo = new Tone.Tremolo({
+    frequency : 10,
+    type : "sine",
+    depth : 0.5,
+    spread : 180,
+    wet: 0
+})
+
+//vibrato
+var vibe = new Tone.Vibrato({
+    frequency: 0,
+    depth: 0,
+    wet: 0
+});
 
 //gyro is dict w keys 'x' 'y' 'z'
 function panner_update(gyro) {
@@ -30,7 +92,7 @@ function panner_update(gyro) {
     panner.setPosition(
         -xscale*gyro['y'], 
         0, 
-        2 - (Math.min(2, zscale*gyro['x'])));
+        2 - (Math.min(1.5, zscale*gyro['x'])));
 }
 
 function wah(gyro) {
@@ -87,19 +149,22 @@ function addEffect(args) {
         case "chorus":
             // delay in ms
             // depth between 0 - 1
-            effect = new Tone.Chorus(args['params']['freq'], args['params']['delay'], args['params']['depth']);
-            effect.toMaster();
+            chorus.frequency.value = args['params']['freq'];
+            chorus.delay.value = args['params']['delay'];
+            chorus.depth.value = args['params']['depth'];
+            chorus.wet.value = args['params']['wet']
             break;
         case 'delay':
             // delay in secs
             // feedback between 0 - 1
-            effect = new Tone.FeedbackDelay(args['params']['delay'], args['params']['feedback']);
-            effect.toMaster();
+            delay.delay.value = args['params']['delay'];
+            delay.feedback.value = args['params']['feedback'];
+            delay.wet.value = args['params']['wet']
             break;
         case "distortion":
-            // level between 0 - 1
-            effect = new Tone.Distortion(args['params']['level']);
-            effect.toMaster();
+            // distortion between 0 - 1
+            distortion.level.value = args['params']['distortion'];
+            distortion.oversample = args['params']['oversample'];
             break;
         case "reverb":
             effect = new Tone.Reverb(args['params']['decay']);
@@ -177,23 +242,6 @@ function removeEffect(name) {
     }
 
 }
-
-var pitchShift = new Tone.PitchShift({
-    pitch: pitchnum
-    // windowSize: 
-});
-var vibe = new Tone.Vibrato({
-    frequency: 0,
-    depth: 0
-});
-
-var filter = new Tone.Filter({
-    type: "allpass",
-    frequency: 4000,
-    Q: 0.1
-});
-
-
 
 //set of current notes being played
 var lastNotes = new Set();
@@ -303,8 +351,8 @@ var volume = new Tone.Volume(-10);
 
 
 polysynth.connect(vibe);
-vibe.connect(filter);
-filter.toMaster();
+vibe.connect(panner);
+panner.toMaster();
 // panner.connect(volume)
 // volume.toMaster();
 // polysynth.toMaster();

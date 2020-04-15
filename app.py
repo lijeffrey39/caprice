@@ -32,6 +32,13 @@ log.setLevel(logging.ERROR)
 
 current_note = []
 
+up_effect = False
+right_effect = False
+left_effect = False
+down_effect = False
+current_mode = "play"
+home_release = True
+
 @app.route("/")
 def index_file():
     return render_template('index.html')
@@ -39,21 +46,78 @@ def index_file():
 
 @socketio.on('my event')
 def notification(message): 
-    # direction = sd.receiveData(message['swipes'])
-    direction = sd.detect_press(message['data'])
-    pc.swipeControl(direction)
-    gyro_vel = gv.velocity_output(message['data'])
 
-    
-    if gyro_vel != None:
-        if gyro_vel['trigger'] == 'start':
-            test_message({'notes': pc.current_notes, 'new_swipe': True,
-                'gyro': gyro_vel})
-        elif gyro_vel['trigger'] == 'hold':
-            test_message({'notes': pc.current_notes, 'new_swipe': False,
-                'gyro': gyro_vel})
+    global current_mode
+    global up_effect
+    global down_effect
+    global left_effect
+    global right_effect
+    global home_release
+
+    if message['data']['homeButton']:
+        if home_release:
+            if current_mode == 'play':
+                current_mode = 'edit'
+                print('EDIT MODE')
+            else:
+                current_mode = 'play'
+                print('PLAY MODE')
+
+            home_release = False
+    else:
+        if not home_release:
+            home_release = True
+
+    swipe_direction = sd.receiveData(message['data'])
+    if swipe_direction != 'none':
+        if current_mode == 'play':
+            if swipe_direction == 'up':
+                if up_effect:
+                    up_effect = False
+                    print('UP EFFECT DISABLED')
+                else:
+                    up_effect = True
+                    print('UP EFFECT ENABLED')
+            elif swipe_direction == 'down':
+                if down_effect:
+                    down_effect = False
+                    print('DOWN EFFECT DISABLED')
+                else:
+                    down_effect = True
+                    print('DOWN EFFECT ENABLED')
+            elif swipe_direction == 'right':
+                if right_effect:
+                    right_effect = False
+                    print('RIGHT EFFECT DISABLED')
+                else:
+                    right_effect = True
+                    print('RIGHT EFFECT ENABLED')
+            elif swipe_direction == 'left':
+                if left_effect:
+                    left_effect = False
+                    print('LEFT EFFECT DISABLED')
+                else:
+                    left_effect = True
+                    print('LEFT EFFECT ENABLED')
         else:
-            test_message({'notes': [], 'new_swipe': True, 'gyro': gyro_vel})
+            # EDIT MODE SWIPES
+            print(swipe_direction)
+
+    if current_mode == 'play':
+
+        direction = sd.detect_press(message['data'])
+        pc.swipeControl(direction)
+
+        gyro_vel = gv.velocity_output(message['data'])
+        if gyro_vel != None:
+            if gyro_vel['trigger'] == 'start':
+                test_message({'notes': pc.current_notes, 'new_swipe': True,
+                    'gyro': gyro_vel})
+            elif gyro_vel['trigger'] == 'hold':
+                test_message({'notes': pc.current_notes, 'new_swipe': False,
+                    'gyro': gyro_vel})
+            else:
+                test_message({'notes': [], 'new_swipe': True, 'gyro': gyro_vel})
     
 
     return
@@ -118,13 +182,6 @@ def test_message(value):
     # print('received')
     # print(message['data']['triggerButton'])
     emit('update value', value, broadcast=True)
-
-@socketio.on('bietch')
-def bietch():
-    global first, tog
-    first = True
-    tog = not tog
-    print('yuk')
 
 
 if __name__ == "__main__":
