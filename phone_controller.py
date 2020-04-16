@@ -131,6 +131,7 @@ class PhoneController:
         self.octave_number += 1
 
     def decrease_octave(self):
+        print(self.midi_start)
         if (self.octave_number % 2 == 0):
             for i in range(4, 8):
                 self.midi_start[i] -= self.midi_octave

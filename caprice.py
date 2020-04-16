@@ -3,6 +3,7 @@ from swipe_detection import SwipeDetector
 from phone_controller import PhoneController
 from gyro_velocity import GyroVelocity
 from play_mode import PlayMode
+from instrument_select import InstrumentSelect
 
 
 class Caprice:
@@ -10,7 +11,7 @@ class Caprice:
     def __init__(self):
         self.sd = SwipeDetector()
         self.gd = GestureDetector()
-
+        self.inSel = InstrumentSelect()
         self.current_mode = "play"
         self.home_release = True
         self.back_release = True
@@ -59,12 +60,21 @@ class Caprice:
         
         elif self.current_mode == 'filter set':
             self.current_mode = 'filter set'
-        
+        elif self.current_mode == 'instrument select':
+            self.current_mode = 'instrument select'
+            (newIn, changeIn, changed) = self.inSel.instrumentNotification(swipe_direction, data['triggerButton'])
+            if (changed):
+                res = {'instrument': newIn, 'change': changeIn}
+                return ['instrument select', res]
         else:
             # MAIN EDIT MODE
 
-            if swipe_direction == 'up':
+            if (swipe_direction == 'up'):
                 self.current_mode = 'filter set'
                 print('FILTER SET MODE')
+            elif (swipe_direction == 'right'):
+                self.current_mode = 'instrument select'
+                print('INSTRUMENT SELECT MODE')
+            
         
         return ['nah', 'nah']

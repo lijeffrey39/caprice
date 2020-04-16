@@ -47,7 +47,8 @@ def notification(message):
 
     if 'play' in parse_result:
         test_message(parse_result[1])
-
+    elif 'instrument select' in parse_result:
+        send_instrument(parse_result[1])
 
     return
 
