@@ -6,11 +6,12 @@ const instruments = ["Bass", "Bassoon", "Cello", "Clarinet", "Contrabass",
 class InstrumentSelect {
     constructor () {
         this.socket = io.connect('http://' + document.domain + ':' + location.port);
-        this.socket.on('send instrument', function(msg) {
-            console.log(msg);
+        this.socket.on('send instrument', (msg) => {
+            this.setInstrument(msg);
         });
 
         this.generateInstruments();
+        this.currInstrument = 'Bass'
         this.x = 0;
         this.y = 0;
         this.length = 6;
@@ -26,6 +27,7 @@ class InstrumentSelect {
             col.className = 'col-2';
 
             var card = document.createElement("div");
+            card.id = instrumentName;
             card.className = 'card mb-4 shadow-sm instrument-card';
 
             var para = document.createElement("p");
@@ -38,10 +40,18 @@ class InstrumentSelect {
         }
     }
 
-    moveInstrumentSelect = (direction) => {
-        console.log(direction);
-        if (!this.checkValidMove(direction)) {
-            return;
+    setInstrument = (data) => {
+        var instrumentName = data['instrument']
+        var triggered = data['change']
+        console.log(instrumentName)
+        
+        if (instrumentName != this.currInstrument) {
+            var instrumentCard = document.getElementById(this.currInstrument);
+            instrumentCard.classList.remove('highlighted');
+            this.currInstrument = instrumentName;
+            
+            instrumentCard = document.getElementById(this.currInstrument);
+            instrumentCard.classList.add('highlighted')
         }
     }
 }

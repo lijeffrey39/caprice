@@ -10,11 +10,7 @@ from engineio.payload import Payload
 from flask import Flask, render_template, jsonify
 from flask_socketio import SocketIO, emit
 
-from gesture_detection import GestureDetector
-from swipe_detection import SwipeDetector
-from phone_controller import PhoneController
-from gyro_velocity import GyroVelocity
-from instrument_select import InstrumentSelect
+from caprice import Caprice
 
 Payload.max_decode_packets = 100
 log = logging.getLogger('werkzeug')
@@ -22,31 +18,12 @@ log.setLevel(logging.ERROR)
 
 app = Flask(__name__)
 socketio = SocketIO(app)
-sd = SwipeDetector()
-pc = PhoneController()
-gd = GestureDetector()
-gv = GyroVelocity()
-inSelect = InstrumentSelect()
 
-pc.current_notes = ['C4'] #, 'E4', 'G4']
+caprice = Caprice()
 
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
-current_note = []
-
-up_effect = False
-right_effect = False
-left_effect = False
-down_effect = False
-current_mode = "play"
-home_release = True
-effects_set = {
-    'up': 'distortion',
-    'down': 'chorus',
-    'left': 'panner',
-    'right': 'wah'
-}
 
 @app.route("/")
 def index_file():
@@ -65,153 +42,15 @@ def index():
 
 @socketio.on('my event')
 def notification(message): 
-
-    global current_mode
-    global up_effect
-    global down_effect
-    global left_effect
-    global right_effect
-    global home_release
-    global effects_set
-
-    if message['data']['homeButton']:
-        if home_release:
-            if current_mode == 'play':
-                current_mode = 'edit'
-                print('EDIT MODE')
-            else:
-                current_mode = 'play'
-                print('PLAY MODE')
-
-            home_release = False
-    else:
-        if not home_release:
-            home_release = True
-
-    swipe_direction = sd.receiveData(message['data'])
-    toggled_effect = None
-    untoggled_effect = None
-
-    if swipe_direction != 'none':
-        if current_mode == 'play':
-            if swipe_direction == 'up':
-                if up_effect:
-                    up_effect = False
-                    untoggled_effect = effects_set['up']
-                    print('%s EFFECT DISABLED' %effects_set['up'])
-                else:
-                    up_effect = True
-                    toggled_effect = effects_set['up']
-                    print('%s EFFECT ENABLED' %effects_set['up'])
-        
-            elif swipe_direction == 'down':
-                if down_effect:
-                    down_effect = False
-                    untoggled_effect = effects_set['down']
-                    print('%s EFFECT DISABLED' %effects_set['down'])
-                else:
-                    down_effect = True
-                    toggled_effect = effects_set['down']
-                    print('%s EFFECT ENABLED' %effects_set['down'])
-
-            elif swipe_direction == 'right':
-                if right_effect:
-                    right_effect = False
-                    untoggled_effect = effects_set['right']
-                    print('%s EFFECT DISABLED' %effects_set['right'])
-                else:
-                    right_effect = True
-                    toggled_effect = effects_set['right']
-                    print('%s EFFECT ENABLED' %effects_set['right'])
-
-            elif swipe_direction == 'left':
-                if left_effect:
-                    left_effect = False
-                    untoggled_effect = effects_set['left']
-                    print('%s EFFECT DISABLED' %effects_set['left'])
-                else:
-                    left_effect = True
-                    toggled_effect = effects_set['left']
-                    print('%s EFFECT ENABLED' %effects_set['left'])
-            # print(toggled_effects)
-            # print(untoggled_effects)
-        else:
-            # EDIT MODE SWIPES
-            print(swipe_direction)
     
-    
+    parse_result = caprice.parse_notification(message['data'])
 
-    (newIn, changeIn, changed) = inSelect.instrumentNotification(swipe_direction, message['data']['triggerButton'])
-    if (changed):
-        res = {'instrument': newIn, 'change': changeIn}
-        send_instrument(res)
+    if 'play' in parse_result:
+        test_message(parse_result[1])
+    elif 'instrument select' in parse_result:
+        send_instrument(parse_result[1])
 
-    if current_mode == 'play':
-        direction = sd.detect_press(message['data'])
-        pc.swipeControl(direction)
-
-        gyro_vel = gv.velocity_output(message['data'])
-        
-        # for effect in toggled_effects:
-        #     effects_toggle.append({
-        #         'toggle': True,
-        #         'name': effect,
-        #         'params': {'wet': 0.5}
-        #     })
-        # for disabled in untoggled_effects:
-        #     effects_toggle.append({
-        #         'toggle': False,
-        #         'name': disabled
-        #     })
-
-        outcome = {}
-        send = False
-
-        if toggled_effect == None and untoggled_effect == None:
-            send = False
-        else:
-            send = True
-            if toggled_effect != None:
-                outcome['toggle'] = True
-                outcome['name'] = toggled_effect
-                outcome['params'] = {'wet': 0.5}
-            else:
-                outcome['toggle'] = False
-                outcome['name'] = untoggled_effect
-
-        if gyro_vel != None:
-
-            if gyro_vel['trigger'] == 'start':
-                if send:
-                    test_message({'notes': pc.current_notes, 'new_swipe': True,
-                        'gyro': gyro_vel, 'effects_toggle': outcome})
-                else:
-                    test_message({'notes': pc.current_notes, 'new_swipe': True,
-                        'gyro': gyro_vel})
-
-            elif gyro_vel['trigger'] == 'hold':
-                if send:
-                    test_message({'notes': pc.current_notes, 'new_swipe': False,
-                        'gyro': gyro_vel, 'effects_toggle': outcome})
-                else:
-                    test_message({'notes': pc.current_notes, 'new_swipe': False,
-                        'gyro': gyro_vel})
-            else:
-                if send:
-                    test_message({'notes': [], 'new_swipe': True, 'gyro': gyro_vel,
-                        'effects_toggle': outcome})
-                else:
-                    test_message({'notes': [], 'new_swipe': True,
-                        'gyro': gyro_vel})
-        
-        else:
-            if send:
-                test_message({'notes': [], 'new_swipe': False, 'gyro': gyro_vel,
-                    'effects_toggle': outcome})
-            else:
-                test_message({'notes': [], 'new_swipe': False,
-                        'gyro': gyro_vel})
-
+    return
 
 
 @socketio.on('connect')
