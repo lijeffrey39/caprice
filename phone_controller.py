@@ -31,8 +31,10 @@ class PhoneController:
     def __init__(self):
         self.real_start = [60] #, 62, 64, 65, 67, 69, 71, 72]
         self.key = 'C'
+        self.keys = keys
         self.midi_start = [60, 62, 64, 65, 67, 69, 71, 72]
         self.mode = 'ionian'
+        self.modes = modes
         self.phone_start = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'Z']
         self.octave_number = 8
         self.midi_octave = 12
@@ -60,7 +62,7 @@ class PhoneController:
         # self.phone_start = self.convert_midi(self.midi_start, False)
 
     def change_key(self, key):
-        diff = self.key - keys['key']
+        diff = self.key - keys[key]
         self.key = key
         self.real_start = self.real_start + diff
 
@@ -71,7 +73,6 @@ class PhoneController:
     def swipeControl(self, dir):
         if (dir == 'none'):
             return
-        print(dir)
         if (dir == 'up'):
             self.shift_up()
             self.set_shift(1)
@@ -92,9 +93,10 @@ class PhoneController:
             self.set_shift(0)
 
     def reset(self):
-        self.midi_start = self.real_start
+        self.midi_start[0] = self.real_start[0]
+        self.change_mode(self.mode)
         self.octave_number = 8
-        self.current_notes = []
+        self.current_notes = ['Cb4']
         self.current_midi_notes = []
         self.shift = 0
 
@@ -122,19 +124,21 @@ class PhoneController:
         self.current_notes = self.convert_midi(res_notes, True)
 
     def increase_octave(self):
-        if (self.octave_number % 2 == 0):
-            for i in range(0, 4):
-                self.midi_start[i] += self.midi_octave
-        else:
-            for i in range(4, 8):
-                self.midi_start[i] += self.midi_octave
-        self.octave_number += 1
+        if(self.octave_number < 12):
+            if (self.octave_number % 2 == 0):
+                for i in range(0, 4):
+                    self.midi_start[i] += self.midi_octave
+            else:
+                for i in range(4, 8):
+                    self.midi_start[i] += self.midi_octave
+            self.octave_number += 1
 
     def decrease_octave(self):
-        if (self.octave_number % 2 == 0):
-            for i in range(4, 8):
-                self.midi_start[i] -= self.midi_octave
-        else:
-            for i in range(0, 4):
-                self.midi_start[i] -= self.midi_octave
-        self.octave_number -= 1
+        if(self.octave_number > 0):
+            if (self.octave_number % 2 == 0):
+                for i in range(4, 8):
+                    self.midi_start[i] -= self.midi_octave
+            else:
+                for i in range(0, 4):
+                    self.midi_start[i] -= self.midi_octave
+            self.octave_number -= 1
