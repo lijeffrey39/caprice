@@ -30,10 +30,6 @@ def index_file():
     return render_template('index.html')
 
 
-@app.route("/right")
-def right_file():
-    return render_template('page-right.html')
-
 @app.route("/ip", methods=["GET"])
 def index():
     ip = get_Host_name_IP()
@@ -89,9 +85,12 @@ def phone_notification(buttonsPressed):
 @socketio.on('notif')
 # this is the note-playing socket
 def test_message(value):
-    # print('received')
-    # print(message['data']['triggerButton'])
     emit('update value', value, broadcast=True)
+
+
+@socketio.on('sendInstrument')
+def send_instrument(value):
+    emit('send instrument', value, broadcast=True)
 
 
 def get_Host_name_IP(): 
