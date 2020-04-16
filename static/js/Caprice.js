@@ -160,7 +160,8 @@ class Caprice {
                       'gyro' : data['gyro'],
                       'triggerButton': data['triggerButton'],
                       'touchpadButton': data['touchpadButton'],
-                      'homeButton': data['homeButton']}
+                      'homeButton': data['homeButton'],
+                      'backButton': data['backButton']}
         this.socket.emit('my event', {data: result});
     }
 

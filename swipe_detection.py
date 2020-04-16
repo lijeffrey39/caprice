@@ -89,6 +89,7 @@ class SwipeDetector:
         if (prev_direction == 'up' or prev_direction == 'down'):
             if (touchpadButton == False and self.press_trigger == False):
                 self.press_trigger = True
+                self.press_direction = 'none'
                 return 'off'
 
         # if (direction[0] != 'none'):
