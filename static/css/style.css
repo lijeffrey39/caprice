@@ -1,22 +1,53 @@
-#main {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 2em 1em;
+#webbluetoothNotSupported {
+    font-family: sans-serif;
+    display: none;
+    transition: opacity 0.5s;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    padding: 1em;
+    background: rgba(255, 255, 255, 0.7);
 }
 
-.nav {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+#webbluetoothNotSupported.show {
+    display: block;
 }
 
-.nav:before {
-    content: 'Navigation: ';
+#loading {
+    display: none;
 }
 
-.nav li {
-    display: inline;
-    margin: 0 .4em;
+#loading1 {
+    display: none;
+}
+
+#loading.show {
+    display: inline-block;
+}
+
+#loading1.show {
+    display: block;
+}
+
+.instrument-card {
+    height: 150px; 
+    text-align: center; 
+    border-radius: 16px;
+}
+
+.highlighted {
+    border: 3px solid #007bff;
+}
+
+.selected {
+    background: #007bff; 
+    color: white;
+}
+
+#instrument-text {
+    margin-top: 60px;
 }
 
 @-webkit-keyframes fadeIn {

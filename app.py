@@ -14,6 +14,7 @@ from gesture_detection import GestureDetector
 from swipe_detection import SwipeDetector
 from phone_controller import PhoneController
 from gyro_velocity import GyroVelocity
+from instrument_select import InstrumentSelect
 
 Payload.max_decode_packets = 100
 log = logging.getLogger('werkzeug')
@@ -25,6 +26,7 @@ sd = SwipeDetector()
 pc = PhoneController()
 gd = GestureDetector()
 gv = GyroVelocity()
+inSelect = InstrumentSelect()
 
 pc.current_notes = ['C4'] #, 'E4', 'G4']
 
@@ -47,7 +49,7 @@ def index_file():
 
 @app.route("/right")
 def right_file():
-    return render_template('page-right.html')
+    return render_template('instruments.html')
 
 @app.route("/ip", methods=["GET"])
 def index():
@@ -118,8 +120,9 @@ def notification(message):
             # EDIT MODE SWIPES
             print(swipe_direction)
 
-    if current_mode == 'play':
+    inSelect.changeInstrument(swipe_direction, message[data]['triggerButton'])
 
+    if current_mode == 'play':
         direction = sd.detect_press(message['data'])
         pc.swipeControl(direction)
 
