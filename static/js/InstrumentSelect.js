@@ -6,14 +6,16 @@ const instruments = ["Bass", "Bassoon", "Cello", "Clarinet", "Contrabass",
 class InstrumentSelect {
     constructor () {
         this.socket = io.connect('http://' + document.domain + ':' + location.port);
-        console.log(this.socket);
+        this.socket.on('send instrument', function(msg) {
+            console.log(msg);
+        });
+
         this.generateInstruments();
         this.x = 0;
         this.y = 0;
         this.length = 6;
         this.width = Math.ceil(instruments.length / this.length);
         this.moveInstrumentSelect  = this.moveInstrumentSelect.bind(this);
-        this.checkValidMove  = this.checkValidMove.bind(this);
     }
 
     generateInstruments = () => {
@@ -36,27 +38,6 @@ class InstrumentSelect {
         }
     }
 
-    moveValue = (direction, x, y) => {
-        var tempX = this.x;
-        var tempY = this.y;
-        if (direction === 'up') {
-            tempY -= 1;
-        } else if (direction === 'down') {
-            tempY += 1;
-        } else if (direction === 'right') {
-            tempX += 1;
-        } else {
-            tempX -= 1;
-        }
-        return (tempX, tempY);
-    }
-
-    // checkValidMove = (direction) => {
-    //     (newX, newY) = moveValue(direction, this.x, this.y);
-    //     if (newX >=)
-    // }
-
-
     moveInstrumentSelect = (direction) => {
         console.log(direction);
         if (!this.checkValidMove(direction)) {
@@ -66,18 +47,3 @@ class InstrumentSelect {
 }
 
 const is = new InstrumentSelect();
-
-$(document).on("keyup", "body", function(e) {
-    if (e.keyCode == 38) {
-        is.moveInstrumentSelect('up');
-    }
-    if (e.keyCode == 40) {
-        is.moveInstrumentSelect('down');
-    }
-    if (e.keyCode == 37) {
-        is.moveInstrumentSelect('left');
-    }
-    if (e.keyCode == 39) {
-        is.moveInstrumentSelect('right');
-    }
-})

@@ -47,10 +47,6 @@ def index_file():
     return render_template('index.html')
 
 
-@app.route("/right")
-def right_file():
-    return render_template('instruments.html')
-
 @app.route("/ip", methods=["GET"])
 def index():
     ip = get_Host_name_IP()
@@ -120,7 +116,10 @@ def notification(message):
             # EDIT MODE SWIPES
             print(swipe_direction)
 
-    inSelect.changeInstrument(swipe_direction, message[data]['triggerButton'])
+    (newIn, changeIn, changed) = inSelect.instrumentNotification(swipe_direction, message['data']['triggerButton'])
+    if (changed):
+        res = {'instrument': newIn, 'change': changeIn}
+        send_instrument(res)
 
     if current_mode == 'play':
         direction = sd.detect_press(message['data'])
@@ -136,32 +135,6 @@ def notification(message):
                     'gyro': gyro_vel})
             else:
                 test_message({'notes': [], 'new_swipe': True, 'gyro': gyro_vel})
-    
-
-    return
-    # output = gd.gesture_output(message['data'])
-    # if (output != None):
-    #     if output == 'start':
-    #         # current_note = ['C4', 'E4', 'G4']
-    #         # emit('update value', {'notes': current_note, 'new_swipe': True}, broadcast=True)
-
-    #         test_message({'notes': current_note, 'new_swipe': True})
-    #         print('start')
-    #     elif output == 'change':
-    #         # current_note = ['D4', 'F4', 'A4']
-    #         # emit('update value', {'notes': current_note, 'new_swipe': True}, broadcast=True)
-
-    #         test_message({'notes': current_note, 'new_swipe': True})
-    #         print('change')
-        
-        # elif output == 'end':
-        #     # emit('update value', {'notes': [], 'new_swipe': True}, broadcast=True)
-        #     test_message({'notes': [], 'new_swipe': True})
-        #     print('end')
-        # else:
-        #     #output is 'hold'
-        #     # emit('update value', {'notes': current_note, 'new_swipe': False}, broadcast=True)
-        #     test_message({'notes': current_note, 'new_swipe': False})
 
 
 @socketio.on('connect')
@@ -197,9 +170,12 @@ def phone_notification(buttonsPressed):
 @socketio.on('notif')
 # this is the note-playing socket
 def test_message(value):
-    # print('received')
-    # print(message['data']['triggerButton'])
     emit('update value', value, broadcast=True)
+
+
+@socketio.on('sendInstrument')
+def send_instrument(value):
+    emit('send instrument', value, broadcast=True)
 
 
 def get_Host_name_IP(): 

@@ -10,11 +10,6 @@ const GYRO_FACTOR = 0.0001; // to radians / s
 const ACCEL_FACTOR = 0.00001; // to g (9.81 m/s**2)
 const TIMESTAMP_FACTOR = 0.001; // to seconds
 
-const instruments = ["Bass", "Bassoon", "Cello", "Clarinet", "Contrabass",
-    "Flute", "French Horn", "Acoustic Guitar", "Electric Guitar", "Classical Guitar",
-    "Harmonium", "Harp", "Organ", "Piano", "Saxophone", "Trombone", "Trumpet","Tuba",
-    "Violin", "Xylophone"];
-
 class Caprice {
     constructor() {
         this.socket = io.connect('http://' + document.domain + ':' + location.port);
@@ -48,9 +43,6 @@ class Caprice {
             document.getElementById('connect').addEventListener(
                 'click', this.pair
             );
-            document.getElementById('connect').addEventListener(
-                'click', this.goRight
-            )
             $('.toast').toast({delay: 5000});
         } else {
             document.getElementById('webbluetoothNotSupported').classList.add('show');

@@ -30,6 +30,23 @@
             </section>
         </div>
 
+        <div id="main1">
+            <div class="sceneElement" data-viewport="1">
+                <section class="jumbotron text-center" style="padding-bottom: 35px">
+                    <div class="container">
+                    <h1 style="margin-top: 10px;">Instruments</h1>
+                    <p class="lead text-muted">Select an instrument below</p>
+        
+                    <!-- <a href="/" data-target="0">Home</a> -->
+                    </div>
+                </section>
+                <div class="container">
+                    <div class="row" id="instrument-list">
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="webbluetoothNotSupported">
             Sorry, your browser cannot run this demo unless it supports the
             <a href="https://www.chromestatus.com/feature/5264933985976320">Web Bluetooth API</a>.<br><br>
@@ -66,6 +83,7 @@
         <script type="text/javascript" src="{{ url_for('static', filename='js/Chart.js') }}"></script>
         <script type = "text/babel" src="{{ url_for('static', filename='js/easy.js') }}"></script>
         <script type = "text/babel" src="{{ url_for('static', filename='js/easy-jason.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/InstrumentSelect.js') }}"></script>
         
         <script type="text/javascript" src="{{ url_for('static', filename='js/babel.min.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/three.min.js') }}"></script>
