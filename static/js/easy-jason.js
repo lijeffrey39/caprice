@@ -727,6 +727,7 @@ function setInstrument(ins) {
             playNotes = synth_playNotes;
             break;
     }
+    sampler.connect(wah);
 }
 
 function addEffect(args) {
