@@ -624,63 +624,83 @@ function setInstrument(ins) {
     switch(ins){
         case "cello":
             sampler = cello;
+            playNotes = sampler_playNotes;
             break;
         case "bass":
             sampler = bass;
+            playNotes = sampler_playNotes;
             break;
         case "bassoon":
             sampler = bassoon;
+            playNotes = sampler_playNotes;
             break;
         case "clarinet":
             sampler = clarinet;
+            playNotes = sampler_playNotes;
             break;
         case "contrabass":
             sampler = contrabass;
+            playNotes = sampler_playNotes;
             break;
         case "flute":
             sampler = flute;
+            playNotes = sampler_playNotes;
             break;
         case "french horn":
             sampler = french_horn;
+            playNotes = sampler_playNotes;
             break;
         case "acoustic guitar":
             sampler = acoustic_guitar;
+            playNotes = sampler_playNotes;
             break;
         case "electric guitar":
             sampler = electric_guitar;
+            playNotes = sampler_playNotes;
             break;
         case "classical guitar":
             sampler = nylon_guitar;
+            playNotes = sampler_playNotes;
             break;
         case "harmonium":
             sampler = harmonium;
+            playNotes = sampler_playNotes;
             break;
         case "harp":
             sampler = harp;
+            playNotes = sampler_playNotes;
             break;
         case "organ":
             sampler = organ;
+            playNotes = sampler_playNotes;
             break;
         case "piano":
             sampler = piano;
+            playNotes = sampler_playNotes;
             break;
         case "saxophone":
             sampler = saxophone;
+            playNotes = sampler_playNotes;
             break;
         case "trombone":
             sampler = trombone;
+            playNotes = sampler_playNotes;
             break;
         case "trumpet":
             sampler = trumpet;
+            playNotes = sampler_playNotes;
             break;
         case "tuba":
             sampler = tuba;
+            playNotes = sampler_playNotes;
             break;
         case "violin":
             sampler = violin;
+            playNotes = sampler_playNotes;
             break;
         case "xylophone":
             sampler = xylophone;
+            playNotes = sampler_playNotes;
             break;
         case "synth":
             sampler = synth;
@@ -888,7 +908,9 @@ $(document).ready(function() {
     });
 
     socket.on('instrument', function(msg) {
-        setInstrument(msg.instrument);
+        console.log(msg.instrument)
+        var instrument = msg.instrument.toLowerCase();
+        setInstrument(instrument);
     });
   
     socket.on('update value', function(msg) {

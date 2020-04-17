@@ -2,12 +2,12 @@
 import copy
 import logging
 import os
-import time
 import socket
+import time
 
 import numpy
 from engineio.payload import Payload
-from flask import Flask, render_template, jsonify
+from flask import Flask, jsonify, render_template
 from flask_socketio import SocketIO, emit
 
 from caprice import Caprice
@@ -18,11 +18,7 @@ log.setLevel(logging.ERROR)
 
 app = Flask(__name__)
 socketio = SocketIO(app)
-
 caprice = Caprice()
-
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
 
 
 @app.route("/")
@@ -33,24 +29,20 @@ def index_file():
 @app.route("/ip", methods=["GET"])
 def index():
     ip = get_Host_name_IP()
-    api_response = {
-        "status": "success",
-        "message": ip
-    }
+    api_response = {"status": "success", "message": ip}
     return jsonify(api_response)
 
 
 @socketio.on('my event')
 def notification(message): 
-    
     parse_result = caprice.parse_notification(message['data'])
-
-    if 'play' in parse_result:
+    if (parse_result[0] == 'play'):
         test_message(parse_result[1])
-    elif 'instrument select' in parse_result:
+    elif (parse_result[0] == 'instrument select'):
         send_instrument(parse_result[1])
-
-    return
+        if (parse_result[1]['change']):
+            print(parse_result[1])
+            emit('instrument', parse_result[1], broadcast=True)
 
 
 @socketio.on('connect')
@@ -58,10 +50,15 @@ def test_connect():
     emit('after connect', {'data': 'Connected'}, broadcast=True)
     print("Connected")
 
+
+@socketio.on('notif') # this is the note-playing socket
+def test_message(value):
+    emit('update value', value, broadcast=True)
+
+
 prev = []
 count = 0
 total = 0
-
 @socketio.on('button press')
 def phone_notification(buttonsPressed):
     global current_note
@@ -79,14 +76,7 @@ def phone_notification(buttonsPressed):
 
     current_note = temp
     prev = buttonsPressed[0]
-
-    # update pc.current_note
     pc.update_notes(buttonsPressed[0])
-
-@socketio.on('notif')
-# this is the note-playing socket
-def test_message(value):
-    emit('update value', value, broadcast=True)
 
 
 @socketio.on('sendInstrument')
@@ -98,11 +88,9 @@ def get_Host_name_IP():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))
     ipAddress = s.getsockname()[0]
-    # socketio.emit('ip address', ipAddress, broadcast=True)
     return ipAddress
 
 
 if __name__ == "__main__":
     print("running")
-    # get_Host_name_IP()
     socketio.run(app, host='0.0.0.0')

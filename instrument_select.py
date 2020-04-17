@@ -10,9 +10,11 @@ class InstrumentSelect:
         self.width = 6
         self.grid = Grid(self.instruments, self.width)
         self.currInstrument = ""
+        self.prevTriggered = True
 
     def instrumentNotification(self, direction, triggered):
-        if (triggered):
+        if (triggered and self.prevTriggered):
+            self.prevTriggered = False
             return (self.currInstrument, True, True)
 
         newX, newY = self.grid.moveValue(direction)
@@ -23,6 +25,7 @@ class InstrumentSelect:
             self.currInstrument = self.grid._grid[newY][newX]
 
         if (newInstrument != self.currInstrument):
+            self.prevTriggered = True
             return (self.currInstrument, False, True)
         else:
             return (self.currInstrument, False, False)
