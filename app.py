@@ -44,11 +44,15 @@ def index():
 def notification(message): 
     
     parse_result = caprice.parse_notification(message['data'])
-
+    
     if 'play' in parse_result:
         test_message(parse_result[1])
     elif 'instrument select' in parse_result:
         send_instrument(parse_result[1])
+        if(parse_result[1]['change']):
+            print(parse_result)
+            set_instrument(parse_result[1])
+            
 
     return
 
@@ -93,6 +97,9 @@ def test_message(value):
 def send_instrument(value):
     emit('send instrument', value, broadcast=True)
 
+@socketio.on('instrument')
+def set_instrument(value):
+    emit('instrument', value, broadcast=True)
 
 def get_Host_name_IP(): 
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

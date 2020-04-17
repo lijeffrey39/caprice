@@ -60,6 +60,7 @@ class Caprice:
         
         elif self.current_mode == 'filter set':
             self.current_mode = 'filter set'
+            
         elif self.current_mode == 'instrument select':
             self.current_mode = 'instrument select'
             (newIn, changeIn, changed) = self.inSel.instrumentNotification(swipe_direction, data['triggerButton'])

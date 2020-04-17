@@ -41,9 +41,9 @@ class InstrumentSelect {
     }
 
     setInstrument = (data) => {
-        var instrumentName = data['instrument']
-        var triggered = data['change']
-        console.log(instrumentName)
+        var instrumentName = data['instrument'];
+        var triggered = data['change'];
+        console.log(instrumentName);
         
         if (instrumentName != this.currInstrument) {
             var instrumentCard = document.getElementById(this.currInstrument);
@@ -51,7 +51,7 @@ class InstrumentSelect {
             this.currInstrument = instrumentName;
             
             instrumentCard = document.getElementById(this.currInstrument);
-            instrumentCard.classList.add('highlighted')
+            instrumentCard.classList.add('highlighted');
         }
     }
 }
