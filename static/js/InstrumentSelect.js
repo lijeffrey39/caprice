@@ -12,6 +12,7 @@ class InstrumentSelect {
 
         this.generateInstruments();
         this.currInstrument = 'Bass'
+        this.selectedInstrument = 'Bass'
         this.x = 0;
         this.y = 0;
         this.length = 6;
@@ -41,9 +42,10 @@ class InstrumentSelect {
     }
 
     setInstrument = (data) => {
-        var instrumentName = data['instrument'];
-        var triggered = data['change'];
-        console.log(instrumentName);
+        var instrumentName = data['instrument']
+        var triggered = data['change']
+        console.log(instrumentName)
+        console.log(triggered)
         
         if (instrumentName != this.currInstrument) {
             var instrumentCard = document.getElementById(this.currInstrument);
@@ -52,6 +54,15 @@ class InstrumentSelect {
             
             instrumentCard = document.getElementById(this.currInstrument);
             instrumentCard.classList.add('highlighted');
+        }
+
+        if (triggered) {
+            var instrumentCard = document.getElementById(this.selectedInstrument);
+            instrumentCard.classList.remove('selected');
+            this.selectedInstrument = instrumentName;
+
+            instrumentCard = document.getElementById(this.selectedInstrument);
+            instrumentCard.classList.add('selected')
         }
     }
 }

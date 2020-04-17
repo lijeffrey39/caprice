@@ -39,6 +39,7 @@
 
 .highlighted {
     border: 3px solid #007bff;
+    font-weight: bold;
 }
 
 .selected {

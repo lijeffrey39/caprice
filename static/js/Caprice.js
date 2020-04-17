@@ -49,21 +49,6 @@ class Caprice {
         }
     }
 
-    goRight = () => {
-        // var link = document.createElementNS("Right", "a");
-        // link.href = '/right';
-        // console.log(link)
-        // // link['data-target'] = '1';
-        // var event = new MouseEvent('click', {
-        //     'view': window,
-        //     'bubbles': false,
-        //     'cancelable': true
-        // });
-        // console.log(link)
-        // link.dispatchEvent(event);
-        $('#right').click();
-    }
-
     onDeviceConnected = (device) => {
         console.log("connecting to bluetooth device");
         return device.gatt.connect().catch(function(){

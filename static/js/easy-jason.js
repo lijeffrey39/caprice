@@ -908,8 +908,9 @@ $(document).ready(function() {
     });
 
     socket.on('instrument', function(msg) {
-        console.log("received: " + msg.instrument);
-        setInstrument(msg.instrument);
+        console.log(msg.instrument)
+        var instrument = msg.instrument.toLowerCase();
+        setInstrument(instrument);
     });
   
     socket.on('update value', function(msg) {
