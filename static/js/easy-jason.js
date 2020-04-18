@@ -100,6 +100,16 @@ function reverb_run(gyro) {
     reverb.decay.value = curDecay + Math.abs(scale*gyro['x']);
 }
 
+var effect_wet = {
+    'chorus': 0,
+    'delay': 0,
+    'distortion': 0,
+    'reverb': 0,
+    'tremolo': 0,
+    'vibrato': 0,
+    'wah': 0
+}
+
 var cello = new Tone.Sampler(
     {
     // 'C4': "static/samples/Harmonics/C.mp3"
@@ -618,8 +628,8 @@ var duosynth = new Tone.PolySynth(4, Tone.DuoSynth);
 var amsynth = new Tone.PolySynth(4, Tone.AMSynth);
 
 
-var sampler = amsynth;
-var playNotes = synth_playNotes;
+var sampler = piano;
+var playNotes = sampler_playNotes;
 function setInstrument(ins) {
     switch(ins){
         case "cello":
@@ -730,78 +740,82 @@ function setInstrument(ins) {
     sampler.connect(wah);
 }
 
+function changeEffect(args) {
+    switch(args[0]) {
+        case "chorus":
+            chorus.frequency.value = args[2]['frequency'][1];
+            chorus.delay = args[2]['delay'][1];
+            chorus.depth = args[2]['depth'][1];
+            effect_wet['chorus'] = args[2]['wet'][1];
+            break;
+        case "delay":
+            delay.delay = args[2]['delay'];
+            delay.feedback.value = args[2]['feedback'][1];
+            effect_wet['delay'] = args[2]['wet'][1];
+            break;
+        case "distortion":
+            distortion.distortion = args[2]['distortion'][1];
+            effect_wet['distortion'] = args[2]['wet'][1];
+            break;
+        case 'reverb':
+            reverb.decay = args[2]['decay'][1];
+            effect_wet['reverb'] = args[2]['wet'][1]
+            break;
+        case 'tremolo':
+            tremolo.frequency.value = args[2]['frequency'][1];
+            tremolo.depth.value = args[2]['depth'][1];
+            effect_wet['tremolo'] = args[2]['wet'][1];
+            break;
+        case 'vibrato':
+            vibe.frequency.value = args[2]['frequency'][1];
+            vibe.depth.value = args[2]['depth'][1];
+            effect_wet['vibrato'] = args[2]['wet'][1];
+            break;
+        case 'panner':
+            console.log('bieth');
+            break;
+        case 'wah':
+            effect_wet['wah'] = args[2]['q'][1];
+            break;
+
+    }
+}
+
 function addEffect(args) {
     var effect;
     console.log('yuk')
     switch(args['name']) {
         case "chorus":
-            // delay in ms
-            // depth between 0 - 1
-            // chorus.frequency.value = args['params']['freq'];
-            // chorus.delay.value = args['params']['delay'];
-            // chorus.depth.value = args['params']['depth'];
-            chorus.wet.value = args['params']['wet']
+            chorus.wet.value = effect_wet['chorus'];
             break;
         case 'delay':
-            // delay in secs
-            // feedback between 0 - 1
-            delay.delay.value = args['params']['delay'];
-            delay.feedback.value = args['params']['feedback'];
-            delay.wet.value = args['params']['wet']
+            delay.wet.value = effect_wet['delay'];
             break;
         case "distortion":
-            // distortion between 0 - 1
-            // distortion.level.value = args['params']['distortion'];
-            // distortion.oversample = args['params']['oversample'];
-            distortion.wet.value = args['params']['wet']
-
+            distortion.wet.value = effect_wet['distortion'];
             break;
         case "reverb":
-            // decay in secs
-            reverb.decay.value = args['params']['decay'];
-            reverb.preDelay.value = args['params']['preDelay'];
-            reverb.wet.value = args['params']['wet']
-
-            curDecay = args['params']['decay'];
-
+            reverb.wet.value = effect_wet['reverb'];
             //have to call this every time params r changed
             reverb.generate();
-
             break;
         case "tremolo":
-            // depth between 0 - 1
-            tremolo.frequency.value = args['params']['freq'];
-            tremolo.depth.value = args['params']['depth'];
-            tremolo.wet.value = args['params']['wet']
-
+            tremolo.wet.value = effect_wet['tremolo'];
             //have to do this everytime something is edited
             tremolo.start();
-
             break;
         case "vibrato":
             // depth between 0 - 1
-            vibe.frequency.value = args['params']['freq'];
-            vibe.depth.value = args['params']['depth'];
-            vibe.wet.value = args['params']['wet'];
+            vibe.wet.value = effect_wet['vibrato'];
             break;
         case "panner":
             pannerOn = true;
             break;
         case "wah":
-            wah.Q.value = 0.5;
+            wah.Q.value = effect_wet['wah'];
             break;
 
     }
-
-    // if(effects.length == 0) {
-    //     polysynth.disconnect();
-    //     polysynth.connect(effect);
-    // } else {
-    //     effects[effects.length - 1].connect(effect);
-    // }
-
-    // effects.push(effect);
-    // effect.toMaster();
 }
 
 function removeEffect(name) {
@@ -912,6 +926,10 @@ $(document).ready(function() {
         console.log(msg.instrument)
         var instrument = msg.instrument.toLowerCase();
         setInstrument(instrument);
+    });
+
+    socket.on('effects tune', function(msg) {
+        changeEffect(msg);
     });
   
     socket.on('update value', function(msg) {

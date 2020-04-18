@@ -44,10 +44,10 @@ class SwipeDetector:
         if (prevDirection == self.direction):
             direction[0] = 'none'
         
-        if (self.actualPrevDirection == 'up' or self.actualPrevDirection == 'down'):
-            if (pressed == False and self.triggered == False):
-                self.triggered = True
-                return 'off'
+        # if (self.actualPrevDirection == 'up' or self.actualPrevDirection == 'down'):
+        if (pressed == False and self.triggered == False):
+            self.triggered = True
+            return 'off'
 
         if (direction[0] != 'none'):
             self.actualPrevDirection = direction[0]
@@ -86,11 +86,11 @@ class SwipeDetector:
         if (prev_direction == self.press_direction):
             direction[0] = 'none'
 
-        if (prev_direction == 'up' or prev_direction == 'down'):
-            if (touchpadButton == False and self.press_trigger == False):
-                self.press_trigger = True
-                self.press_direction = 'none'
-                return 'off'
+        # if (prev_direction == 'up' or prev_direction == 'down'):
+        if (touchpadButton == False and self.press_trigger == False):
+            self.press_trigger = True
+            self.press_direction = 'none'
+            return 'off'
 
         # if (direction[0] != 'none'):
         # self.press_direction_prev = self.press_direction

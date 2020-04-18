@@ -43,6 +43,9 @@ def notification(message):
         if(parse_result[1]['change']):
             print(parse_result)
             set_instrument(parse_result[1])
+    elif parse_result[0] == 'param select':
+        set_effects(parse_result[1])
+
             
 
     return
@@ -89,6 +92,9 @@ def send_instrument(value):
 @socketio.on('instrument')
 def set_instrument(value):
     emit('instrument', value, broadcast=True)
+
+def set_effects(value):
+    emit('effects tune', value, broadcast=True)
 
 def get_Host_name_IP(): 
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
