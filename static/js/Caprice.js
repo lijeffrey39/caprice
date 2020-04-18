@@ -28,6 +28,7 @@ class Caprice {
         this.customServiceNotify = null;
         this.gattServer = null;
         this.customService = null;
+        this.position = 0;
 
         this.onControllerDataReceived  = this.onControllerDataReceived.bind(this);
         this.onDeviceConnected = this.onDeviceConnected.bind(this);
@@ -48,6 +49,39 @@ class Caprice {
             document.getElementById('webbluetoothNotSupported').classList.add('show');
         }
     }
+
+    move = (from, to, animation) => {
+        console.log(animation)
+        var fromAnimation = JSON.parse(JSON.stringify(animation));
+        fromAnimation['opacity'] = 0;
+        var toAnimation = JSON.parse(JSON.stringify(animation));
+        toAnimation['opacity'] = 1;
+        $(from).animate(fromAnimation, 1000);
+        $(to).animate(toAnimation, 1000);
+    }
+
+    moveDirection = (direction) => {
+        console.log(direction);
+        const amount = '700px';
+        if (direction === 'up') {
+            if (this.position === 0) {
+                this.move('#main-container', '#instrument-container1', {top: '-=' + amount});
+                this.position = 1;
+            } else if (this.position === 2) {
+                this.move('#instrument-container', '#main-container', {top: '-=' + amount});
+                this.position = 0;
+            }
+        } else if (direction === 'down') {
+            if (this.position === 1) {
+                this.move('#instrument-container1', '#main-container', {top: '+=' + amount});
+                this.position = 0;
+            } else if (this.position === 0) {
+                this.move('#main-container', '#instrument-container', {top: '+=' + amount});
+                this.position = 2;
+            }
+        }
+    }
+
 
     onDeviceConnected = (device) => {
         console.log("connecting to bluetooth device");
@@ -194,3 +228,20 @@ class Caprice {
 }
 
 var caprice = new Caprice();
+
+document.onkeydown = checkKey;
+function checkKey(e) {
+    e = e || window.event;
+    if (e.keyCode == '38') {
+        caprice.moveDirection('up');
+    }
+    else if (e.keyCode == '40') {
+        caprice.moveDirection('down');
+    }
+    else if (e.keyCode == '37') {
+        caprice.moveDirection('left');
+    }
+    else if (e.keyCode == '39') {
+        caprice.moveDirection('right');
+    }
+}

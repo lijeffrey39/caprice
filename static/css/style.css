@@ -32,13 +32,14 @@
 }
 
 .instrument-card {
-    height: 150px; 
+    height: 120px; 
     text-align: center; 
     border-radius: 16px;
+    font-weight: 200;
 }
 
 .highlighted {
-    border: 3px solid #007bff;
+    border: 4px solid #007bff;
     font-weight: bold;
 }
 
@@ -47,9 +48,52 @@
     color: white;
 }
 
-#instrument-text {
-    margin-top: 60px;
+#instrument-container1 {
+    top: -350px;
+    position: relative;
+    opacity: 0;
 }
+
+#main-container {
+    top: -700px;
+    position: relative;
+}
+
+#instrument-container {
+    position: relative;
+    top: -750px;
+    opacity: 0;
+}
+
+#instrument-text {
+    margin-top: 47px;
+}
+
+.stop-scrolling {
+    height: 100%;
+    overflow: hidden;
+}
+
+#effect-text {
+    /* text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; */
+    font-size: 24px;
+    color: black;
+    margin-top: 120px;
+    /* letter-spacing: 1.5px; */
+}
+
+/* #instrument-title {
+    position: relative;
+    top: 300px;
+}
+#instrument-text {
+    position: relative;
+    top: 300px;
+}
+#instrument-div {
+    position: relative;
+    top: 300px;
+} */
 
 @-webkit-keyframes fadeIn {
     0% {
