@@ -41,5 +41,15 @@ class Grid:
             tempX -= 1
         return (tempX, tempY)
 
-    def isValid(self, newX, newY):
-        return newX >= 0 and newX < self.width and newY >= 0 and newY < self.height and self._grid[newY][newX] != '*'
+    def isValid(self, newX, newY, toggledInstrument):
+
+        if newX >= 0 and newX < self.width and newY >= 0 and newY < self.height:
+            if self._grid[newY][newX] != '*':
+                
+                if self._grid[newY][newX] == toggledInstrument:
+                    return 'skip'
+                else:
+                    return True
+        
+        return False
+        # return newX >= 0 and newX < self.width and newY >= 0 and newY < self.height and self._grid[newY][newX] != '*'

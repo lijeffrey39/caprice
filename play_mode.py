@@ -14,7 +14,7 @@ class PlayMode:
         self.pc = PhoneController()
 
         self.pc.current_notes = ['C4']
-
+        self.toggled_instrument = 'AMSynth'
         self.effects_set = {
             'up': 'distortion',
             'down': 'chorus',
@@ -108,10 +108,10 @@ class PlayMode:
                         'gyro': gyro_vel}
             else:
                 if send:
-                    final_message = {'notes': [], 'new_swipe': True, 'gyro': gyro_vel,
+                    final_message = {'notes': [], 'new_swipe': False, 'gyro': gyro_vel,
                         'effects_toggle': outcome}
                 else:
-                    final_message = {'notes': [], 'new_swipe': True,
+                    final_message = {'notes': [], 'new_swipe': False,
                         'gyro': gyro_vel}
         
         else:

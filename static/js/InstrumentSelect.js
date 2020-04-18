@@ -1,7 +1,7 @@
 const instruments = ["Bass", "Bassoon", "Cello", "Clarinet", "Contrabass",
     "Flute", "French Horn", "Acoustic Guitar", "Electric Guitar", "Classical Guitar",
     "Harmonium", "Harp", "Organ", "Piano", "Saxophone", "Trombone", "Trumpet","Tuba",
-    "Violin", "Xylophone"];
+    "Violin", "Xylophone","AMSynth", "FMSynth", "MembraneSynth","DuoSynth"];
 
 class InstrumentSelect {
     constructor () {
