@@ -41,7 +41,7 @@ def notification(message):
     elif (parse_result[0] == 'instrument select'):
         send_instrument(parse_result[1])
         if(parse_result[1]['change']):
-            print(parse_result)
+            # print(parse_result)
             set_instrument(parse_result[1])
             
 
