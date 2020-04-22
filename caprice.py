@@ -92,7 +92,8 @@ class Caprice:
             print(swipe_direction)
 
         # update edit mode (instrument, filter, key, params)
-        self.update_edit_mode(swipe_direction)
+        if self.edit_mode == "":
+            self.update_edit_mode(swipe_direction)
 
         output = None
         if self.current_mode == 'play':
@@ -107,7 +108,7 @@ class Caprice:
                     self.play_mode.toggled_instrument = newIn
             elif self.edit_mode == 'parameter set':
                 output = self.parSel.paramNotification(swipe_direction, tap_direction)
-        
+
         res = {
             'mode': self.current_mode,
             'editMode': self.edit_mode,
