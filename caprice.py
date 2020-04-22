@@ -30,8 +30,6 @@ class Caprice:
         self.edit_mode = ""
 
 
-
-
     def update_mode(self, home, back):
         if (home):
             if self.home_release:
@@ -100,7 +98,18 @@ class Caprice:
             output = self.play_mode.generate_message(swipe_direction, tap_direction, data)
         elif (self.edit_mode != ""):
             if (self.edit_mode == 'filter set'):
-                self.edit_mode = 'filter set'
+                (filter_dir, new_effect, changed, selected) = self.filter_select.filterMenu(swipe_direction, 
+                                                                                        tap_direction,
+                                                                                        trigSelect)
+                if new_effect == "" and filter_dir != "":
+                    output = {'toggle': filter_dir}
+                
+                if selected:
+                    self.play_mode.effects_set[filter_dir] = new_effect
+                
+                if changed:
+                    output = {'direction': filter_dir, 'effect': new_effect, 'selected': selected}
+                    
             elif (self.edit_mode == 'instrument select'):
                 (newIn, changeIn, changed) = self.inSel.instrumentNotification(swipe_direction, data['triggerButton'])
                 output = {'instrument': newIn, 'change': changeIn}

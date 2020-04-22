@@ -22,12 +22,12 @@ class InstrumentSelect:
 
         newX, newY = self.grid.moveValue(direction)
         newInstrument = self.currInstrument
-        if (self.grid.isValid(newX, newY, []) == True):
+        if (self.grid.isValid(newX, newY, [self.toggledInstrument]) == True):
             # self.x, self.y = newX, newY
             self.grid.move(newX, newY)
             self.currInstrument = self.grid._grid[newY][newX]
-            
-        elif (self.grid.isValid(newX, newY, []) == 'skip'):
+
+        elif (self.grid.isValid(newX, newY, [self.toggledInstrument]) == 'skip'):
             
             if direction == 'up':
                 newY -= 1
@@ -38,7 +38,7 @@ class InstrumentSelect:
             elif direction == 'left':
                 newX -= 1
 
-            if (self.grid.isValid(newX, newY, [])):
+            if (self.grid.isValid(newX, newY, [self.toggledInstrument])):
                 self.grid.move(newX, newY)
                 self.currInstrument = self.grid._grid[newY][newX]
 

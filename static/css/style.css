@@ -43,11 +43,27 @@
     font-weight: bold;
 }
 
+.right-highlighted {
+    border: 3px solid #ffb682;
+    font-weight: bold;
+}
+
+.left-highlighted { 
+    border: 3px solid #fcea21;
+    font-weight: bold;
+}
+
+.down-highlighted {
+    border: 3px solid #df5dfc;
+    font-weight: bold;
+}
+
 .selected {
     background: #007bff; 
     color: white;
 }
 
+<<<<<<< HEAD
 #instrument-container1 {
     top: -350px;
     position: relative;
@@ -92,6 +108,23 @@
     position: relative;
     top: 300px;
 }
+=======
+.right-selected {
+    background: #ffb682; 
+    color: white;
+}
+
+.left-selected { 
+    background: #fcea21;
+    color: white;
+}
+
+.down-selected {
+    background: #df5dfc;
+    color: white;
+}
+
+>>>>>>> origin/master
 #instrument-text {
     position: relative;
     top: 300px;

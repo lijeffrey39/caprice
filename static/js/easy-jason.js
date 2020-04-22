@@ -101,13 +101,13 @@ function reverb_run(gyro) {
 }
 
 var effect_wet = {
-    'chorus': 0,
-    'delay': 0,
-    'distortion': 0,
-    'reverb': 0,
-    'tremolo': 0,
-    'vibrato': 0,
-    'wah': 0
+    'chorus': 0.4,
+    'delay': 0.4,
+    'distortion': 0.4,
+    'reverb': 0.4,
+    'tremolo': 0.4,
+    'vibrato': 0.4,
+    'wah': 0.4
 }
 
 var cello = new Tone.Sampler(

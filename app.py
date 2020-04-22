@@ -51,6 +51,31 @@ def notification(message):
                 set_instrument(result['output'])
         elif (result['editMode'] == 'parameter set'):
             set_effects(result['output'])
+        elif (result['editMode'] == 'filter set'):
+            if result['output'] != None:
+                if 'toggle' in result['output']:
+                    send_filter_toggle(result['output'])
+                else:
+                    send_filter(result['output'])
+                
+# def notification(message): 
+#     parse_result = caprice.parse_notification(message['data'])
+#     if (parse_result[0] == 'play'):
+#         test_message(parse_result[1])
+#     elif (parse_result[0] == 'instrument select'):
+#         send_instrument(parse_result[1])
+#         if(parse_result[1]['change']):
+#             set_instrument(parse_result[1])
+#     elif (parse_result[0] == 'param select'):
+#         set_effects(parse_result[1])
+#     elif (parse_result[0] == 'filter set'):
+#         if 'toggle' in parse_result[1]:
+#             send_filter_toggle(parse_result[1])
+#         else:
+#             send_filter(parse_result[1])
+            
+
+#     return
 
 
 @socketio.on('connect')
@@ -86,6 +111,11 @@ def phone_notification(buttonsPressed):
     prev = buttonsPressed[0]
     pc.update_notes(buttonsPressed[0])
 
+def send_filter(value):
+    emit('send filter', value, broadcast=True)
+
+def send_filter_toggle(value):
+    emit('send filter toggle', value, broadcast=True)
 
 @socketio.on('sendInstrument')
 def send_instrument(value):
