@@ -20,7 +20,7 @@ class FilterSelect:
         if trigger:
             if self.curr_edit_direction != "" and self.curr_filter != self.curr_effects_set[self.curr_edit_direction]:
                 self.curr_effects_set[self.curr_edit_direction] = self.curr_filter
-                print("SELECTED ", self.curr_filter)
+                # print("SELECTED ", self.curr_filter)
                 return (self.curr_edit_direction, self.curr_filter, True, True)
 
         if tap_direction != 'none' and tap_direction != 'off':

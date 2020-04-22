@@ -105,7 +105,10 @@ class Caprice:
             (filter_dir, new_effect, changed, selected) = self.filter_select.filterMenu(swipe_direction, 
                                                                             tap_direction,
                                                                             trigSelect)
-            if (changed):
+            if selected:
+                self.play_mode.effects_set[filter_dir] = new_effect
+            
+            if changed:
                 res = {'direction': filter_dir, 'effect': new_effect, 'selected': selected}
                 return ['filter set', res]
 

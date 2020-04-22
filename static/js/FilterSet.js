@@ -5,17 +5,17 @@ class FilterSet {
     constructor () {
         this.socket = io.connect('http://' + document.domain + ':' + location.port);
         this.socket.on('send filter', (msg) => {
-            this.setInstrument(msg);
+            this.setFilter(msg);
         });
 
-        this.generateInstruments();
-        this.currInstrument = 'Bass'
-        this.selectedInstrument = 'Bass'
+        this.generateFilters();
+        this.currFilter = 'chorus'
+        this.selectedInstrument = 'chorus'
         this.x = 0;
         this.y = 0;
-        this.length = 6;
-        this.width = Math.ceil(instruments.length / this.length);
-        this.moveInstrumentSelect  = this.moveInstrumentSelect.bind(this);
+        this.length = 4;
+        this.width = Math.ceil(filters.length / this.length);
+        // this.moveInstrumentSelect  = this.moveInstrumentSelect.bind(this);
     }
 
     generateInstruments = () => {

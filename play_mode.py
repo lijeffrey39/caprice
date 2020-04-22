@@ -84,7 +84,6 @@ class PlayMode:
             if toggled_effect != None:
                 outcome['toggle'] = True
                 outcome['name'] = toggled_effect
-                outcome['params'] = {'wet': 0.5}
             else:
                 outcome['toggle'] = False
                 outcome['name'] = untoggled_effect

@@ -17,7 +17,7 @@ class InstrumentSelect {
         this.y = 0;
         this.length = 6;
         this.width = Math.ceil(instruments.length / this.length);
-        this.moveInstrumentSelect  = this.moveInstrumentSelect.bind(this);
+        // this.moveInstrumentSelect  = this.moveInstrumentSelect.bind(this);
     }
 
     generateInstruments = () => {
