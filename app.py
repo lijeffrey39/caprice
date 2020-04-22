@@ -41,11 +41,11 @@ def notification(message):
     elif (parse_result[0] == 'instrument select'):
         send_instrument(parse_result[1])
         if(parse_result[1]['change']):
-            # print(parse_result)
             set_instrument(parse_result[1])
-    elif parse_result[0] == 'param select':
+    elif (parse_result[0] == 'param select'):
         set_effects(parse_result[1])
-
+    elif (parse_result[0] == 'filter set'):
+        print(parse_result[1])
             
 
     return
