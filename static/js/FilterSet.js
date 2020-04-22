@@ -8,62 +8,103 @@ class FilterSet {
             this.setFilter(msg);
         });
 
-        this.generateFilters();
+        this.socket.on('send filter toggle', (msg) => {
+            this.setCursor(msg);
+        })
+
+        
         this.currFilter = 'chorus'
-        this.selectedInstrument = 'chorus'
+        this.selectedFilter = 'chorus'
         this.x = 0;
         this.y = 0;
-        this.length = 4;
-        this.width = Math.ceil(filters.length / this.length);
+        // this.length = 4;
+        // this.width = Math.ceil(filters.length / this.length);
+
+        this.currFilterSet = { up: 'distortion',
+                                down: 'chorus',
+                                left: 'panner',
+                                right: 'wah' };
+
+        this.currDirectionToggle = "";
+
+        this.highlightColors = { up: 'highlighted',
+                                down: 'down-highlighted',
+                                left: 'left-highlighted',
+                                right: 'right-highlighted' };
+        
+        this.selectedColors = { up: 'selected',
+                                down: 'down-selected',
+                                left: 'left-selected',
+                                right: 'right-selected' };
+        
+        this.generateFilters();
+
         // this.moveInstrumentSelect  = this.moveInstrumentSelect.bind(this);
     }
 
-    generateInstruments = () => {
-        var instrumentRow = document.getElementById("instrument-list");
-        for (var i = 0; i < instruments.length; i++) {
-            const instrumentName = instruments[i];
+    generateFilters = () => {
+        var filterRow = document.getElementById("filter-list");
+        for (var i = 0; i < filters.length; i++) {
+            const filterName = filters[i];
             var col = document.createElement("div");
-            col.className = 'col-2';
+            col.className = 'col-3';
 
             var card = document.createElement("div");
-            card.id = instrumentName;
+            card.id = filterName;
             card.className = 'card mb-4 shadow-sm instrument-card';
+
+            for (var key in this.currFilterSet){
+                console.log(key);
+                console.log(this.selectedColors[key]);
+                if (this.currFilterSet[key] == filterName){
+                    card.classList.add(this.selectedColors[key]);
+                }
+            }
 
             var para = document.createElement("p");
             para.id = 'instrument-text';
-            para.innerText = instrumentName;
+            para.innerText = filterName.charAt(0).toUpperCase() + filterName.slice(1);
 
             card.appendChild(para);
             col.appendChild(card);
-            instrumentRow.appendChild(col);
+            filterRow.appendChild(col);
         }
     }
 
-    setInstrument = (data) => {
-        var instrumentName = data['instrument']
-        var triggered = data['change']
-        console.log(instrumentName)
-        console.log(triggered)
+    setFilter = (data) => {
+        var filterName = data['effect'];
+        var triggered = data['selected'];
         
-        if (instrumentName != this.currInstrument) {
-            var instrumentCard = document.getElementById(this.currInstrument);
-            instrumentCard.classList.remove('highlighted');
-            this.currInstrument = instrumentName;
+        if (filterName != this.currFilter) {
+            var filterCard = document.getElementById(this.currFilter);
+            filterCard.classList.remove(this.highlightColors[this.currDirectionToggle]);
+            this.currFilter = filterName;
             
-            instrumentCard = document.getElementById(this.currInstrument);
-            instrumentCard.classList.add('highlighted');
+            filterCard = document.getElementById(this.currFilter);
+            filterCard.classList.add(this.highlightColors[this.currDirectionToggle]);
         }
 
         if (triggered) {
-            var instrumentCard = document.getElementById(this.selectedInstrument);
-            instrumentCard.classList.remove('selected');
-            this.selectedInstrument = instrumentName;
+            var filterCard = document.getElementById(this.selectedFilter);
+            filterCard.classList.remove(this.selectedColors[this.currDirectionToggle]);
+            this.selectedFilter = filterName;
 
-            instrumentCard = document.getElementById(this.selectedInstrument);
-            instrumentCard.classList.add('selected')
+            filterCard = document.getElementById(this.selectedFilter);
+            filterCard.classList.add(this.selectedColors[this.currDirectionToggle]);
         }
+    }
+
+    setCursor = (data) => {
+        var oldDirection = this.currDirectionToggle;
+
+        this.currDirectionToggle = data['toggle'];
+
+        var filterCard = document.getElementById(this.currFilter);
+        filterCard.classList.add(this.highlightColors[this.currDirectionToggle]);
+        filterCard.classList.remove(this.highlightColors[oldDirection]);
+
     }
 }
 
-const is = new InstrumentSelect();
+const fs = new FilterSet();
 

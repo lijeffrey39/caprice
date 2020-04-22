@@ -44,8 +44,8 @@ class InstrumentSelect {
     setInstrument = (data) => {
         var instrumentName = data['instrument']
         var triggered = data['change']
-        console.log(instrumentName)
-        console.log(triggered)
+        // console.log(instrumentName)
+        // console.log(triggered)
         
         if (instrumentName != this.currInstrument) {
             var instrumentCard = document.getElementById(this.currInstrument);

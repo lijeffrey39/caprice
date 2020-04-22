@@ -42,8 +42,38 @@
     font-weight: bold;
 }
 
+.right-highlighted {
+    border: 3px solid #ffb682;
+    font-weight: bold;
+}
+
+.left-highlighted { 
+    border: 3px solid #fcea21;
+    font-weight: bold;
+}
+
+.down-highlighted {
+    border: 3px solid #df5dfc;
+    font-weight: bold;
+}
+
 .selected {
     background: #007bff; 
+    color: white;
+}
+
+.right-selected {
+    background: #ffb682; 
+    color: white;
+}
+
+.left-selected { 
+    background: #fcea21;
+    color: white;
+}
+
+.down-selected {
+    background: #df5dfc;
     color: white;
 }
 

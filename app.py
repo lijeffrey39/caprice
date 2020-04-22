@@ -45,7 +45,10 @@ def notification(message):
     elif (parse_result[0] == 'param select'):
         set_effects(parse_result[1])
     elif (parse_result[0] == 'filter set'):
-        print(parse_result[1])
+        if 'toggle' in parse_result[1]:
+            send_filter_toggle(parse_result[1])
+        else:
+            send_filter(parse_result[1])
             
 
     return
@@ -84,6 +87,11 @@ def phone_notification(buttonsPressed):
     prev = buttonsPressed[0]
     pc.update_notes(buttonsPressed[0])
 
+def send_filter(value):
+    emit('send filter', value, broadcast=True)
+
+def send_filter_toggle(value):
+    emit('send filter toggle', value, broadcast=True)
 
 @socketio.on('sendInstrument')
 def send_instrument(value):
