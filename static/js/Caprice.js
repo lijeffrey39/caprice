@@ -10,6 +10,14 @@ const GYRO_FACTOR = 0.0001; // to radians / s
 const ACCEL_FACTOR = 0.00001; // to g (9.81 m/s**2)
 const TIMESTAMP_FACTOR = 0.001; // to seconds
 
+
+// $('#myModal').on('shown.bs.modal', function () {
+//     $('#myInput').trigger('focus')
+// })
+
+// const es = new EffectSetup();
+const is = new InstrumentSelect();
+
 class Caprice {
     constructor() {
         this.socket = io.connect('http://' + document.domain + ':' + location.port);
@@ -44,10 +52,19 @@ class Caprice {
             document.getElementById('connect').addEventListener(
                 'click', this.pair
             );
-            $('.toast').toast({delay: 5000});
+            // $('.toast').toast({delay: 5000});
         } else {
             document.getElementById('webbluetoothNotSupported').classList.add('show');
         }
+
+        $('a[href$="#ip-modal"]').on("click", function() {
+            $('#ip-modal').modal('show');
+        });
+
+        $('a[href$="#instrument-modal"]').on("click", function() {
+            console.log("yo");
+            $('#instrument-modal').modal('show');
+        });
     }
 
     move = (from, to, animation) => {
@@ -92,8 +109,9 @@ class Caprice {
     }
 
     pair = () => {
-        document.getElementById('loading').classList.add('show');
-        document.getElementById('loading1').classList.add('show');
+        // document.getElementById('loading').classList.add('show');
+        // document.getElementById('loading1').classList.add('show');
+        console.log("pairing");
         return navigator.bluetooth.requestDevice({
             filters: [{ namePrefix: 'Gear' }], 
             optionalServices: [UUID_CUSTOM_SERVICE]
@@ -118,15 +136,21 @@ class Caprice {
                     setInterval(() => {
                         if (count >= 2) { return }
                         count += 1
+                        if (count == 1) {
+                            // es.generateEffectsList();
+                            $('#instrument-modal').modal('show');
+                            is.generateInstruments();
+                        }
+                        // $('#instrument-modal').modal('show');
                         this.startSensorData();
                     }, 1000);
                 }));
     }
 
     startSensorData = () => {
-        document.getElementById('loading').classList.remove('show');
-        document.getElementById('loading1').classList.remove('show');
-        $('.toast').toast('show');
+        // document.getElementById('loading').classList.remove('show');
+        // document.getElementById('loading1').classList.remove('show');
+        // $('.toast').toast('show');
         this.runCommand(CMD_VR_MODE)
             .then(() => this.runCommand(CMD_SENSOR));
     }

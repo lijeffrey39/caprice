@@ -51,6 +51,7 @@ const effectDict = {
 class EffectSetup {
     constructor () {
         this.socket = io.connect('http://' + document.domain + ':' + location.port);
+        // this.firstConnection = fal
         this.socket.on('new effect', (msg) => {
             this.readSocket(msg);
         });
@@ -58,23 +59,25 @@ class EffectSetup {
         this.currParam = "";
         this.currEffect = "";
         this.currPercent = 0;
-        this.generateEffectsList();
-        this.highlightEffect();
+        // this.generateEffectsList();
+        // this.highlightEffect();
     }
 
+
+
     readSocket = (value) => {
+        // console.log(value);
         const name = value[0];
         const param = value[1];
         if (name != this.currEffect) {
-            this.currEffect = name;
             this.highlightEffect(name);
             document.getElementById("parameters").innerHTML = '';
-            this.generateParameters(name, value[2]);
+            // this.generateParameters(name, value[2]);
             // this.highlightParam(param);
         }
 
-        // this.generateParameters(name, value[2]);
-        this.highlightParam(param);
+        this.generateParameters(name, value[2]);
+        this.highlightParam(name, param);
     }
 
 
@@ -121,27 +124,35 @@ class EffectSetup {
     }
 
     highlightEffect = (effectName) => {
+        if (!effectName) {
+            return;
+        }
         var instrumentCard = document.getElementById(effectName);
         instrumentCard.classList.add('highlighted');
-        if (this.currEffect) {
+        if (this.currEffect && this.currEffect != effectName) {
             document.getElementById(this.currEffect).classList.remove('highlighted');
         }
         this.currEffect = effectName;
     }
 
     highlightParam = (effectName, param) => {
+        if (!effectName || !param) {
+            return;
+        }
         var textID = effectName + " " + param;
         var paramText = document.getElementById(textID);
         paramText.style.fontWeight = "bold";
-        if (this.currParam) {
+        if (this.currParam != textID && document.getElementById(this.currParam) != null) {
             document.getElementById(this.currParam).style.fontWeight = 'normal';
         }
         this.currParam = textID;
     }
 
     generateParameters = (effectName, params) => {
+        var parametersRow = document.getElementById('parameters');
+        parametersRow.innerHTML = "";
         for (var param in params) {
-            const percent = params[param][0];
+            const percent = params[param][0] * 100;
             var paramCol = document.createElement("div");
             paramCol.className = 'col-2';
             paramCol.style.marginTop = '10px';
@@ -171,4 +182,4 @@ class EffectSetup {
     }
 }
 
-const es = new EffectSetup();
+// const es = new EffectSetup();

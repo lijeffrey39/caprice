@@ -101,7 +101,7 @@ class ParameterSelect:
         if (tapdirection != 'none' and tapdirection != 'off'):  # move effect
             newX, newY = self.grid.moveValue(tapdirection)
 
-            if (self.grid.isValid(newX, newY)):
+            if (self.grid.isValid(newX, newY, None)):
                 # self.x, self.y = newX, newY
                 self.grid.move(newX, newY)
                 self.cur_effect = self.grid._grid[newY][newX]
@@ -113,7 +113,7 @@ class ParameterSelect:
             grid = self.grid_dict[self.cur_effect]
 
             newX, newY = grid.moveValue(swipedirection)
-            if (grid.isValid(newX, newY)):
+            if (grid.isValid(newX, newY, None)):
                 # self.x, self.y = newX, newY
                 grid.move(newX, newY)
                 self.cur_param = grid._grid[newY][newX]
@@ -139,7 +139,7 @@ class ParameterSelect:
 
                 self.effectValues[self.cur_effect][self.cur_param][0] = self.effectValues[self.cur_effect][self.cur_param][1] / param_max
 
-                print(self.effectValues[self.cur_effect][self.cur_param])
+                # print(self.effectValues[self.cur_effect][self.cur_param])
 
         return [self.cur_effect, self.cur_param,
                 self.effectValues[self.cur_effect]]

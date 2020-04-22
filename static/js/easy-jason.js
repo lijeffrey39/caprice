@@ -73,7 +73,7 @@ var tremolo = new Tone.Tremolo({
 var vibe = new Tone.Vibrato({
     frequency: 0,
     depth: 0,
-    wet: 0
+    wet: 1
 });
 
 //gyro is dict w keys 'x' 'y' 'z'
@@ -85,7 +85,7 @@ function panner_update(gyro) {
     panner.setPosition(
         -xscale*gyro['y'], 
         0, 
-        2 - (Math.min(1, zscale*gyro['x'])));
+        4 - (Math.min(1, zscale*gyro['x'])));
 }
 
 function wah_run(gyro) {
@@ -909,11 +909,6 @@ function sampler_playNotes(notes, new_swipe) {
 var dt;
 
 $(document).ready(function() {
-
-    // setInterval(() => function() {
-    //     panner.setOrientation(panner.orientationX, panner.orientationY,
-    //         panner.orientationZ + 0.1);
-    // }, 100);
          
     // sending a connect request to the server.
     socket = io.connect('http://localhost:5000');
@@ -955,7 +950,7 @@ $(document).ready(function() {
             }
             wah_run(msg.gyro);
         } else {
-            panner.setPosition(0,0,2);
+            panner.setPosition(0,0,4);
         }
         
     });

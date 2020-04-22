@@ -27,9 +27,47 @@ class Caprice:
         self.homeHeld = False
         self.backHeld = False
 
-       
-    
+        self.edit_mode = ""
+
+
+
+
+    def update_mode(self, home, back):
+        if (home):
+            if self.home_release:
+                if self.current_mode == 'play':
+                    self.current_mode = 'edit'
+                else:
+                    self.current_mode = 'play'
+                self.home_release = False
+        else:
+            if not self.home_release:
+                self.home_release = True
+        
+        if (back):
+            if self.back_release:
+                if (self.edit_mode != ""):
+                    self.current_mode = 'edit'
+                    self.edit_mode = ""
+                self.back_release = False
+        else:
+            if not self.back_release:
+                self.back_release = True
+
+
+    def update_edit_mode(self, swipe_direction):
+        if (swipe_direction == 'up'):
+            self.edit_mode = 'filter set'
+        elif (swipe_direction == 'right'):
+            self.edit_mode = 'instrument select'
+        elif (swipe_direction == 'left'):
+            self.edit_mode = 'parameter set'
+        elif (swipe_direction == 'down'):
+            self.edit_mode = 'key set'
+
+
     def parse_notification(self,data):
+        prev_mode = self.current_mode
 
         #trigger button logic, use trigselect for ur classes
         if (data['triggerButton'] and not self.triggerHeld):
@@ -42,87 +80,38 @@ class Caprice:
                 self.triggerHeld = False
                 trigSelect = False
 
-        if (data['homeButton'] and not self.homeHeld):
-            self.homeHeld = True
-            homeSelect = True
-        else:
-            if (data['homeButton'] and self.homeHeld):
-                homeSelect = False
-            else:
-                self.homeHeld = False
-                homeSelect = False
-
-        if (data['backButton'] and not self.backHeld):
-            self.backHeld = True
-            backSelect = True
-        else:
-            if (data['backButton'] and self.backHeld):
-                backSelect = False
-            else:
-                self.backHeld = False
-                backSelect = False
-
-        if data['homeButton']:
-            if self.home_release:
-                if self.current_mode == 'play':
-                    self.current_mode = 'edit'
-                    print('EDIT MODE')
-                else:
-                    self.current_mode = 'play'
-                    print('PLAY MODE')
-
-                self.home_release = False
-        else:
-            if not self.home_release:
-                self.home_release = True
-        
-        if data['backButton']:
-            if self.back_release:
-                if self.current_mode != 'play' and self.current_mode != 'edit':
-                    self.current_mode = 'edit'
-                    print('EDIT MODE')
-
-                self.back_release = False
-        else:
-            if not self.back_release:
-                self.back_release = True
-
-        #touchpad click direction
+        # update current mode (play, edit)
+        self.update_mode(data['homeButton'], data['backButton'])
+    
+        # touchpad click direction
         tap_direction = self.sd.detect_press(data)
 
-        #touchpad swipe direction
+        # touchpad swipe direction
         swipe_direction = self.sd.receiveData(data)
-        
-        if self.current_mode == 'play':
-            message = self.play_mode.generate_message(swipe_direction,
-                                                          tap_direction,
-                                                          data)
-            return ['play', message]
-        
-        elif self.current_mode == 'filter set':
-            self.current_mode = 'filter set'
-            
-        elif self.current_mode == 'instrument select':
-            (newIn, changeIn, changed) = self.inSel.instrumentNotification(swipe_direction, data['triggerButton'])
-            if (changed):
-                res = {'instrument': newIn, 'change': changeIn}
-                self.play_mode.toggled_instrument = newIn
-                return ['instrument select', res]
-        elif self.current_mode == 'parameter set':
-            output = self.parSel.paramNotification(swipe_direction, tap_direction)
-            return ['param select', output]
-        else:
-            # MAIN EDIT MODE
+        if swipe_direction != "none":
+            print(swipe_direction)
 
-            if (swipe_direction == 'up'):
-                self.current_mode = 'filter set'
-                print('FILTER SET MODE')
-            elif (swipe_direction == 'right'):
-                self.current_mode = 'instrument select'
-                print('INSTRUMENT SELECT MODE')
-            elif (swipe_direction == 'left'):
-                self.current_mode = 'parameter set'
-                print('PARAMETER SELECT MODE')
-            
+        # update edit mode (instrument, filter, key, params)
+        self.update_edit_mode(swipe_direction)
+
+        output = None
+        if self.current_mode == 'play':
+            output = self.play_mode.generate_message(swipe_direction, tap_direction, data)
+        elif (self.edit_mode != ""):
+            if (self.edit_mode == 'filter set'):
+                self.edit_mode = 'filter set'
+            elif (self.edit_mode == 'instrument select'):
+                (newIn, changeIn, changed) = self.inSel.instrumentNotification(swipe_direction, data['triggerButton'])
+                output = {'instrument': newIn, 'change': changeIn}
+                if (changed):
+                    self.play_mode.toggled_instrument = newIn
+            elif self.edit_mode == 'parameter set':
+                output = self.parSel.paramNotification(swipe_direction, tap_direction)
         
-        return ['nah', 'nah']
+        res = {
+            'mode': self.current_mode,
+            'editMode': self.edit_mode,
+            'output': output,
+            'modeChanged': self.current_mode != prev_mode
+        }
+        return res

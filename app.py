@@ -34,21 +34,23 @@ def index():
 
 
 @socketio.on('my event')
-def notification(message): 
-    parse_result = caprice.parse_notification(message['data'])
-    if (parse_result[0] == 'play'):
-        test_message(parse_result[1])
-    elif (parse_result[0] == 'instrument select'):
-        send_instrument(parse_result[1])
-        if(parse_result[1]['change']):
-            # print(parse_result)
-            set_instrument(parse_result[1])
-    elif parse_result[0] == 'param select':
-        set_effects(parse_result[1])
+def notification(message):
+    result = caprice.parse_notification(message['data'])
+    # mode updated (send to front end once)
+    if (result['modeChanged']):
+        toggle_mode(caprice.current_mode)
+        print(caprice.current_mode)
 
-            
-
-    return
+    # play or edit mode
+    if (result['mode'] == 'play'):
+        test_message(result['output'])
+    else:
+        if (result['editMode'] == 'instrument select'):
+            send_instrument(result['output'])
+            if (result['output']['change']):
+                set_instrument(result['output'])
+        elif (result['editMode'] == 'parameter set'):
+            set_effects(result['output'])
 
 
 @socketio.on('connect')
@@ -93,8 +95,15 @@ def send_instrument(value):
 def set_instrument(value):
     emit('instrument', value, broadcast=True)
 
+
+@socketio.on('editmode')
+def toggle_mode(mode):
+    emit('mode', mode, broadcast=True)
+
+
 def set_effects(value):
     emit('effects tune', value, broadcast=True)
+    emit('new effect', value, broadcast=True)
 
 def get_Host_name_IP(): 
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

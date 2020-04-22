@@ -54,10 +54,16 @@
     opacity: 0;
 }
 
-#main-container {
+/* #main-container {
     top: -700px;
     position: relative;
-}
+} */
+
+/* #main-container {
+    top: 0p;
+    position: relative;
+} */
+
 
 #instrument-container {
     position: relative;
@@ -69,10 +75,10 @@
     margin-top: 47px;
 }
 
-.stop-scrolling {
+/* .stop-scrolling {
     height: 100%;
     overflow: hidden;
-}
+} */
 
 #effect-text {
     /* text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; */
