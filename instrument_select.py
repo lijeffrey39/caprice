@@ -27,20 +27,20 @@ class InstrumentSelect:
             self.grid.move(newX, newY)
             self.currInstrument = self.grid._grid[newY][newX]
 
-        elif (self.grid.isValid(newX, newY, [self.toggledInstrument]) == 'skip'):
+        # elif (self.grid.isValid(newX, newY, [self.toggledInstrument]) == 'skip'):
             
-            if direction == 'up':
-                newY -= 1
-            elif direction == 'down':
-                newY += 1
-            elif direction == 'right':
-                newX += 1
-            elif direction == 'left':
-                newX -= 1
+        #     if direction == 'up':
+        #         newY -= 1
+        #     elif direction == 'down':
+        #         newY += 1
+        #     elif direction == 'right':
+        #         newX += 1
+        #     elif direction == 'left':
+        #         newX -= 1
 
-            if (self.grid.isValid(newX, newY, [self.toggledInstrument])):
-                self.grid.move(newX, newY)
-                self.currInstrument = self.grid._grid[newY][newX]
+        #     if (self.grid.isValid(newX, newY, [self.toggledInstrument])):
+        #         self.grid.move(newX, newY)
+        #         self.currInstrument = self.grid._grid[newY][newX]
 
         if (newInstrument != self.currInstrument):
             self.prevTriggered = True

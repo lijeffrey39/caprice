@@ -63,7 +63,6 @@
     color: white;
 }
 
-<<<<<<< HEAD
 #instrument-container1 {
     top: -350px;
     position: relative;
@@ -104,11 +103,10 @@
     /* letter-spacing: 1.5px; */
 }
 
-/* #instrument-title {
+/* .instrument-title {
     position: relative;
     top: 300px;
-}
-=======
+} */
 .right-selected {
     background: #ffb682; 
     color: white;
@@ -124,7 +122,7 @@
     color: white;
 }
 
->>>>>>> origin/master
+/*
 #instrument-text {
     position: relative;
     top: 300px;
