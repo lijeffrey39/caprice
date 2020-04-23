@@ -92,7 +92,7 @@ class EffectSetup {
             col.style.marginBottom = '30px';
 
             var card = document.createElement("div");
-            card.id = effectName;
+            card.id = effectName + "_card";
             card.className = 'card mb-4 shadow-sm instrument-card';
             card.style.backgroundImage = 'url(' + foundURL + ')';
             card.style.backgroundSize = "100%";
@@ -127,11 +127,12 @@ class EffectSetup {
         if (!effectName) {
             return;
         }
-        console.log(effectName);
-        var instrumentCard = document.getElementById(effectName);
+        // console.log(effectName);
+        var instrumentCard = document.getElementById(effectName + "_card");
+        console.log(instrumentCard);
         instrumentCard.classList.add('highlighted');
         if (this.currEffect && this.currEffect != effectName) {
-            document.getElementById(this.currEffect).classList.remove('highlighted');
+            document.getElementById(this.currEffect + "_card").classList.remove('highlighted');
         }
         this.currEffect = effectName;
     }
