@@ -89,6 +89,8 @@ class FilterSet {
             filterCard.classList.remove(this.selectedColors[this.currDirectionToggle]);
             this.selectedFilter = filterName;
 
+            this.currFilterSet[this.currDirectionToggle] = this.selectedFilter;
+
             filterCard = document.getElementById(this.selectedFilter);
             filterCard.classList.add(this.selectedColors[this.currDirectionToggle]);
         }
