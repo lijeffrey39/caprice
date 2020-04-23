@@ -17,6 +17,7 @@ const TIMESTAMP_FACTOR = 0.001; // to seconds
 
 // const es = new EffectSetup();
 const is = new InstrumentSelect();
+const fs = new FilterSet();
 
 class Caprice {
     constructor() {
@@ -31,7 +32,35 @@ class Caprice {
                 console.error(e);
             });
 
+        this.socket.on('mode', (msg) => {
+            console.log(this.mode);
+            if (this.mode === 'play') {
+                $('#mode-badge').removeClass('badge-success').addClass('badge-danger');
+                $('#mode-badge').html('Edit Mode');
+            } else {
+                $('#mode-badge').removeClass('badge-danger').addClass('badge-success');
+                $('#mode-badge').html('Play Mode');
+            }
+            this.mode = msg;
+        });
 
+        this.socket.on('edit', (msg) => {
+            console.log(msg);
+            if (msg === 'back') {
+                $(this.openModal).modal('hide');
+            } else {
+                if (msg === 'instrument select') {
+                    $('#instrument-modal').modal('show');
+                    this.openModal = '#instrument-modal';
+                } else if (msg === 'filter set') {
+                    $('#filter-modal').modal('show');
+                    this.openModal = '#filter-modal';
+                }
+            }
+        });
+
+        this.openModal = '';
+        this.mode = 'play';
         this.customServiceWrite = null;
         this.customServiceNotify = null;
         this.gattServer = null;
@@ -138,8 +167,9 @@ class Caprice {
                         count += 1
                         if (count == 1) {
                             // es.generateEffectsList();
-                            $('#instrument-modal').modal('show');
+                            // $('#instrument-modal').modal('show');
                             is.generateInstruments();
+                            fs.generateFilters();
                         }
                         // $('#instrument-modal').modal('show');
                         this.startSensorData();

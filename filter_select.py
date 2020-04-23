@@ -25,7 +25,7 @@ class FilterSelect:
                 self.curr_edit_direction = ""
                 return (result_direction, self.curr_filter, True, True)
 
-        if tap_direction != 'none' and tap_direction != 'off':
+        if tap_direction != 'none' and tap_direction != 'off' and tap_direction != 'center':
             self.curr_edit_direction = tap_direction
             self.curr_filter = self.curr_effects_set[tap_direction]
             print("FILTER SET MODE: Editing '%s'" %self.curr_edit_direction)

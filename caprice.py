@@ -9,28 +9,25 @@ from filter_select import FilterSelect
 
 
 class Caprice:
-
     def __init__(self):
         self.sd = SwipeDetector()
         self.gd = GestureDetector()
         self.parSel = ParameterSelect()
-        
         self.play_mode = PlayMode()
         self.filter_select = FilterSelect(self.play_mode.effects_set)
         
         self.inSel = InstrumentSelect(self.play_mode.toggled_instrument)
-
         self.current_mode = "play"
+        self.edit_mode = ""
         self.home_release = True
         self.back_release = True
         self.triggerHeld = False
         self.homeHeld = False
         self.backHeld = False
 
-        self.edit_mode = ""
-
 
     def update_mode(self, home, back):
+        backPressed = False
         if (home):
             if self.home_release:
                 if self.current_mode == 'play':
@@ -47,10 +44,12 @@ class Caprice:
                 if (self.edit_mode != ""):
                     self.current_mode = 'edit'
                     self.edit_mode = ""
+                    backPressed = True
                 self.back_release = False
         else:
             if not self.back_release:
                 self.back_release = True
+        return backPressed
 
 
     def update_edit_mode(self, swipe_direction):
@@ -66,6 +65,7 @@ class Caprice:
 
     def parse_notification(self,data):
         prev_mode = self.current_mode
+        edit_mode_changed = False
 
         #trigger button logic, use trigselect for ur classes
         if (data['triggerButton'] and not self.triggerHeld):
@@ -79,7 +79,7 @@ class Caprice:
                 trigSelect = False
 
         # update current mode (play, edit)
-        self.update_mode(data['homeButton'], data['backButton'])
+        backPressed = self.update_mode(data['homeButton'], data['backButton'])
     
         # touchpad click direction
         tap_direction = self.sd.detect_press(data)
@@ -90,8 +90,9 @@ class Caprice:
             print(swipe_direction)
 
         # update edit mode (instrument, filter, key, params)
-        if self.edit_mode == "":
+        if (self.edit_mode == ""):
             self.update_edit_mode(swipe_direction)
+            edit_mode_changed = True
 
         output = None
         if self.current_mode == 'play':
@@ -122,6 +123,8 @@ class Caprice:
             'mode': self.current_mode,
             'editMode': self.edit_mode,
             'output': output,
-            'modeChanged': self.current_mode != prev_mode
+            'modeChanged': self.current_mode != prev_mode,
+            'editModeChanged': self.edit_mode != "" and edit_mode_changed,
+            'backPressed': backPressed
         }
         return res

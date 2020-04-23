@@ -17,14 +17,14 @@
                     <div>
                         <h1 style="margin-top: 150px; display: inline-block">Caprice</h1>
                         <div style="margin-top: 164px; display: inline-block; margin-left: 10px; position: absolute">
-                            <span class="badge badge-pill badge-success">Play Mode</span>
+                            <span class="badge badge-pill badge-success" id="mode-badge">Play Mode</span>
                         </div>
                     </div>
                     <p class="lead text-muted">The all in on motion controlled syntesizer</p>
                     <p>
                         <a id="connect" class="btn btn-primary my-2" style="color: white;">Connect your VR remote</a>
                         <a style="color: white;" class="btn btn-secondary my-2" href="#ip-modal" >View Ip</a>
-                        <a style="color: white;" class="btn btn-secondary my-2" href="#instrument-modal" >Instrument Modal</a>
+                        <!-- <a style="color: white;" class="btn btn-secondary my-2" href="#instrument-modal" >Instrument Modal</a> -->
                     </p>
                     <p style="margin-top: 50px;" id="loading1">Pairing with your VR remote</p>
                     <div class="spinner-border" role="status" id="loading">
@@ -60,25 +60,22 @@
                         </div>
                     </div>
                 </div> 
+
+                <div class="modal fade" id="filter-modal" role="dialog">
+                    <div class="modal-dialog modal-lg" role="document" style="min-width: 1000px; zoom: 85%; margin-top: 5px;">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="container">
+                                    <h1 style="margin-top: 10px;">Filter Selection</h1>
+                                    <p class="lead text-muted">Bind filters below</p>
+                                    <div class="row" id="filter-list">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
             </section>
-        </div>
-        
-        <div id="main2">
-            <div class="sceneElement" data-viewport="1">
-                <section class="jumbotron text-center" style="padding-bottom: 35px">
-                    <div class="container">
-                    <h1 style="margin-top: 10px;">Filter Selection</h1>
-                    <p class="lead text-muted">Bind filters below</p>
-        
-                    <!-- <a href="/" data-target="0">Home</a> -->
-                    </div>
-                </section>
-                <div class="container">
-                    <div class="row" id="filter-list">
-                    </div>
-                </div>
-                
-            </div>
         </div>
 
         <div id="webbluetoothNotSupported">

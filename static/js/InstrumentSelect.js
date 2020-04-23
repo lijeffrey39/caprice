@@ -10,7 +10,7 @@ class InstrumentSelect {
             this.setInstrument(msg);
         });
 
-        this.generateInstruments();
+        // this.generateInstruments();
         this.currInstrument = 'Bass'
         this.selectedInstrument = 'Bass'
         this.x = 0;

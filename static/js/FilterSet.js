@@ -37,7 +37,7 @@ class FilterSet {
                                 left: 'left-selected',
                                 right: 'right-selected' };
         
-        this.generateFilters();
+        // this.generateFilters();
 
         // this.moveInstrumentSelect  = this.moveInstrumentSelect.bind(this);
     }
@@ -54,8 +54,8 @@ class FilterSet {
             card.className = 'card mb-4 shadow-sm instrument-card';
 
             for (var key in this.currFilterSet){
-                console.log(key);
-                console.log(this.selectedColors[key]);
+                // console.log(key);
+                // console.log(this.selectedColors[key]);
                 if (this.currFilterSet[key] == filterName){
                     card.classList.add(this.selectedColors[key]);
                 }
@@ -106,5 +106,5 @@ class FilterSet {
     }
 }
 
-const fs = new FilterSet();
+// const fs = new FilterSet();
 
