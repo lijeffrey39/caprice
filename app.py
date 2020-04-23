@@ -54,8 +54,10 @@ def notification(message):
             send_instrument(result['output'])
             if (result['output']['change']):
                 set_instrument(result['output'])
+        # set effect params and play notes at same time
         elif (result['editMode'] == 'parameter set'):
             set_effects(result['output'])
+            test_message(result['notes'])
         elif (result['editMode'] == 'filter set'):
             if result['output'] != None:
                 if 'toggle' in result['output']:
