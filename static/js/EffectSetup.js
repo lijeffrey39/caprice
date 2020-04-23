@@ -127,6 +127,7 @@ class EffectSetup {
         if (!effectName) {
             return;
         }
+        console.log(effectName);
         var instrumentCard = document.getElementById(effectName);
         instrumentCard.classList.add('highlighted');
         if (this.currEffect && this.currEffect != effectName) {
@@ -157,7 +158,7 @@ class EffectSetup {
             paramCol.className = 'col-2';
             paramCol.style.marginTop = '10px';
             paramCol.id = effectName + " " + param;
-            paramCol.innerText = param;
+            paramCol.innerText = param + ' (' + Math.round(percent) + '%)';
             parametersRow.appendChild(paramCol)
 
             var progressCol = document.createElement("div");
@@ -168,7 +169,7 @@ class EffectSetup {
             progressDiv.className = 'progress';
 
             var progressBar = '<div class="progress-bar" role="progressbar" style="width: ' 
-                + percent + '%;" aria-valuenow="' + percent + '" aria-valuemin="0" aria-valuemax="100"> ' + percent + '%</div>'
+                + percent + '%;" aria-valuenow="' + percent + '" aria-valuemin="0" aria-valuemax="100"></div>'
             progressDiv.innerHTML = progressBar;
             progressCol.appendChild(progressDiv);
 
