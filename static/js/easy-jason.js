@@ -430,6 +430,14 @@ $(document).ready(function() {
                 removeEffect(msg.effects_toggle.name);
             }
         }
+        if(msg.new_swipe){
+            if(msg.time){
+                var d = new Date();
+                var t = d.getTime();
+                console.log(t-msg.time);
+            }
+
+        }
         // sampler_playNotes(msg.notes, msg.new_swipe);
         playNotes(msg.notes, msg.new_swipe);
 

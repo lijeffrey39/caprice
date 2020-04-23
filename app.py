@@ -35,6 +35,7 @@ def index():
 
 @socketio.on('my event')
 def notification(message):
+    # start = time.time()
     result = caprice.parse_notification(message['data'])
     # mode updated (send to front end once)
     if (result['modeChanged']):
@@ -48,7 +49,12 @@ def notification(message):
 
     # play or edit mode
     if (result['mode'] == 'play'):
-        test_message(result['output'])
+        if result['output']['new_swipe']:
+            emitted = time.time()
+            result['output']['time'] = emitted*1000
+
+            test_message(result['output'])
+        
     else:
         if (result['editMode'] == 'instrument select'):
             send_instrument(result['output'])
