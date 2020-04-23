@@ -89,6 +89,8 @@ class FilterSet {
             filterCard.classList.remove(this.selectedColors[this.currDirectionToggle]);
             this.selectedFilter = filterName;
 
+            this.currFilterSet[this.currDirectionToggle] = this.selectedFilter;
+
             filterCard = document.getElementById(this.selectedFilter);
             filterCard.classList.add(this.selectedColors[this.currDirectionToggle]);
         }
@@ -98,6 +100,7 @@ class FilterSet {
         var oldDirection = this.currDirectionToggle;
 
         this.currDirectionToggle = data['toggle'];
+        this.selectedFilter = this.currFilterSet[this.currDirectionToggle];
 
         var filterCard = document.getElementById(this.currFilter);
         filterCard.classList.add(this.highlightColors[this.currDirectionToggle]);

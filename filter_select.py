@@ -41,20 +41,20 @@ class FilterSelect:
                 self.grid.move(newX, newY)
                 self.curr_filter = self.grid._grid[newY][newX]
 
-            elif (self.grid.isValid(newX, newY, toggled_filter_list) == 'skip'):
+            # elif (self.grid.isValid(newX, newY, toggled_filter_list) == 'skip'):
                 
-                if swipe_direction == 'up':
-                    newY -= 1
-                elif swipe_direction == 'down':
-                    newY += 1
-                elif swipe_direction == 'right':
-                    newX += 1
-                elif swipe_direction == 'left':
-                    newX -= 1
+            #     if swipe_direction == 'up':
+            #         newY -= 1
+            #     elif swipe_direction == 'down':
+            #         newY += 1
+            #     elif swipe_direction == 'right':
+            #         newX += 1
+            #     elif swipe_direction == 'left':
+            #         newX -= 1
 
-                if (self.grid.isValid(newX, newY, toggled_filter_list) == True):
-                    self.grid.move(newX, newY)
-                    self.curr_filter = self.grid._grid[newY][newX]
+            #     if (self.grid.isValid(newX, newY, toggled_filter_list) == True):
+            #         self.grid.move(newX, newY)
+            #         self.curr_filter = self.grid._grid[newY][newX]
             
             if self.curr_filter != prev_filter:
                 return (self.curr_edit_direction, self.curr_filter, True, False)
