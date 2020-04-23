@@ -79,7 +79,7 @@ def test_message(value):
 
 @socketio.on('button press')
 def phone_notification(buttonsPressed):
-    print(buttonsPressed)
+    # print(buttonsPressed)
     caprice.play_mode.pc.update_notes(buttonsPressed)
 
 
