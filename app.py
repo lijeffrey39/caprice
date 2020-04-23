@@ -93,11 +93,12 @@ def phone_notification(buttonsPressed):
     if(copy.deepcopy(prev) != copy.deepcopy(buttonsPressed[0])):
         count += 1
         total += round(time.time() * 1000) - buttonsPressed[1]
-        print(total / count)
+        # print(total / count)
 
     current_note = temp
     prev = buttonsPressed[0]
-    pc.update_notes(buttonsPressed[0])
+    print(buttonsPressed)
+    # pc.update_notes(buttonsPressed[0])
 
 
 def send_filter(value):
