@@ -75,27 +75,10 @@ def test_message(value):
     emit('update value', value, broadcast=True)
 
 
-prev = []
-count = 0
-total = 0
 @socketio.on('button press')
 def phone_notification(buttonsPressed):
-    global current_note
-    global prev
-    global count 
-    global total
-    temp = []
-    for note in buttonsPressed[0]:
-        if (buttonsPressed[0][note]):
-            temp.append(note + '4')
-    if(copy.deepcopy(prev) != copy.deepcopy(buttonsPressed[0])):
-        count += 1
-        total += round(time.time() * 1000) - buttonsPressed[1]
-        print(total / count)
-
-    current_note = temp
-    prev = buttonsPressed[0]
-    pc.update_notes(buttonsPressed[0])
+    print(buttonsPressed)
+    caprice.play_mode.pc.update_notes(buttonsPressed)
 
 
 def send_filter(value):
