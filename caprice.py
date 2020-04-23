@@ -80,7 +80,7 @@ class Caprice:
 
         # update current mode (play, edit)
         backPressed = self.update_mode(data['homeButton'], data['backButton'])
-    
+
         # touchpad click direction
         tap_direction = self.sd.detect_press(data)
 
@@ -90,7 +90,7 @@ class Caprice:
             print(swipe_direction)
 
         # update edit mode (instrument, filter, key, params)
-        if (self.edit_mode == ""):
+        if (self.edit_mode == "" and self.current_mode == 'edit'):
             self.update_edit_mode(swipe_direction)
             edit_mode_changed = True
 

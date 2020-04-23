@@ -10,12 +10,7 @@ const GYRO_FACTOR = 0.0001; // to radians / s
 const ACCEL_FACTOR = 0.00001; // to g (9.81 m/s**2)
 const TIMESTAMP_FACTOR = 0.001; // to seconds
 
-
-// $('#myModal').on('shown.bs.modal', function () {
-//     $('#myInput').trigger('focus')
-// })
-
-// const es = new EffectSetup();
+const es = new EffectSetup();
 const is = new InstrumentSelect();
 const fs = new FilterSet();
 
@@ -55,6 +50,9 @@ class Caprice {
                 } else if (msg === 'filter set') {
                     $('#filter-modal').modal('show');
                     this.openModal = '#filter-modal';
+                } else if (msg === 'parameter set') {
+                    $('#effects-modal').modal('show');
+                    this.openModal = '#effects-modal';
                 }
             }
         });
@@ -86,14 +84,14 @@ class Caprice {
             document.getElementById('webbluetoothNotSupported').classList.add('show');
         }
 
-        $('a[href$="#ip-modal"]').on("click", function() {
-            $('#ip-modal').modal('show');
-        });
+        // $('a[href$="#ip-modal"]').on("click", function() {
+        //     $('#ip-modal').modal('show');
+        // });
 
-        $('a[href$="#instrument-modal"]').on("click", function() {
-            console.log("yo");
-            $('#instrument-modal').modal('show');
-        });
+        // $('a[href$="#instrument-modal"]').on("click", function() {
+        //     console.log("yo");
+        //     $('#instrument-modal').modal('show');
+        // });
     }
 
     move = (from, to, animation) => {
@@ -166,12 +164,10 @@ class Caprice {
                         if (count >= 2) { return }
                         count += 1
                         if (count == 1) {
-                            // es.generateEffectsList();
-                            // $('#instrument-modal').modal('show');
                             is.generateInstruments();
                             fs.generateFilters();
+                            es.generateEffectsList();
                         }
-                        // $('#instrument-modal').modal('show');
                         this.startSensorData();
                     }, 1000);
                 }));
@@ -282,20 +278,3 @@ class Caprice {
 }
 
 var caprice = new Caprice();
-
-document.onkeydown = checkKey;
-function checkKey(e) {
-    e = e || window.event;
-    if (e.keyCode == '38') {
-        caprice.moveDirection('up');
-    }
-    else if (e.keyCode == '40') {
-        caprice.moveDirection('down');
-    }
-    else if (e.keyCode == '37') {
-        caprice.moveDirection('left');
-    }
-    else if (e.keyCode == '39') {
-        caprice.moveDirection('right');
-    }
-}
