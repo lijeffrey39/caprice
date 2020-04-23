@@ -98,6 +98,7 @@ class FilterSet {
         var oldDirection = this.currDirectionToggle;
 
         this.currDirectionToggle = data['toggle'];
+        this.selectedFilter = this.currFilterSet[this.currDirectionToggle];
 
         var filterCard = document.getElementById(this.currFilter);
         filterCard.classList.add(this.highlightColors[this.currDirectionToggle]);
