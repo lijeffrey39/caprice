@@ -119,12 +119,24 @@ class Caprice:
             elif self.edit_mode == 'parameter set':
                 output = self.parSel.paramNotification(swipe_direction, tap_direction)
 
-        res = {
-            'mode': self.current_mode,
-            'editMode': self.edit_mode,
-            'output': output,
-            'modeChanged': self.current_mode != prev_mode,
-            'editModeChanged': self.edit_mode != "" and edit_mode_changed,
-            'backPressed': backPressed
-        }
+        if self.edit_mode != 'parameter set':
+            res = {
+                'mode': self.current_mode,
+                'editMode': self.edit_mode,
+                'output': output,
+                'modeChanged': self.current_mode != prev_mode,
+                'editModeChanged': self.edit_mode != "" and edit_mode_changed,
+                'backPressed': backPressed
+            }
+        else:
+            data['triggerButton'] = True
+            res = {
+                'mode': self.current_mode,
+                'editMode': self.edit_mode,
+                'output': output,
+                'notes': self.play_mode.generate_message('none', 'none', data),
+                'modeChanged': self.current_mode != prev_mode,
+                'editModeChanged': self.edit_mode != "" and edit_mode_changed,
+                'backPressed': backPressed
+            }
         return res
