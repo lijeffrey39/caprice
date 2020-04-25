@@ -4,6 +4,7 @@ import logging
 import os
 import socket
 import time
+import json
 
 import numpy
 from engineio.payload import Payload
@@ -32,9 +33,30 @@ def index():
     api_response = {"status": "success", "message": ip}
     return jsonify(api_response)
 
+data = None
+prevTime = time.time()
+totalA = 0
+totalB = 0
 
 @socketio.on('my event')
 def notification(message):
+    # global prevTime
+    # global totalA
+    # global totalB
+    # totalA += 1
+
+    # if (totalA < 50):
+    #     return
+
+    # totalB += (time.time() - prevTime)
+
+    # avg = totalB / (totalA - 50)
+    
+    # prevTime = time.time()
+
+
+    # global triggered
+    global data
     # start = time.time()
     result = caprice.parse_notification(message['data'])
     # mode updated (send to front end once)
@@ -50,26 +72,27 @@ def notification(message):
     # play or edit mode
     if (result['mode'] == 'play'):
         if result['output']['new_swipe']:
+            print(result['output']['notes'])
             emitted = time.time()
             result['output']['time'] = emitted*1000
-
+            data = result['output']
             test_message(result['output'])
-        
     else:
+        output = result['output']
         if (result['editMode'] == 'instrument select'):
-            send_instrument(result['output'])
-            if (result['output']['change']):
-                set_instrument(result['output'])
+            emit('send instrument', output, broadcast=True)
+            if (output['change']):
+                emit('instrument', output, broadcast=True)
         # set effect params and play notes at same time
         elif (result['editMode'] == 'parameter set'):
-            set_effects(result['output'])
-            test_message(result['notes'])
+            set_effects(output)
+            test_message(output)
         elif (result['editMode'] == 'filter set'):
-            if result['output'] != None:
-                if 'toggle' in result['output']:
-                    send_filter_toggle(result['output'])
+            if (output != None):
+                if ('toggle' in output):
+                    emit('send filter toggle', output, broadcast=True)
                 else:
-                    send_filter(result['output'])
+                    emit('send filter', output, broadcast=True)
 
 
 @socketio.on('connect')
@@ -82,33 +105,33 @@ def test_connect():
 def test_message(value):
     emit('update value', value, broadcast=True)
 
+prevState = {}
+totalPing = 0
+total = 0
+# triggered = False
 
 @socketio.on('button press')
 def phone_notification(buttonsPressed):
-    # print(buttonsPressed)
-    caprice.play_mode.pc.update_notes(buttonsPressed)
+    global prevState
+    global totalPing
+    global total
+    
+    # notes = []
+    if (json.dumps(buttonsPressed[0]) != json.dumps(prevState)):
+        caprice.play_mode.pc.update_notes(buttonsPressed[0])
 
+        total += 1
+        if (total <= 5):
+            return
+        totalPing += (time.time() * 1000) - buttonsPressed[1]
+        print((time.time() * 1000) - buttonsPressed[1])
+        if data:
+            data['notes'] = caprice.play_mode.pc.current_notes
+            data['new_swipe'] = False
+            print(data['notes'], "YUH")
+            test_message(data)
 
-def send_filter(value):
-    emit('send filter', value, broadcast=True)
-
-
-def send_filter_toggle(value):
-    emit('send filter toggle', value, broadcast=True)
-
-
-@socketio.on('sendInstrument')
-def send_instrument(value):
-    emit('send instrument', value, broadcast=True)
-
-@socketio.on('instrument')
-def set_instrument(value):
-    emit('instrument', value, broadcast=True)
-
-
-# @socketio.on('editmode')
-# def toggle_mode(mode):
-#     emit('mode', mode, broadcast=True)
+        prevState = buttonsPressed[0]
 
 
 def set_effects(value):
