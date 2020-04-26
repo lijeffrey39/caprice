@@ -93,12 +93,19 @@ def notification(message):
                     emit('send filter toggle', output, broadcast=True)
                 else:
                     emit('send filter', output, broadcast=True)
+        elif (result['editMode'] == 'key set'):
+            if output:
+                set_keymode(output)
 
 
 @socketio.on('connect')
 def test_connect():
     emit('after connect', {'data': 'Connected'}, broadcast=True)
     print("Connected")
+
+    
+def set_keymode(key):
+    emit('key mode', key, broadcast=True)
 
 
 @socketio.on('notif') # this is the note-playing socket
