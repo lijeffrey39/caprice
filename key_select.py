@@ -2,7 +2,7 @@ from grid_select import Grid
 
 
 class KeySelect:
-    def __init__(self):
+    def __init__(self, phoneController):
         self.keys = {'C': 0,
                      'C#': 1,
                      'D': 2,
@@ -42,12 +42,16 @@ class KeySelect:
 
         self.whichGrid = "key"  # or mode
 
+        self.pc = phoneController
+
     def keyNotification(self, direction, triggered):
         if triggered:
             if self.whichGrid == 'key':
                 self.selected_key = self.cur_key
+                self.pc.change_key(self.selected_key)
             else:
                 self.selected_mode = self.cur_mode
+                self.pc.change_mode(self.selected_mode)
 
             return [self.cur_key, self.selected_key, self.cur_mode, self.selected_mode]
 
