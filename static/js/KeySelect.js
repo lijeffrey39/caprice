@@ -10,7 +10,6 @@ class KeySelect {
 
         this.currKey = 'C';
         this.selectedKey = 'C';
-
         this.currMode = 'ionian';
         this.selectedMode = 'ionian';
     }

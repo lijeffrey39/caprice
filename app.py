@@ -33,31 +33,9 @@ def index():
     api_response = {"status": "success", "message": ip}
     return jsonify(api_response)
 
-data = None
-prevTime = time.time()
-totalA = 0
-totalB = 0
 
 @socketio.on('my event')
 def notification(message):
-    # global prevTime
-    # global totalA
-    # global totalB
-    # totalA += 1
-
-    # if (totalA < 50):
-    #     return
-
-    # totalB += (time.time() - prevTime)
-
-    # avg = totalB / (totalA - 50)
-    
-    # prevTime = time.time()
-
-
-    # global triggered
-    global data
-    # start = time.time()
     result = caprice.parse_notification(message['data'])
     # mode updated (send to front end once)
     if (result['modeChanged']):
@@ -65,7 +43,7 @@ def notification(message):
 
     if (result['backPressed']):
         emit('edit', 'back', broadcast=True)
-    
+
     if (result['editModeChanged']):
         emit('edit', caprice.edit_mode, broadcast=True)
 
@@ -95,8 +73,7 @@ def notification(message):
                     emit('send filter', output, broadcast=True)
         elif (result['editMode'] == 'key set'):
             if output:
-                print(output)
-                set_keymode(output)
+                 emit('key mode', output, broadcast=True)
 
 
 @socketio.on('connect')
@@ -104,17 +81,12 @@ def test_connect():
     emit('after connect', {'data': 'Connected'}, broadcast=True)
     print("Connected")
 
-    
-def set_keymode(key):
-    emit('key mode', key, broadcast=True)
-
 
 @socketio.on('notif') # this is the note-playing socket
 def test_message(value):
     emit('update value', value, broadcast=True)
 
 
-@socketio.on('uhh')
 def send_notes(notes):
     data = {'notes': notes}
     emit('update notes', data, broadcast=True)
@@ -123,28 +95,24 @@ def send_notes(notes):
 prevState = {}
 totalPing = 0
 total = 0
-# triggered = False
 
 @socketio.on('button press')
 def phone_notification(buttonsPressed):
     global prevState
     global totalPing
     global total
-    
-    # notes = []
+
     if (json.dumps(buttonsPressed[0]) != json.dumps(prevState)):
         caprice.play_mode.pc.update_notes(buttonsPressed[0])
+        send_notes(caprice.play_mode.pc.current_notes)
+        emit('notes back', caprice.play_mode.pc.octave_number, broadcast=True)
+        prevState = buttonsPressed[0]
 
         total += 1
         if (total <= 5):
             return
         totalPing += (time.time() * 1000) - buttonsPressed[1]
         print((time.time() * 1000) - buttonsPressed[1])
-
-        send_notes(caprice.play_mode.pc.current_notes)
-        emit('notes back', caprice.play_mode.pc.octave_number, broadcast=True)
-
-        prevState = buttonsPressed[0]
 
 
 def set_effects(value):
