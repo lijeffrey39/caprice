@@ -49,12 +49,12 @@ def notification(message):
 
     # play or edit mode
     if (result['mode'] == 'play'):
-        if result['output']['new_swipe']:
-            print(result['output']['notes'])
-            emitted = time.time()
-            result['output']['time'] = emitted*1000
-            data = result['output']
-            test_message(result['output'])
+        # if result['output']['new_swipe'] or result['output']['effects_toggle']:
+        # print(result['output']['notes'])
+        emitted = time.time()
+        result['output']['time'] = emitted*1000
+        data = result['output']
+        test_message(result['output'])
     else:
         output = result['output']
         if (result['editMode'] == 'instrument select'):

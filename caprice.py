@@ -18,7 +18,7 @@ class Caprice:
         self.filter_select = FilterSelect(self.play_mode.effects_set)
 
         self.inSel = InstrumentSelect(self.play_mode.toggled_instrument)
-        self.keySel = KeySelect()
+        self.keySel = KeySelect(self.play_mode.pc)
         self.current_mode = "play"
         self.edit_mode = ""
         self.home_release = True

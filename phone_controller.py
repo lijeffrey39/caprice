@@ -64,9 +64,9 @@ class PhoneController:
         # self.phone_start = self.convert_midi(self.midi_start, False)
 
     def change_key(self, key):
-        diff = self.key - keys[key]
+        diff = keys[key] - keys[self.key]
         self.key = key
-        self.real_start = self.real_start + diff
+        self.real_start[0] = self.real_start[0] + diff
 
         for i in range(len(self.midi_start)):
             self.midi_start[i] = self.midi_start[i] + diff
