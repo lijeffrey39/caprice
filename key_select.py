@@ -24,12 +24,12 @@ class KeySelect:
             # ???
             'locrian': [0, 1, 3, 5, 6, 8, 10, 12],
             # minor modes
-            'natural minor': [0, 2, 3, 5, 7, 8, 10, 12],
+            'aeolian': [0, 2, 3, 5, 7, 8, 10, 12],
             'dorian': [0, 2, 3, 5, 7, 9, 10, 12],
             'phrygian': [0, 1, 3, 5, 7, 8, 10, 12]
         }
         self.keyWidth = 6
-        self.modeWidth = 7
+        self.modeWidth = 4
 
         self.keyGrid = Grid(list(self.keys), self.keyWidth)
         self.modeGrid = Grid(list(self.modes), self.modeWidth)
@@ -49,7 +49,7 @@ class KeySelect:
             else:
                 self.selected_mode = self.cur_mode
 
-            return (self.cur_key, self.selected_key, self.cur_mode, self.selected_mode)
+            return [self.cur_key, self.selected_key, self.cur_mode, self.selected_mode]
 
         if direction == 'none':
             return
@@ -69,4 +69,4 @@ class KeySelect:
             elif newY < 0:  # switch to next grid
                 self.whichGrid = 'key'
 
-        return (self.cur_key, self.selected_key, self.cur_mode, self.selected_mode)
+        return [self.cur_key, self.selected_key, self.cur_mode, self.selected_mode]

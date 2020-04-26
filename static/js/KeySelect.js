@@ -59,6 +59,7 @@ class KeySelect {
     }
 
     setKey = (key, setKey) => {
+        console.log(key, setKey);
         var keyCard = document.getElementById(this.currKey);
         keyCard.classList.remove('highlighted');
         this.currKey = key;
@@ -75,6 +76,7 @@ class KeySelect {
     }
 
     setMode = (currMode, selectedMode) => {
+        console.log(currMode, selectedMode);
         var modeCard = document.getElementById(this.currMode);
         modeCard.classList.remove('highlighted');
         this.currMode = currMode;

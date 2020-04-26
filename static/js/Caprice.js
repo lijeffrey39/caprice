@@ -54,7 +54,7 @@ class Caprice {
                 } else if (msg === 'parameter set') {
                     $('#effects-modal').modal('show');
                     this.openModal = '#effects-modal';
-                } else if (msg === 'key select') {
+                } else if (msg === 'key set') {
                     $('#keys-modal').modal('show');
                     this.openModal = '#keys-modal';
                 }
@@ -150,6 +150,7 @@ class Caprice {
                             fs.generateFilters();
                             es.generateEffectsList();
                             ks.generateKeys();
+                            ks.generateModes();
                         }
                         this.startSensorData();
                     }, 1000);

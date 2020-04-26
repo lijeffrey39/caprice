@@ -56,14 +56,15 @@ class Caprice:
 
     def update_edit_mode(self, swipe_direction):
         prev_edit_mode = self.edit_mode
-        if (swipe_direction == 'up'):
-            self.edit_mode = 'filter set'
-        elif (swipe_direction == 'right'):
-            self.edit_mode = 'instrument select'
-        elif (swipe_direction == 'left'):
-            self.edit_mode = 'parameter set'
-        elif (swipe_direction == 'down'):
-            self.edit_mode = 'key set'
+        if (self.edit_mode == ""):
+            if (swipe_direction == 'up'):
+                self.edit_mode = 'filter set'
+            elif (swipe_direction == 'right'):
+                self.edit_mode = 'instrument select'
+            elif (swipe_direction == 'left'):
+                self.edit_mode = 'parameter set'
+            elif (swipe_direction == 'down'):
+                self.edit_mode = 'key set'
         return self.edit_mode != prev_edit_mode
 
 

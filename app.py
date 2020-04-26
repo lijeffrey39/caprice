@@ -95,6 +95,7 @@ def notification(message):
                     emit('send filter', output, broadcast=True)
         elif (result['editMode'] == 'key set'):
             if output:
+                print(output)
                 set_keymode(output)
 
 
