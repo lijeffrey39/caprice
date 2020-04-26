@@ -3,12 +3,11 @@ const filters = ['chorus', 'delay', 'distortion', 'reverb', 'tremolo',
 
 class FilterSet { 
     constructor () {
-        this.socket = io.connect('http://' + document.domain + ':' + location.port);
-        this.socket.on('send filter', (msg) => {
+        socket.on('send filter', (msg) => {
             this.setFilter(msg);
         });
 
-        this.socket.on('send filter toggle', (msg) => {
+        socket.on('send filter toggle', (msg) => {
             this.setCursor(msg);
         })
 

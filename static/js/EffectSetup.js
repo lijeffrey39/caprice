@@ -40,17 +40,13 @@ const effectDict = {
 
 class EffectSetup {
     constructor () {
-        this.socket = io.connect('http://' + document.domain + ':' + location.port);
-        this.socket.on('new effect', (msg) => {
+        socket.on('new effect', (msg) => {
             this.readSocket(msg);
         });
-
         this.currParam = "";
         this.currEffect = "";
         this.currPercent = 0;
     }
-
-
 
     readSocket = (value) => {
         const name = value[0];
@@ -59,18 +55,16 @@ class EffectSetup {
             this.highlightEffect(name);
             document.getElementById("parameters").innerHTML = '';
         }
-
         this.generateParameters(name, value[2]);
         this.highlightParam(name, param);
     }
-
 
     generateEffectsList = () => {
         var effectsRow = document.getElementById("effects-list");
         var i = 0;
         while (i < 8) {
             const effectName = effectNames[i];
-            const foundURL = (i + 1) + '.jpg';
+            const foundURL = '/static/img/' + (i + 1) + '.jpg';
             var col = document.createElement("div");
             col.className = 'col-2';
             col.style.marginBottom = '30px';
@@ -87,7 +81,6 @@ class EffectSetup {
 
             card.appendChild(para);
             col.appendChild(card);
-            // effectsRow.appendChild(col);
             if (i == 0 || i == 4) {
                 var newcol = document.createElement("div");
                 newcol.className = 'col-2';
@@ -166,5 +159,3 @@ class EffectSetup {
         }
     }
 }
-
-// const es = new EffectSetup();
