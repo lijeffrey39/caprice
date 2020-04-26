@@ -89,6 +89,7 @@ class Caprice {
         }
 
         $('a[href$="#ip-modal"]').on("click", function() {
+            console.log("hi")
             $('#ip-modal').modal('show');
         });
 

@@ -132,12 +132,9 @@ def phone_notification(buttonsPressed):
             return
         totalPing += (time.time() * 1000) - buttonsPressed[1]
         print((time.time() * 1000) - buttonsPressed[1])
-        # if data:
-        #     data['notes'] = caprice.play_mode.pc.current_notes
-        #     data['new_swipe'] = False
-        #     print(data['notes'], "YUH")
+
         send_notes(caprice.play_mode.pc.current_notes)
-        # emit('update notes', caprice.play_mode.pc.current_notes, broadcast=True)
+        emit('notes back', caprice.play_mode.pc.octave_number, broadcast=True)
 
         prevState = buttonsPressed[0]
 
