@@ -416,6 +416,10 @@ $(document).ready(function() {
     socket.on('effects tune', function(msg) {
         changeEffect(msg);
     });
+
+    socket.on('update notes', function(msg) {
+        playNotes(msg.notes, false);
+    });
   
     socket.on('update value', function(msg) {
         var timer;
@@ -439,9 +443,7 @@ $(document).ready(function() {
 
         // }
         // sampler_playNotes(msg.notes, msg.new_swipe);
-        console.log(msg);
-        playNotes(msg.notes, msg.new_swipe);
-
+        playNotes(lastNotes, msg.new_swipe);
 
         if (msg.gyro != null) {
             if(pannerOn) {

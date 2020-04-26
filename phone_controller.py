@@ -1,4 +1,6 @@
 
+from flask_socketio import emit
+
 modes = {
     #major modes
     'ionian': [0, 2, 4, 5, 7, 9, 11, 12],
@@ -76,9 +78,13 @@ class PhoneController:
         if (dir == 'up'):
             self.shift_up()
             self.set_shift(1)
+            emit('update notes', {'notes': self.current_notes}, broadcast=True)
+
         elif (dir == 'down'):
             self.shift_down()
             self.set_shift(-1)
+            emit('update notes', {'notes': self.current_notes}, broadcast=True)
+
         elif (dir == 'right'):
             self.increase_octave()
         elif (dir == 'left'):
@@ -88,8 +94,10 @@ class PhoneController:
         elif (dir == 'off'):
             if (self.get_shift() == 1):
                 self.shift_down()
+                emit('update notes', {'notes': self.current_notes}, broadcast=True)
             elif (self.get_shift() == -1):
                 self.shift_up()
+                emit('update notes', {'notes': self.current_notes}, broadcast=True)
             self.set_shift(0)
 
     def reset(self):
@@ -110,9 +118,19 @@ class PhoneController:
         for i in range(len(self.midi_start)):
             self.midi_start[i] += 1
 
+        for i in range(len(self.current_midi_notes)):
+            self.current_midi_notes[i] += 1
+
+        self.current_notes = self.convert_midi(self.current_midi_notes, True)
+
     def shift_down(self):
         for i in range(len(self.midi_start)):
             self.midi_start[i] -= 1
+
+        for i in range(len(self.current_midi_notes)):
+            self.current_midi_notes[i] -= 1
+
+        self.current_notes = self.convert_midi(self.current_midi_notes, True)
 
     def update_notes(self, buttons):
         res_notes = []

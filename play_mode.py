@@ -74,9 +74,8 @@ class PlayMode:
             if swipe_direction == 'off':
                 self.isOff = True
 
-        
         self.pc.swipeControl(direction)
-        
+
         gyro_vel = self.gv.velocity_output(data)
 
         outcome = {}
