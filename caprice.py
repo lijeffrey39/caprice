@@ -6,6 +6,7 @@ from play_mode import PlayMode
 from instrument_select import InstrumentSelect
 from parameter_select import ParameterSelect
 from filter_select import FilterSelect
+from key_select import KeySelect
 
 
 class Caprice:
@@ -17,6 +18,7 @@ class Caprice:
         self.filter_select = FilterSelect(self.play_mode.effects_set)
 
         self.inSel = InstrumentSelect(self.play_mode.toggled_instrument)
+        self.keySel = KeySelect()
         self.current_mode = "play"
         self.edit_mode = ""
         self.home_release = True
@@ -121,6 +123,8 @@ class Caprice:
                 output = {}
                 output['param_notif'] = self.parSel.paramNotification(swipe_direction, tap_direction)
                 output['notes'] = self.play_mode.pc.current_notes
+            elif self.edit_mode == 'key set':
+                output = self.keySel.keyNotification(swipe_direction, trigSelect)
 
         res = {
             'mode': self.current_mode,
