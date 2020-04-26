@@ -3,8 +3,7 @@ const modes = ['ionian', 'lydian', 'mixolydian', 'locrian', 'aeolian', 'dorian',
 
 class KeySelect {
     constructor () {
-        this.socket = io.connect('http://' + document.domain + ':' + location.port);
-        this.socket.on('key mode', (msg) => {
+        socket.on('key mode', (msg) => {
             this.setKey(msg[0], msg[1]);
             this.setMode(msg[2], msg[3]);
         });

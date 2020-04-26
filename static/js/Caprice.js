@@ -10,6 +10,8 @@ const GYRO_FACTOR = 0.0001; // to radians / s
 const ACCEL_FACTOR = 0.00001; // to g (9.81 m/s**2)
 const TIMESTAMP_FACTOR = 0.001; // to seconds
 
+const socket = io.connect('http://' + document.domain + ':' + location.port);
+
 const es = new EffectSetup();
 const is = new InstrumentSelect();
 const fs = new FilterSet();
@@ -17,7 +19,6 @@ const ks = new KeySelect();
 
 class Caprice {
     constructor() {
-        this.socket = io.connect('http://' + document.domain + ':' + location.port);
         fetch("/ip" )
             .then(async r => {
                 const text = await r.text()
@@ -28,7 +29,7 @@ class Caprice {
                 console.error(e);
             });
 
-        this.socket.on('mode', (msg) => {
+        socket.on('mode', (msg) => {
             console.log(this.mode);
             if (this.mode === 'play') {
                 $('#mode-badge').removeClass('badge-success').addClass('badge-danger');
@@ -40,7 +41,7 @@ class Caprice {
             this.mode = msg;
         });
 
-        this.socket.on('edit', (msg) => {
+        socket.on('edit', (msg) => {
             console.log(msg);
             if (msg === 'back') {
                 $(this.openModal).modal('hide');
@@ -80,23 +81,19 @@ class Caprice {
         this.getMagnetometerFloatWithOffsetFromArrayBufferAtIndex = this.getMagnetometerFloatWithOffsetFromArrayBufferAtIndex.bind(this);
 
         if (navigator.bluetooth) {
-            document.getElementById('connect').addEventListener(
-                'click', this.pair
-            );
             // $('.toast').toast({delay: 5000});
         } else {
             document.getElementById('webbluetoothNotSupported').classList.add('show');
         }
 
+        document.getElementById('connect').addEventListener(
+            'click', this.pair
+        );
+
         $('a[href$="#ip-modal"]').on("click", function() {
             console.log("hi")
             $('#ip-modal').modal('show');
         });
-
-        // $('a[href$="#instrument-modal"]').on("click", function() {
-        //     console.log("yo");
-        //     $('#instrument-modal').modal('show');
-        // });
     }
 
     move = (from, to, animation) => {
@@ -224,7 +221,7 @@ class Caprice {
                       'touchpadButton': data['touchpadButton'],
                       'homeButton': data['homeButton'],
                       'backButton': data['backButton']}
-        this.socket.emit('my event', {data: result});
+        socket.emit('my event', {data: result});
     }
 
     getAccelerometerFloatWithOffsetFromArrayBufferAtIndex = (arrayBuffer, offset, index) => {

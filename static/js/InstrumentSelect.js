@@ -5,17 +5,11 @@ const instruments = ["Bass", "Bassoon", "Cello", "Clarinet", "Contrabass",
 
 class InstrumentSelect {
     constructor () {
-        this.socket = io.connect('http://' + document.domain + ':' + location.port);
-        this.socket.on('send instrument', (msg) => {
+        socket.on('send instrument', (msg) => {
             this.setInstrument(msg);
         });
-
         this.currInstrument = 'Bass'
         this.selectedInstrument = 'Bass'
-        this.x = 0;
-        this.y = 0;
-        this.length = 6;
-        this.width = Math.ceil(instruments.length / this.length);
     }
 
     generateInstruments = () => {
