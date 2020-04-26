@@ -1,13 +1,10 @@
-const instruments = ["Bass", "Bassoon", "Cello", "Clarinet", "Contrabass",
-    "Flute", "French Horn", "Acoustic Guitar", "Electric Guitar", "Classical Guitar",
-    "Harmonium", "Harp", "Organ", "Piano", "Saxophone", "Trombone", "Trumpet","Tuba",
-    "Violin", "Xylophone","AMSynth", "FMSynth", "MembraneSynth","DuoSynth"];
+const keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
-class InstrumentSelect {
+class KeySelect {
     constructor () {
         this.socket = io.connect('http://' + document.domain + ':' + location.port);
-        this.socket.on('send instrument', (msg) => {
-            this.setInstrument(msg);
+        this.socket.on('send key', (msg) => {
+            this.setKey(msg);
         });
 
         this.currInstrument = 'Bass'
@@ -15,31 +12,31 @@ class InstrumentSelect {
         this.x = 0;
         this.y = 0;
         this.length = 6;
-        this.width = Math.ceil(instruments.length / this.length);
+        this.width = Math.ceil(keys.length / this.length);
     }
 
-    generateInstruments = () => {
-        var instrumentRow = document.getElementById("instrument-list");
-        for (var i = 0; i < instruments.length; i++) {
-            const instrumentName = instruments[i];
+    generateKeys = () => {
+        var keysRow = document.getElementById("keys-list");
+        for (var i = 0; i < keys.length; i++) {
+            const keyName = keys[i];
             var col = document.createElement("div");
             col.className = 'col-2';
 
             var card = document.createElement("div");
-            card.id = instrumentName;
+            card.id = keyName;
             card.className = 'card mb-4 shadow-sm instrument-card';
 
             var para = document.createElement("p");
             para.id = 'instrument-text';
-            para.innerText = instrumentName;
+            para.innerText = keyName;
 
             card.appendChild(para);
             col.appendChild(card);
-            instrumentRow.appendChild(col);
+            keysRow.appendChild(col);
         }
     }
 
-    setInstrument = (data) => {
+    setKey = (data) => {
         var instrumentName = data['instrument']
         var triggered = data['change']
         

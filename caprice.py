@@ -15,7 +15,7 @@ class Caprice:
         self.parSel = ParameterSelect()
         self.play_mode = PlayMode()
         self.filter_select = FilterSelect(self.play_mode.effects_set)
-        
+
         self.inSel = InstrumentSelect(self.play_mode.toggled_instrument)
         self.current_mode = "play"
         self.edit_mode = ""
@@ -53,6 +53,7 @@ class Caprice:
 
 
     def update_edit_mode(self, swipe_direction):
+        prev_edit_mode = self.edit_mode
         if (swipe_direction == 'up'):
             self.edit_mode = 'filter set'
         elif (swipe_direction == 'right'):
@@ -61,6 +62,7 @@ class Caprice:
             self.edit_mode = 'parameter set'
         elif (swipe_direction == 'down'):
             self.edit_mode = 'key set'
+        return self.edit_mode != prev_edit_mode
 
 
     def parse_notification(self,data):
@@ -90,9 +92,8 @@ class Caprice:
             print(swipe_direction)
 
         # update edit mode (instrument, filter, key, params)
-        if (self.edit_mode == "" and self.current_mode == 'edit'):
-            self.update_edit_mode(swipe_direction)
-            edit_mode_changed = True
+        if (self.current_mode == 'edit'):
+            edit_mode_changed = self.update_edit_mode(swipe_direction)
 
         output = None
         if self.current_mode == 'play':
@@ -117,26 +118,16 @@ class Caprice:
                 if (changed):
                     self.play_mode.toggled_instrument = newIn
             elif self.edit_mode == 'parameter set':
-                output = self.parSel.paramNotification(swipe_direction, tap_direction)
+                output = {}
+                output['param_notif'] = self.parSel.paramNotification(swipe_direction, tap_direction)
+                output['notes'] = self.play_mode.pc.current_notes
 
-        if self.edit_mode != 'parameter set':
-            res = {
-                'mode': self.current_mode,
-                'editMode': self.edit_mode,
-                'output': output,
-                'modeChanged': self.current_mode != prev_mode,
-                'editModeChanged': self.edit_mode != "" and edit_mode_changed,
-                'backPressed': backPressed
-            }
-        else:
-            data['triggerButton'] = True
-            res = {
-                'mode': self.current_mode,
-                'editMode': self.edit_mode,
-                'output': output,
-                'notes': self.play_mode.generate_message('none', 'none', data),
-                'modeChanged': self.current_mode != prev_mode,
-                'editModeChanged': self.edit_mode != "" and edit_mode_changed,
-                'backPressed': backPressed
-            }
+        res = {
+            'mode': self.current_mode,
+            'editMode': self.edit_mode,
+            'output': output,
+            'modeChanged': self.current_mode != prev_mode,
+            'editModeChanged': edit_mode_changed,
+            'backPressed': backPressed
+        }
         return res

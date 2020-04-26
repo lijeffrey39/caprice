@@ -1,14 +1,4 @@
 const effectNames = ['chorus', 'delay', 'distortion', 'reverb', 'tremolo', 'vibrato', 'panner', 'wah'];
-const effectURL = [
-    'https://www.imperial.ac.uk/ImageCropToolT4/imageTool/uploaded-images/newseventsimage_1536238974057_mainnews2012_x1.jpg',
-    'https://i.redd.it/ac2sg6wlkxu01.jpg',
-    'https://i.guim.co.uk/img/media/75035f49bc60f6f6bf2701ff5680adbad50bd21a/0_800_4000_2400/master/4000.jpg?width=300&quality=85&auto=format&fit=max&s=fb1269ced0b7b4a807b8e52920a97f95',
-    'https://1843magazine.static-economist.com/sites/default/files/201708_FE_LSD_90-HEADER-V3.jpg',
-    'https://beckleyfoundation.org/wp-content/uploads/2016/03/cerebellum-plate-with-watermark_small.jpg',
-    'https://render.fineartamerica.com/images/rendered/default/poster/10/8/break/images/artworkimages/medium/1/lsd-omaste-witkowski.jpg',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT0fPnwien4cnX1K7Js60F5NsT9i2Hdd6Ozu_iTON1VKn0nAEdJ&usqp=CAU',
-    'https://wi-images.condecdn.net/image/q57EEeADyZ0/crop/1620/f/lsd.jpg'
-]
 
 const effectDict = {
     'chorus': {
@@ -51,7 +41,6 @@ const effectDict = {
 class EffectSetup {
     constructor () {
         this.socket = io.connect('http://' + document.domain + ':' + location.port);
-        // this.firstConnection = fal
         this.socket.on('new effect', (msg) => {
             this.readSocket(msg);
         });
@@ -59,21 +48,16 @@ class EffectSetup {
         this.currParam = "";
         this.currEffect = "";
         this.currPercent = 0;
-        // this.generateEffectsList();
-        // this.highlightEffect();
     }
 
 
 
     readSocket = (value) => {
-        // console.log(value);
         const name = value[0];
         const param = value[1];
         if (name != this.currEffect) {
             this.highlightEffect(name);
             document.getElementById("parameters").innerHTML = '';
-            // this.generateParameters(name, value[2]);
-            // this.highlightParam(param);
         }
 
         this.generateParameters(name, value[2]);
@@ -86,7 +70,7 @@ class EffectSetup {
         var i = 0;
         while (i < 8) {
             const effectName = effectNames[i];
-            const foundURL = effectURL[i];
+            const foundURL = (i + 1) + '.jpg';
             var col = document.createElement("div");
             col.className = 'col-2';
             col.style.marginBottom = '30px';
@@ -127,7 +111,6 @@ class EffectSetup {
         if (!effectName) {
             return;
         }
-        // console.log(effectName);
         var instrumentCard = document.getElementById(effectName + "_card");
         console.log(instrumentCard);
         instrumentCard.classList.add('highlighted');

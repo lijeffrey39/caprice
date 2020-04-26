@@ -85,7 +85,7 @@ def notification(message):
                 emit('instrument', output, broadcast=True)
         # set effect params and play notes at same time
         elif (result['editMode'] == 'parameter set'):
-            set_effects(output)
+            set_effects(output['param_notif'])
             test_message(output)
         elif (result['editMode'] == 'filter set'):
             if (output != None):

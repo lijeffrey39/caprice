@@ -420,7 +420,7 @@ $(document).ready(function() {
     socket.on('update value', function(msg) {
         var timer;
 
-        if("effects_toggle" in msg) {
+        if ("effects_toggle" in msg) {
             if(msg.effects_toggle.toggle) {
                 // console.log('yup')
                 addEffect(msg.effects_toggle);
@@ -430,19 +430,20 @@ $(document).ready(function() {
                 removeEffect(msg.effects_toggle.name);
             }
         }
-        if(msg.new_swipe){
-            if(msg.time){
-                var d = new Date();
-                var t = d.getTime();
-                console.log(t-msg.time);
-            }
+        // if(msg.new_swipe){
+        //     if(msg.time){
+        //         var d = new Date();
+        //         var t = d.getTime();
+        //         console.log(t-msg.time);
+        //     }
 
-        }
+        // }
         // sampler_playNotes(msg.notes, msg.new_swipe);
+        console.log(msg);
         playNotes(msg.notes, msg.new_swipe);
 
 
-        if(msg.gyro != null) {
+        if (msg.gyro != null) {
             if(pannerOn) {
                 panner_update(msg.gyro);
             }

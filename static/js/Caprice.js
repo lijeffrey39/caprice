@@ -13,6 +13,7 @@ const TIMESTAMP_FACTOR = 0.001; // to seconds
 const es = new EffectSetup();
 const is = new InstrumentSelect();
 const fs = new FilterSet();
+const ks = new KeySelect();
 
 class Caprice {
     constructor() {
@@ -53,6 +54,9 @@ class Caprice {
                 } else if (msg === 'parameter set') {
                     $('#effects-modal').modal('show');
                     this.openModal = '#effects-modal';
+                } else if (msg === 'key select') {
+                    $('#keys-modal').modal('show');
+                    this.openModal = '#keys-modal';
                 }
             }
         });
@@ -84,9 +88,9 @@ class Caprice {
             document.getElementById('webbluetoothNotSupported').classList.add('show');
         }
 
-        // $('a[href$="#ip-modal"]').on("click", function() {
-        //     $('#ip-modal').modal('show');
-        // });
+        $('a[href$="#ip-modal"]').on("click", function() {
+            $('#ip-modal').modal('show');
+        });
 
         // $('a[href$="#instrument-modal"]').on("click", function() {
         //     console.log("yo");
@@ -103,29 +107,6 @@ class Caprice {
         $(from).animate(fromAnimation, 1000);
         $(to).animate(toAnimation, 1000);
     }
-
-    moveDirection = (direction) => {
-        console.log(direction);
-        const amount = '700px';
-        if (direction === 'up') {
-            if (this.position === 0) {
-                this.move('#main-container', '#instrument-container1', {top: '-=' + amount});
-                this.position = 1;
-            } else if (this.position === 2) {
-                this.move('#instrument-container', '#main-container', {top: '-=' + amount});
-                this.position = 0;
-            }
-        } else if (direction === 'down') {
-            if (this.position === 1) {
-                this.move('#instrument-container1', '#main-container', {top: '+=' + amount});
-                this.position = 0;
-            } else if (this.position === 0) {
-                this.move('#main-container', '#instrument-container', {top: '+=' + amount});
-                this.position = 2;
-            }
-        }
-    }
-
 
     onDeviceConnected = (device) => {
         console.log("connecting to bluetooth device");
@@ -167,6 +148,7 @@ class Caprice {
                             is.generateInstruments();
                             fs.generateFilters();
                             es.generateEffectsList();
+                            ks.generateKeys();
                         }
                         this.startSensorData();
                     }, 1000);
@@ -174,9 +156,6 @@ class Caprice {
     }
 
     startSensorData = () => {
-        // document.getElementById('loading').classList.remove('show');
-        // document.getElementById('loading1').classList.remove('show');
-        // $('.toast').toast('show');
         this.runCommand(CMD_VR_MODE)
             .then(() => this.runCommand(CMD_SENSOR));
     }

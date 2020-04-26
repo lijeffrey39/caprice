@@ -93,6 +93,21 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="modal fade" id="keys-modal" role="dialog">
+                    <div class="modal-dialog modal-lgmodal-dialog-centered " role="document" style="min-width: 1000px; zoom: 85%;">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="container">
+                                    <h1 id="keys-title">Keys/Modes</h1>
+                                    <p id="keys-subheading" class="lead text-muted">Select a key below</p>
+                                    <div class="row" id="key-list">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div> 
             </section>
         </div>
@@ -125,9 +140,11 @@
         <script type = "text/babel" src="{{ url_for('static', filename='js/easy.js') }}"></script>
         <script type="text/babel" src="{{ url_for('static', filename='js/samples.js') }}"></script>
         <script type = "text/babel" src="{{ url_for('static', filename='js/easy-jason.js') }}"></script>
+    
         <script type="text/javascript" src="{{ url_for('static', filename='js/InstrumentSelect.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/EffectSetup.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/FilterSet.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/KeySelect.js') }}"></script>
         
         <script type="text/javascript" src="{{ url_for('static', filename='js/babel.min.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/three.min.js') }}"></script>
