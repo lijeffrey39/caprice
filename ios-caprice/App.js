@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TextInput, TouchableOpacity} from 'react-native';
 import SocketIOClient from 'socket.io-client';
 
 const data = [
@@ -29,7 +29,6 @@ const numColumns = 2;
 export default class App extends React.Component {  
     constructor() { 
         super();
-        this.socket = SocketIOClient("http://10.0.0.98:5000", {query: 'b64=1'});
         this.state = {
             "A": false,
             "B": false,
@@ -38,20 +37,18 @@ export default class App extends React.Component {
             "E": false,
             "F": false,
             "G": false,
-            "Z": false
+            "Z": false,
+            'inputText': '',
+            'socket': null,
+            'octave': 8
         }
-        this.socket.on("this data", msg => {
-            this.setState(msg['data']);
-            console.log("huh");
-        });
     }
 
     componentDidMount() {
         this._interval = setInterval(() => {
-            // if (this.state.updated) {
-            // console.log("emmitting");
-            this.socket.emit('button press', [this.state, new Date().getTime()]);
-            // }
+            if (this.state.socket) {
+                this.state.socket.emit('button press', [formatResult(this.state), new Date().getTime()]);
+            }
         }, 20);
     }
 
@@ -61,12 +58,9 @@ export default class App extends React.Component {
             [key]: true
         }));
         this.state[key] = true;
-        this.socket.emit('button press', [this.state, new Date().getTime()]);
-        // this.setState({'updated': true});
-
-        // setTimeout(() => {
-        //     this.setState({'updated': false});
-        // }, 8);
+        if (this.state.socket) {
+            this.state.socket.emit('button press', [formatResult(this.state), new Date().getTime()]);
+        }
     }
 
     release = (key) => {
@@ -75,35 +69,73 @@ export default class App extends React.Component {
             [key]: false
         }));
         this.state[key] = false;
-        this.socket.emit('button press', [this.state, new Date().getTime()]);
-        // this.setState({'updated': true});
-
-        // setTimeout(() => {
-        //     this.setState({'updated': false});
-        // }, 8);
+        if (this.state.socket) {
+            this.state.socket.emit('button press', [formatResult(this.state), new Date().getTime()]);
+        }
     }
 
-    renderItem = ({ item, index }) => {
+    currOctave = (i) => {
+        if (this.state.octave % 2 === 0) {
+            return (this.state.octave / 2);
+        } else {
+            if (i < 4) {
+                return (this.state.octave / 2);
+            } else {
+                return Math.floor(this.state.octave / 2) + 1;
+            }
+        }
+    }
+
+    currNote = (note) => {
+        if (note === 'Z') {
+            return 'C';
+        }
+        return note;
+    }
+
+    renderItem = ({ item, i }) => {
         if (item.empty === true) {
             return <View style={[styles.item, styles.itemInvisible]} />;
         }
         return (
             <View onTouchStart={() => this.sendData(item.key)} onTouchEnd={() => this.release(item.key)}
                 style={this.state[item.key] ? styles.item : styles.itemPressed}>
-                <Text style={this.state[item.key] ? styles.itemText : styles.itemTextPressed}>{item.key}</Text>
+                <Text style={this.state[item.key] ? styles.itemText : styles.itemTextPressed}>{this.currNote(item.key) + this.currOctave(i)}</Text>
             </View>
         );
     };
 
+    formatIP = () => {
+        return 'http://' + this.state.inputText + ':5000';
+    }
+
     render() {
         return (
-            <FlatList
-                extraData={this.state}
-                data={formatData(data, numColumns)}
-                style={styles.container}
-                renderItem={this.renderItem}
-                numColumns={numColumns}
-                scrollEnabled={false}/>
+            <View style={styles.realContainer}>
+                <FlatList
+                    extraData={this.state}
+                    data={formatData(data, numColumns)}
+                    style={styles.container}
+                    renderItem={this.renderItem}
+                    numColumns={numColumns}
+                    scrollEnabled={false}/>
+                <TextInput
+                    style={{ height: 30, borderColor: 'gray', borderRadius: 5, borderWidth: 1, marginTop: 40, marginLeft: 20, marginRight: 20 }}
+                    onChangeText={text => this.setState({'inputText': text})}
+                    value={this.state.inputText}/>
+                <TouchableOpacity
+                    style={styles.loginScreenButton}
+                    underlayColor='#fff'
+                    onPress={() => {
+                        const tempSocket = SocketIOClient(this.formatIP(), {query: 'b64=1'});
+                        this.setState({socket: tempSocket});
+                        tempSocket.on("notes back", msg => {
+                            this.setState({octave: msg});
+                        });
+                    }}>
+                    <Text style={styles.loginText}>Update IP Address</Text>
+                </TouchableOpacity>
+            </View>
         );
     }
 }
@@ -114,12 +146,34 @@ const height = 500;
 const width = 400;
 
 const styles = StyleSheet.create({
+    loginScreenButton:{
+        marginRight:40,
+        marginLeft:40,
+        marginTop:10,
+        paddingTop:10,
+        paddingBottom:10,
+        backgroundColor:'#1E6738',
+        borderRadius:10,
+        borderWidth: 1,
+        borderColor: '#fff'
+    },
+    loginText:{
+        color:'#fff',
+        textAlign:'center',
+        paddingLeft : 10,
+        paddingRight : 10
+    },
+    realContainer: {
+        flex: 1,
+        backgroundColor: 'white',
+        marginTop: 30
+    },
     container: {
         flex: 1,
         width: 250,
         position: 'absolute',
         right: 0,
-        marginTop: 100
+        marginTop: 150
     },
     item: {
         backgroundColor: 'white',
