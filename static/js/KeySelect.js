@@ -1,5 +1,5 @@
 const keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-const modes = ['ionian', 'lydian', 'mixolydian', 'locrian', 'aeolian', 'dorian', 'phrygian'];
+const modes = ['ionian', 'lydian', 'mixolydian', 'locrian', 'aeolian', 'dorian', 'phrygian', 'jazz'];
 
 class KeySelect {
     constructor () {
