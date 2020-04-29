@@ -31,6 +31,8 @@ class Caprice:
     
     def parse_notification(self,data):
 
+        trigSelect = None
+
         #trigger button logic, use trigselect for ur classes
         if (data['triggerButton'] and not self.triggerHeld):
             self.triggerHeld = True
@@ -100,17 +102,31 @@ class Caprice:
             return ['play', message]
         
         elif self.current_mode == 'filter set':
-            self.current_mode = 'filter set'
+            (filter_dir, new_effect, changed, selected) = self.filter_select.filterMenu(swipe_direction, 
+                                                                                        tap_direction,
+                                                                                        trigSelect)
+            if new_effect == "" and filter_dir != "":
+                res = {'toggle': filter_dir}
+                return ['filter set', res]
             
+            if selected:
+                self.play_mode.effects_set[filter_dir] = new_effect
+            
+            if changed:
+                res = {'direction': filter_dir, 'effect': new_effect, 'selected': selected}
+                return ['filter set', res]
+
         elif self.current_mode == 'instrument select':
             (newIn, changeIn, changed) = self.inSel.instrumentNotification(swipe_direction, data['triggerButton'])
             if (changed):
                 res = {'instrument': newIn, 'change': changeIn}
                 self.play_mode.toggled_instrument = newIn
                 return ['instrument select', res]
+                
         elif self.current_mode == 'parameter set':
             output = self.parSel.paramNotification(swipe_direction, tap_direction)
             return ['param select', output]
+
         else:
             # MAIN EDIT MODE
 

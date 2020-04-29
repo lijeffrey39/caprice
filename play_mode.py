@@ -14,7 +14,7 @@ class PlayMode:
         self.pc = PhoneController()
 
         self.pc.current_notes = ['C4']
-        self.toggled_instrument = 'AMSynth'
+        self.toggled_instrument = 'Piano'
         self.effects_set = {
             'up': 'distortion',
             'down': 'chorus',
@@ -84,7 +84,6 @@ class PlayMode:
             if toggled_effect != None:
                 outcome['toggle'] = True
                 outcome['name'] = toggled_effect
-                outcome['params'] = {'wet': 0.5}
             else:
                 outcome['toggle'] = False
                 outcome['name'] = untoggled_effect

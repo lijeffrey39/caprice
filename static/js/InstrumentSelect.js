@@ -17,7 +17,7 @@ class InstrumentSelect {
         this.y = 0;
         this.length = 6;
         this.width = Math.ceil(instruments.length / this.length);
-        this.moveInstrumentSelect  = this.moveInstrumentSelect.bind(this);
+        // this.moveInstrumentSelect  = this.moveInstrumentSelect.bind(this);
     }
 
     generateInstruments = () => {
@@ -44,8 +44,8 @@ class InstrumentSelect {
     setInstrument = (data) => {
         var instrumentName = data['instrument']
         var triggered = data['change']
-        console.log(instrumentName)
-        console.log(triggered)
+        // console.log(instrumentName)
+        // console.log(triggered)
         
         if (instrumentName != this.currInstrument) {
             var instrumentCard = document.getElementById(this.currInstrument);
