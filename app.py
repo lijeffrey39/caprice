@@ -4,6 +4,7 @@ import logging
 import os
 import socket
 import time
+import json
 
 import numpy
 from engineio.payload import Payload
@@ -34,24 +35,44 @@ def index():
 
 
 @socketio.on('my event')
-def notification(message): 
-    parse_result = caprice.parse_notification(message['data'])
-    if (parse_result[0] == 'play'):
-        test_message(parse_result[1])
-    elif (parse_result[0] == 'instrument select'):
-        send_instrument(parse_result[1])
-        if(parse_result[1]['change']):
-            set_instrument(parse_result[1])
-    elif (parse_result[0] == 'param select'):
-        set_effects(parse_result[1])
-    elif (parse_result[0] == 'filter set'):
-        if 'toggle' in parse_result[1]:
-            send_filter_toggle(parse_result[1])
-        else:
-            send_filter(parse_result[1])
-            
+def notification(message):
+    result = caprice.parse_notification(message['data'])
+    # mode updated (send to front end once)
+    if (result['modeChanged']):
+        emit('mode', caprice.current_mode, broadcast=True)
 
-    return
+    if (result['backPressed']):
+        emit('edit', 'back', broadcast=True)
+
+    if (result['editModeChanged']):
+        emit('edit', caprice.edit_mode, broadcast=True)
+
+    # play or edit mode
+    if (result['mode'] == 'play'):
+        # if result['output']['new_swipe'] or result['output']['effects_toggle']:
+        # print(result['output']['notes'])
+        emitted = time.time()
+        result['output']['time'] = emitted*1000
+        test_message(result['output'])
+    else:
+        output = result['output']
+        if (result['editMode'] == 'instrument select'):
+            emit('send instrument', output, broadcast=True)
+            if (output['change']):
+                emit('instrument', output, broadcast=True)
+        # set effect params and play notes at same time
+        elif (result['editMode'] == 'parameter set'):
+            set_effects(output['param_notif'])
+            test_message(output)
+        elif (result['editMode'] == 'filter set'):
+            if (output != None):
+                if ('toggle' in output):
+                    emit('send filter toggle', output, broadcast=True)
+                else:
+                    emit('send filter', output, broadcast=True)
+        elif (result['editMode'] == 'key set'):
+            if output:
+                 emit('key mode', output, broadcast=True)
 
 
 @socketio.on('connect')
@@ -65,44 +86,38 @@ def test_message(value):
     emit('update value', value, broadcast=True)
 
 
-prev = []
-count = 0
+def send_notes(notes):
+    data = {'notes': notes}
+    emit('update notes', data, broadcast=True)
+
+
+prevState = {}
+totalPing = 0
 total = 0
+
 @socketio.on('button press')
 def phone_notification(buttonsPressed):
-    global current_note
-    global prev
-    global count 
+    global prevState
+    global totalPing
     global total
-    temp = []
-    for note in buttonsPressed[0]:
-        if (buttonsPressed[0][note]):
-            temp.append(note + '4')
-    if(copy.deepcopy(prev) != copy.deepcopy(buttonsPressed[0])):
-        count += 1
-        total += round(time.time() * 1000) - buttonsPressed[1]
-        print(total / count)
 
-    current_note = temp
-    prev = buttonsPressed[0]
-    pc.update_notes(buttonsPressed[0])
+    if (json.dumps(buttonsPressed[0]) != json.dumps(prevState)):
+        caprice.play_mode.pc.update_notes(buttonsPressed[0])
+        send_notes(caprice.play_mode.pc.current_notes)
+        emit('notes back', caprice.play_mode.pc.octave_number, broadcast=True)
+        prevState = buttonsPressed[0]
 
-def send_filter(value):
-    emit('send filter', value, broadcast=True)
+        total += 1
+        if (total <= 5):
+            return
+        totalPing += (time.time() * 1000) - buttonsPressed[1]
+        print((time.time() * 1000) - buttonsPressed[1])
 
-def send_filter_toggle(value):
-    emit('send filter toggle', value, broadcast=True)
-
-@socketio.on('sendInstrument')
-def send_instrument(value):
-    emit('send instrument', value, broadcast=True)
-
-@socketio.on('instrument')
-def set_instrument(value):
-    emit('instrument', value, broadcast=True)
 
 def set_effects(value):
     emit('effects tune', value, broadcast=True)
+    emit('new effect', value, broadcast=True)
+
 
 def get_Host_name_IP(): 
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

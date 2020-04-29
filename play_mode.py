@@ -9,6 +9,7 @@ class PlayMode:
         self.right_effect = False
         self.left_effect = False
         self.down_effect = False
+        self.isOff = True
         
         self.gv = GyroVelocity()
         self.pc = PhoneController()
@@ -22,12 +23,14 @@ class PlayMode:
             'right': 'wah'
         }
     
-    def generate_message(self,swipe_direction, direction, data):
+    def generate_message(self, swipe_direction, direction, data):
         
         toggled_effect = None
         untoggled_effect = None
 
-        if swipe_direction == 'up':
+        if self.isOff and swipe_direction != 'none' and swipe_direction != 'off':
+            self.isOff = False
+            if swipe_direction == 'up':
                 if self.up_effect:
                     self.up_effect = False
                     untoggled_effect = self.effects_set['up']
@@ -36,40 +39,43 @@ class PlayMode:
                     self.up_effect = True
                     toggled_effect = self.effects_set['up']
                     print('%s EFFECT ENABLED' %self.effects_set['up'])
-        
-        elif swipe_direction == 'down':
-            if self.down_effect:
-                self.down_effect = False
-                untoggled_effect = self.effects_set['down']
-                print('%s EFFECT DISABLED' %self.effects_set['down'])
-            else:
-                self.down_effect = True
-                toggled_effect = self.effects_set['down']
-                print('%s EFFECT ENABLED' %self.effects_set['down'])
 
-        elif swipe_direction == 'right':
-            if self.right_effect:
-                self.right_effect = False
-                untoggled_effect = self.effects_set['right']
-                print('%s EFFECT DISABLED' %self.effects_set['right'])
-            else:
-                self.right_effect = True
-                toggled_effect = self.effects_set['right']
-                print('%s EFFECT ENABLED' %self.effects_set['right'])
+            elif swipe_direction == 'down':
+                if self.down_effect:
+                    self.down_effect = False
+                    untoggled_effect = self.effects_set['down']
+                    print('%s EFFECT DISABLED' %self.effects_set['down'])
+                else:
+                    self.down_effect = True
+                    toggled_effect = self.effects_set['down']
+                    print('%s EFFECT ENABLED' %self.effects_set['down'])
 
-        elif swipe_direction == 'left':
-            if self.left_effect:
-                self.left_effect = False
-                untoggled_effect = self.effects_set['left']
-                print('%s EFFECT DISABLED' %self.effects_set['left'])
-            else:
-                self.left_effect = True
-                toggled_effect = self.effects_set['left']
-                print('%s EFFECT ENABLED' %self.effects_set['left'])
+            elif swipe_direction == 'right':
+                if self.right_effect:
+                    self.right_effect = False
+                    untoggled_effect = self.effects_set['right']
+                    print('%s EFFECT DISABLED' %self.effects_set['right'])
+                else:
+                    self.right_effect = True
+                    toggled_effect = self.effects_set['right']
+                    print('%s EFFECT ENABLED' %self.effects_set['right'])
 
-        
+            elif swipe_direction == 'left':
+                if self.left_effect:
+                    self.left_effect = False
+                    untoggled_effect = self.effects_set['left']
+                    print('%s EFFECT DISABLED' %self.effects_set['left'])
+                else:
+                    self.left_effect = True
+                    toggled_effect = self.effects_set['left']
+                    print('%s EFFECT ENABLED' %self.effects_set['left'])
+
+        else:
+            if swipe_direction == 'off':
+                self.isOff = True
+
         self.pc.swipeControl(direction)
-        
+
         gyro_vel = self.gv.velocity_output(data)
 
         outcome = {}

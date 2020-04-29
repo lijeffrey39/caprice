@@ -139,7 +139,7 @@ class ParameterSelect:
 
                 self.effectValues[self.cur_effect][self.cur_param][0] = self.effectValues[self.cur_effect][self.cur_param][1] / param_max
 
-                print(self.effectValues[self.cur_effect][self.cur_param])
+                # print(self.effectValues[self.cur_effect][self.cur_param])
 
         return [self.cur_effect, self.cur_param,
                 self.effectValues[self.cur_effect]]

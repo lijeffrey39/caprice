@@ -10,9 +10,16 @@ const GYRO_FACTOR = 0.0001; // to radians / s
 const ACCEL_FACTOR = 0.00001; // to g (9.81 m/s**2)
 const TIMESTAMP_FACTOR = 0.001; // to seconds
 
+const socket = io.connect('http://' + document.domain + ':' + location.port);
+
+const es = new EffectSetup();
+const is = new InstrumentSelect();
+const fs = new FilterSet();
+const ks = new KeySelect();
+var enabledEffects = [];
+
 class Caprice {
     constructor() {
-        this.socket = io.connect('http://' + document.domain + ':' + location.port);
         fetch("/ip" )
             .then(async r => {
                 const text = await r.text()
@@ -23,7 +30,63 @@ class Caprice {
                 console.error(e);
             });
 
+        socket.on('mode', (msg) => {
+            console.log(this.mode);
+            if (this.mode === 'play') {
+                $('#mode-badge').removeClass('badge-success').addClass('badge-danger');
+                $('#mode-badge').html('Edit Mode');
+            } else {
+                $('#mode-badge').removeClass('badge-danger').addClass('badge-success');
+                $('#mode-badge').html('Play Mode');
+            }
+            this.mode = msg;
+        });
 
+        socket.on('update value', function(msg) {
+            if ("effects_toggle" in msg) {
+                const name = msg.effects_toggle.name;
+                var effectsRow = document.getElementById("enabledEffects");
+                if (msg.effects_toggle.toggle) {
+                    if (!enabledEffects.includes(name)) {
+                        var span = document.createElement("span");
+                        span.className = 'badge badge-warning';
+                        span.id = name
+                        span.innerHTML = name
+                        effectsRow.appendChild(span);
+                        enabledEffects.push(name);
+                    }
+                } else {
+                    if (enabledEffects.includes(name)) {
+                        enabledEffects.splice(enabledEffects.indexOf(name), 1);
+                        $('#' + name).remove();
+                    }
+                }
+            }
+        });
+        
+        socket.on('edit', (msg) => {
+            console.log(msg);
+            if (msg === 'back') {
+                $(this.openModal).modal('hide');
+            } else {
+                if (msg === 'instrument select') {
+                    $('#instrument-modal').modal('show');
+                    this.openModal = '#instrument-modal';
+                } else if (msg === 'filter set') {
+                    $('#filter-modal').modal('show');
+                    this.openModal = '#filter-modal';
+                } else if (msg === 'parameter set') {
+                    $('#effects-modal').modal('show');
+                    this.openModal = '#effects-modal';
+                } else if (msg === 'key set') {
+                    $('#keys-modal').modal('show');
+                    this.openModal = '#keys-modal';
+                }
+            }
+        });
+
+        this.openModal = '';
+        this.mode = 'play';
         this.customServiceWrite = null;
         this.customServiceNotify = null;
         this.gattServer = null;
@@ -41,47 +104,20 @@ class Caprice {
         this.getMagnetometerFloatWithOffsetFromArrayBufferAtIndex = this.getMagnetometerFloatWithOffsetFromArrayBufferAtIndex.bind(this);
 
         if (navigator.bluetooth) {
-            document.getElementById('connect').addEventListener(
-                'click', this.pair
-            );
-            $('.toast').toast({delay: 5000});
+            // $('.toast').toast({delay: 5000});
         } else {
             document.getElementById('webbluetoothNotSupported').classList.add('show');
         }
-    }
 
-    move = (from, to, animation) => {
-        console.log(animation)
-        var fromAnimation = JSON.parse(JSON.stringify(animation));
-        fromAnimation['opacity'] = 0;
-        var toAnimation = JSON.parse(JSON.stringify(animation));
-        toAnimation['opacity'] = 1;
-        $(from).animate(fromAnimation, 1000);
-        $(to).animate(toAnimation, 1000);
-    }
+        document.getElementById('connect').addEventListener(
+            'click', this.pair
+        );
 
-    moveDirection = (direction) => {
-        console.log(direction);
-        const amount = '700px';
-        if (direction === 'up') {
-            if (this.position === 0) {
-                this.move('#main-container', '#instrument-container1', {top: '-=' + amount});
-                this.position = 1;
-            } else if (this.position === 2) {
-                this.move('#instrument-container', '#main-container', {top: '-=' + amount});
-                this.position = 0;
-            }
-        } else if (direction === 'down') {
-            if (this.position === 1) {
-                this.move('#instrument-container1', '#main-container', {top: '+=' + amount});
-                this.position = 0;
-            } else if (this.position === 0) {
-                this.move('#main-container', '#instrument-container', {top: '+=' + amount});
-                this.position = 2;
-            }
-        }
+        $('a[href$="#ip-modal"]').on("click", function() {
+            console.log("hi")
+            $('#ip-modal').modal('show');
+        });
     }
-
 
     onDeviceConnected = (device) => {
         console.log("connecting to bluetooth device");
@@ -92,8 +128,9 @@ class Caprice {
     }
 
     pair = () => {
-        document.getElementById('loading').classList.add('show');
-        document.getElementById('loading1').classList.add('show');
+        // document.getElementById('loading').classList.add('show');
+        // document.getElementById('loading1').classList.add('show');
+        console.log("pairing");
         return navigator.bluetooth.requestDevice({
             filters: [{ namePrefix: 'Gear' }], 
             optionalServices: [UUID_CUSTOM_SERVICE]
@@ -118,15 +155,19 @@ class Caprice {
                     setInterval(() => {
                         if (count >= 2) { return }
                         count += 1
+                        if (count == 1) {
+                            is.generateInstruments();
+                            fs.generateFilters();
+                            es.generateEffectsList();
+                            ks.generateKeys();
+                            ks.generateModes();
+                        }
                         this.startSensorData();
                     }, 1000);
                 }));
     }
 
     startSensorData = () => {
-        document.getElementById('loading').classList.remove('show');
-        document.getElementById('loading1').classList.remove('show');
-        $('.toast').toast('show');
         this.runCommand(CMD_VR_MODE)
             .then(() => this.runCommand(CMD_SENSOR));
     }
@@ -193,7 +234,7 @@ class Caprice {
                       'touchpadButton': data['touchpadButton'],
                       'homeButton': data['homeButton'],
                       'backButton': data['backButton']}
-        this.socket.emit('my event', {data: result});
+        socket.emit('my event', {data: result});
     }
 
     getAccelerometerFloatWithOffsetFromArrayBufferAtIndex = (arrayBuffer, offset, index) => {
@@ -228,20 +269,3 @@ class Caprice {
 }
 
 var caprice = new Caprice();
-
-document.onkeydown = checkKey;
-function checkKey(e) {
-    e = e || window.event;
-    if (e.keyCode == '38') {
-        caprice.moveDirection('up');
-    }
-    else if (e.keyCode == '40') {
-        caprice.moveDirection('down');
-    }
-    else if (e.keyCode == '37') {
-        caprice.moveDirection('left');
-    }
-    else if (e.keyCode == '39') {
-        caprice.moveDirection('right');
-    }
-}

@@ -1,0 +1,94 @@
+<div id="main">
+            <section class="jumbotron text-center" style="height: 400px;">
+                <div class="container">
+                    <!-- <div id="instrument-container">
+                        <h1 id="instrument-title">Instruments</h1>
+                        <p id="instrument-subheading" class="lead text-muted">Select an instrument below</p>
+                        <div class="row" id="instrument-list">
+                        </div>
+                    </div> -->
+
+
+
+                    <div id="main-container">
+                        <h1>Effect Setup</h1>
+                        <a id="connect" class="btn btn-primary my-2" style="color: white;">Connect your VR remote</a>
+                        <!-- <p id="main-subheading" class="lead text-muted">Change your instrument's effects</p> -->
+                        <div class="row" id="effects-list">
+                            <!-- <div class="col-3">
+                                <div class='card mb-4 shadow-sm instrument-card' style="background-image: url(https://i.redd.it/ac2sg6wlkxu01.jpg); background-size: 100%;">
+                                    <p id="effect-text">Chorus</p>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class='card mb-4 shadow-sm instrument-card'>
+                                    <p>Effect</p>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class='card mb-4 shadow-sm instrument-card'>
+                                    <p>Effect</p>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class='card mb-4 shadow-sm instrument-card'>
+                                    <p>Effect</p>
+                                </div>
+                            </div> -->
+                        </div>
+
+                        <div class="row" style="margin-top: 20px;" id="parameters">
+                            <!-- <div class="col-2" style="margin-top:10px;">
+                                Delay:
+                            </div>
+                            <div class="col-8" style="margin-top: 15px;">
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                            <div class="col-2" style="margin-top:10px;">
+                                Delay:
+                            </div>
+                            <div class="col-8" style="margin-top: 15px;">
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                                </div>
+                            </div>
+                            <div class="col-2"></div>
+                            <div class="col-2" style="margin-top:10px;">
+                                Delay:
+                            </div>
+                            <div class="col-8" style="margin-top: 15px;">
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                                </div>
+                            </div>
+                            <div class="col-2"></div> -->
+                        </div>
+                    </div>
+                    <!-- <div id="main-container">
+                        <h1 id="main-title">Caprice</h1>
+                        <p id="main-subheading" class="lead text-muted">The all in one motion controlled synthesizer</p>
+                        <p id="buttons">
+                            <a id="connect" class="btn btn-primary my-2" style="color: white;">Connect your VR remote</a>
+                            <a style="color: white;" class="btn btn-secondary my-2" data-toggle="modal" data-target="#exampleModal">Connect to your phone</a>
+                        </p>
+                    </div> -->
+                    <!-- <div id="instrument-container">
+                        <h1 id="instrument-title">Instruments</h1>
+                        <p id="instrument-subheading" class="lead text-muted">Select an instrument below</p>
+                        <div class="row" id="instrument-list1">
+                        </div>
+                    </div> -->
+                    <!-- <h1 id="instrument-title">Instruments</h1>
+                    <p id="instrument-text" class="lead text-muted">Select an instrument below</p> -->
+                    <!-- <a href="/right" data-target="1" id="right" style="display: none;">Right</a> -->
+                    <!-- <button id="right">Right</button> -->
+                    <!-- <p style="margin-top: 50px;" id="loading1">Pairing with your VR remote</p>
+                    <div class="spinner-border" role="status" id="loading">
+                        <span class="sr-only">Loading...</span>
+                    </div> -->
+                </div>
+            </section>
+        </div>

@@ -3,12 +3,11 @@ const filters = ['chorus', 'delay', 'distortion', 'reverb', 'tremolo',
 
 class FilterSet { 
     constructor () {
-        this.socket = io.connect('http://' + document.domain + ':' + location.port);
-        this.socket.on('send filter', (msg) => {
+        socket.on('send filter', (msg) => {
             this.setFilter(msg);
         });
 
-        this.socket.on('send filter toggle', (msg) => {
+        socket.on('send filter toggle', (msg) => {
             this.setCursor(msg);
         })
 
@@ -37,7 +36,7 @@ class FilterSet {
                                 left: 'left-selected',
                                 right: 'right-selected' };
         
-        this.generateFilters();
+        // this.generateFilters();
 
         // this.moveInstrumentSelect  = this.moveInstrumentSelect.bind(this);
     }
@@ -54,8 +53,8 @@ class FilterSet {
             card.className = 'card mb-4 shadow-sm instrument-card';
 
             for (var key in this.currFilterSet){
-                console.log(key);
-                console.log(this.selectedColors[key]);
+                // console.log(key);
+                // console.log(this.selectedColors[key]);
                 if (this.currFilterSet[key] == filterName){
                     card.classList.add(this.selectedColors[key]);
                 }
@@ -109,5 +108,5 @@ class FilterSet {
     }
 }
 
-const fs = new FilterSet();
+// const fs = new FilterSet();
 

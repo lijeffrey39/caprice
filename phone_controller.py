@@ -1,4 +1,6 @@
 
+from flask_socketio import emit
+
 modes = {
     #major modes
     'ionian': [0, 2, 4, 5, 7, 9, 11, 12],
@@ -9,22 +11,23 @@ modes = {
     #minor modes
     'aeolian': [0, 2, 3, 5, 7, 8, 10, 12],
     'dorian': [0, 2, 3, 5, 7, 9, 10, 12],
-    'phrygian': [0, 1, 3, 5, 7, 8, 10, 12]
+    'phrygian': [0, 1, 3, 5, 7, 8, 10, 12],
+    'jazz': [0, 3, 5, 6, 7, 8, 10, 12]
 }
 
 keys = {
     'C': 0,
-    'Db': 1,
+    'C#': 1,
     'D': 2,
-    'Eb': 3,
+    'D#': 3,
     'E': 4,
     'F': 5,
-    'Gb': 6, 
+    'F#': 6, 
     'G': 7,
-    'Ab': 8,
+    'G#': 8,
     'A': 9,
-    'Bb': 11,
-    'B': 12
+    'A#': 10,
+    'B': 11
 }
 
 class PhoneController:
@@ -62,9 +65,9 @@ class PhoneController:
         # self.phone_start = self.convert_midi(self.midi_start, False)
 
     def change_key(self, key):
-        diff = self.key - keys[key]
+        diff = keys[key] - keys[self.key]
         self.key = key
-        self.real_start = self.real_start + diff
+        self.real_start[0] = self.real_start[0] + diff
 
         for i in range(len(self.midi_start)):
             self.midi_start[i] = self.midi_start[i] + diff
@@ -76,9 +79,13 @@ class PhoneController:
         if (dir == 'up'):
             self.shift_up()
             self.set_shift(1)
+            emit('update notes', {'notes': self.current_notes}, broadcast=True)
+
         elif (dir == 'down'):
             self.shift_down()
             self.set_shift(-1)
+            emit('update notes', {'notes': self.current_notes}, broadcast=True)
+
         elif (dir == 'right'):
             self.increase_octave()
         elif (dir == 'left'):
@@ -88,8 +95,10 @@ class PhoneController:
         elif (dir == 'off'):
             if (self.get_shift() == 1):
                 self.shift_down()
+                emit('update notes', {'notes': self.current_notes}, broadcast=True)
             elif (self.get_shift() == -1):
                 self.shift_up()
+                emit('update notes', {'notes': self.current_notes}, broadcast=True)
             self.set_shift(0)
 
     def reset(self):
@@ -110,9 +119,19 @@ class PhoneController:
         for i in range(len(self.midi_start)):
             self.midi_start[i] += 1
 
+        for i in range(len(self.current_midi_notes)):
+            self.current_midi_notes[i] += 1
+
+        self.current_notes = self.convert_midi(self.current_midi_notes, True)
+
     def shift_down(self):
         for i in range(len(self.midi_start)):
             self.midi_start[i] -= 1
+
+        for i in range(len(self.current_midi_notes)):
+            self.current_midi_notes[i] -= 1
+
+        self.current_notes = self.convert_midi(self.current_midi_notes, True)
 
     def update_notes(self, buttons):
         res_notes = []
