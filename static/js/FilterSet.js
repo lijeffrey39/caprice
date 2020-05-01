@@ -1,5 +1,5 @@
 const filters = ['chorus', 'delay', 'distortion', 'reverb', 'tremolo',
-    'vibrato', 'panner', 'wah'];
+    'vibrato', 'panner', 'wah', 'pitchshift'];
 
 class FilterSet { 
     constructor () {
