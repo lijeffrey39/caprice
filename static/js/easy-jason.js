@@ -17,7 +17,7 @@ var pitchShift = new Tone.PitchShift({
     windowSize : 0.1,
     delayTime : 0,
     feedback : 0,
-    wet: 0
+    wet: 1
 });
 
 // wah effect
@@ -56,7 +56,7 @@ var curDecay = 2;
 var reverb = new Tone.Reverb({
     decay : 2 ,
     preDelay : 0.01,
-    wet: 0.6,
+    wet: 0,
 })
 reverb.generate();
 
@@ -73,7 +73,7 @@ var tremolo = new Tone.Tremolo({
 var vibe = new Tone.Vibrato({
     frequency: 0,
     depth: 0,
-    wet: 1
+    wet: 0
 });
 
 //gyro is dict w keys 'x' 'y' 'z'
@@ -94,10 +94,20 @@ function wah_run(gyro) {
     wah.frequency.value = Math.max(100, 4000-scale*gyro['x']);
 }
 
-function reverb_run(gyro) {
+var pitchShiftOn = true;
+function bitchshift(gyro) {
     var scale = 0.1;
+    var shift;
 
-    reverb.decay.value = curDecay + Math.abs(scale*gyro['x']);
+    if(scale*gyro['x'] > 2){
+        shift = 2;
+    } else if (scale*gyro['x'] < -2) {
+        shift = -2
+    } else {
+        shift = scale*gyro['x'];
+    }
+
+    pitchShift.pitch = shift;
 }
 
 var effect_wet = {
@@ -227,7 +237,7 @@ function setInstrument(ins) {
             playNotes = synth_playNotes;
             break;
     }
-    sampler.connect(wah);
+    sampler.connect(pitchShift);
 }
 
 function changeEffect(args) {
@@ -267,7 +277,10 @@ function changeEffect(args) {
         case 'wah':
             effect_wet['wah'] = args[2]['q'][1];
             break;
-
+        case 'pitchshift':
+            pitchShift.delayTime.value = args[2]['delayTime'][1];
+            pitchShift.feedback.value = args[2]['feedback'][1];
+            break;
     }
 }
 
@@ -304,7 +317,9 @@ function addEffect(args) {
         case "wah":
             wah.Q.value = effect_wet['wah'];
             break;
-
+        case 'pitchshift':
+            pitchShiftOn = true;
+            break;
     }
 }
 
@@ -334,6 +349,9 @@ function removeEffect(name) {
             break;
         case "wah":
             wah.Q.value = 0;
+            break;
+        case "pitchshift":
+            pitchShiftOn = false;
             break;
     }
 }
@@ -449,16 +467,21 @@ $(document).ready(function() {
             if(pannerOn) {
                 panner_update(msg.gyro);
             }
+            if(pitchShiftOn) {
+                bitchshift(msg.gyro)
+            }
             wah_run(msg.gyro);
         } else {
             panner.setPosition(0,0,4);
+            pitchShift.pitch = 0;
         }
         
     });
   });
 
 //set up effects chain
-sampler.connect(wah);
+sampler.connect(pitchShift);
+pitchShift.connect(wah);
 wah.connect(tremolo);
 tremolo.connect(vibe);
 vibe.connect(distortion);

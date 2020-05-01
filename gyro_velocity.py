@@ -29,7 +29,7 @@ class GyroVelocity:
             
             self.current_velocity = {'x': 0,
                                      'y': 0,
-                                     'z': 0 }
+                                     'z': 0}
                                         
             return None
         

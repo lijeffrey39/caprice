@@ -1,4 +1,4 @@
-const effectNames = ['chorus', 'delay', 'distortion', 'reverb', 'tremolo', 'vibrato', 'panner', 'wah'];
+const effectNames = ['chorus', 'delay', 'distortion', 'reverb', 'tremolo', 'vibrato', 'wah', 'pitchshift'];
 
 const effectDict = {
     'chorus': {
@@ -30,11 +30,12 @@ const effectDict = {
         'depth': 1,
         'wet': 1
     },
-    'panner': {
-        'frequency': 1
-    }, 
     'wah': {
         'q': 1,
+    },
+    'pitchshift': {
+                'delayTime': 100,
+                'feedback': 1
     }
 }
 

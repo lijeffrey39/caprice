@@ -4,7 +4,7 @@ class FilterSelect:
 
     def __init__(self, effects_set):
         self.filters = ['chorus', 'delay', 'distortion', 'reverb', 'tremolo',
-                        'vibrato', 'panner', 'wah']
+                        'vibrato', 'panner', 'wah', 'pitchshift']
 
         self.width = 4
         self.grid = Grid(self.filters, self.width)

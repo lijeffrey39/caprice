@@ -34,11 +34,12 @@ class ParameterSelect:
                 'depth': 1,  # normal
                 'wet': 1,  # normal
             },
-            'panner': {
-                'joe': 1
-            },
             'wah': {
                 'q': 1,  # normal
+            },
+            'pitchshift': {
+                'delayTime': 1,
+                'feedback': 1
             }
         }
         self.effectValues = {
@@ -46,36 +47,37 @@ class ParameterSelect:
                 'frequency': [0, 0],  # Hz,
                 'delay': [0, 0],  # ms,
                 'depth': [0, 0],  # normal
-                'wet': [0, 0],  # normal
+                'wet': [1, 1],  # normal
             },
             'delay': {
                 'delay': [0, 0],  # s
                 'feedback': [0, 0],  # normal
-                'wet': [0, 0],  # normal
+                'wet': [1, 1],  # normal
             },
             'distortion': {
                 'distortion': [0, 0],  # normal
-                'wet': [0, 0],  # normal
+                'wet': [1, 1],  # normal
             },
             'reverb': {
                 'decay': [0, 0],  # s
-                'wet': [0, 0],  # normal
+                'wet': [1, 1],  # normal
             },
             'tremolo': {
                 'frequency': [0, 0],  # Hz,
                 'depth': [0, 0],  # normal
-                'wet': [0, 0],  # normal
+                'wet': [1, 1],  # normal
             },
             'vibrato': {
                 'frequency': [0, 0],  # Hz,
                 'depth': [0, 0],  # normal
-                'wet': [0, 0],  # normal
-            },
-            'panner': {
-                'joe': [0, 0], #normal
+                'wet': [1, 1],  # normal
             },
             'wah': {
                 'q': [0, 0],  # normal
+            },
+            'pitchshift': {
+                'delayTime': [0, 0],
+                'feedback': [0, 0]
             }
         }
         self.width = 4
