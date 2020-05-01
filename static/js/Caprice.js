@@ -16,6 +16,7 @@ const es = new EffectSetup();
 const is = new InstrumentSelect();
 const fs = new FilterSet();
 const ks = new KeySelect();
+var enabledEffects = [];
 
 class Caprice {
     constructor() {
@@ -41,6 +42,28 @@ class Caprice {
             this.mode = msg;
         });
 
+        socket.on('update value', function(msg) {
+            if ("effects_toggle" in msg) {
+                const name = msg.effects_toggle.name;
+                var effectsRow = document.getElementById("enabledEffects");
+                if (msg.effects_toggle.toggle) {
+                    if (!enabledEffects.includes(name)) {
+                        var span = document.createElement("span");
+                        span.className = 'badge badge-warning';
+                        span.id = name
+                        span.innerHTML = name
+                        effectsRow.appendChild(span);
+                        enabledEffects.push(name);
+                    }
+                } else {
+                    if (enabledEffects.includes(name)) {
+                        enabledEffects.splice(enabledEffects.indexOf(name), 1);
+                        $('#' + name).remove();
+                    }
+                }
+            }
+        });
+        
         socket.on('edit', (msg) => {
             console.log(msg);
             if (msg === 'back') {
@@ -94,16 +117,6 @@ class Caprice {
             console.log("hi")
             $('#ip-modal').modal('show');
         });
-    }
-
-    move = (from, to, animation) => {
-        console.log(animation)
-        var fromAnimation = JSON.parse(JSON.stringify(animation));
-        fromAnimation['opacity'] = 0;
-        var toAnimation = JSON.parse(JSON.stringify(animation));
-        toAnimation['opacity'] = 1;
-        $(from).animate(fromAnimation, 1000);
-        $(to).animate(toAnimation, 1000);
     }
 
     onDeviceConnected = (device) => {

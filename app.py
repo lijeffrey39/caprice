@@ -53,7 +53,6 @@ def notification(message):
         # print(result['output']['notes'])
         emitted = time.time()
         result['output']['time'] = emitted*1000
-        data = result['output']
         test_message(result['output'])
     else:
         output = result['output']
